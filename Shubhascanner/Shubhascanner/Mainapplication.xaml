@@ -1,0 +1,55 @@
+﻿<Window x:Class="Shubhascanner.Mainapplication"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Shubha scanner " Height="490" Width="726" Loaded="Window_Loaded">
+    <Grid>
+        <TabControl Height="427" HorizontalAlignment="Left" Margin="13,13,0,0" Name="tabControl1" VerticalAlignment="Top" Width="675">
+            
+            <TabItem Header="Home" Name="tabItem1" FontFamily="Times New Roman" FontSize="14">
+                <Grid>
+                    <Button Content="Save" Height="23" HorizontalAlignment="Left" Margin="227,242,0,0" Name="button1" VerticalAlignment="Top" Width="75" />
+                    <Label Content=" Bollinger band  Price :" Height="28" HorizontalAlignment="Left" Margin="17,36,0,0" Name="label1" VerticalAlignment="Top" />
+                    <Label Content=" Bollinger band Period :" Height="28" HorizontalAlignment="Left" Margin="10,62,0,0" Name="label2" VerticalAlignment="Top" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="161,68,0,0" Name="Bbperiod" VerticalAlignment="Top" Width="95" />
+                    <Label Content=" Bollinger band Width :" Height="28" HorizontalAlignment="Left" Margin="11,91,0,0" Name="Bbwidth" VerticalAlignment="Top" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="161,97,0,0" Name="bbwidth" VerticalAlignment="Top" Width="95" />
+                    <Label Content="ATR :" Height="28" HorizontalAlignment="Left" Margin="109,121,0,0" Name="label3" VerticalAlignment="Top" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="161,126,0,0" Name="atr" VerticalAlignment="Top" Width="95" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="458,39,0,0" Name="rsi" VerticalAlignment="Top" Width="95" />
+                    <Label Content="RSI :" Height="28" HorizontalAlignment="Left" Margin="413,36,0,0" Name="label4" VerticalAlignment="Top" />
+                    <ComboBox Height="23" HorizontalAlignment="Left" Margin="161,36,0,0" Name="bbprice" VerticalAlignment="Top" Width="95" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="458,67,0,0" Name="saracceleration" VerticalAlignment="Top" Width="95" />
+                    <Label Content="SAR acceleration :" Height="28" HorizontalAlignment="Left" Margin="338,66,0,0" Name="label5" VerticalAlignment="Top" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="458,126,0,0" Name="macdfastavg" VerticalAlignment="Top" Width="95" />
+                    <Label Content="MACD fast avg :" Height="28" HorizontalAlignment="Left" Margin="347,124,0,0" Name="label6" VerticalAlignment="Top" />
+                    <Label Content="MACD fast avg :" Height="28" HorizontalAlignment="Left" Margin="348,156,0,0" Name="label7" VerticalAlignment="Top" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="458,156,0,0" Name="macdslowavg" VerticalAlignment="Top" Width="95" />
+                    <Label Content="MACD signal avg :" Height="28" HorizontalAlignment="Left" Margin="335,187,0,0" Name="label8" VerticalAlignment="Top" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="458,187,0,0" Name="macdsignal" VerticalAlignment="Top" Width="95" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="458,97,0,0" Name="sarmaxacceleration" VerticalAlignment="Top" Width="95" />
+                    <Label Content="SAR max acceleration : " Height="28" HorizontalAlignment="Left" Margin="311,92,0,0" Name="label9" VerticalAlignment="Top" />
+                    <Label Content="ROC price :" Height="28" HorizontalAlignment="Left" Margin="76,154,0,0" Name="label10" VerticalAlignment="Top" />
+                    <Label Content="ROC period :" Height="28" HorizontalAlignment="Left" Margin="68,183,0,0" Name="label11" VerticalAlignment="Top" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="162,186,0,0" Name="textBox4" VerticalAlignment="Top" Width="95" />
+                    <ComboBox HorizontalAlignment="Left" Margin="162,156,0,220" Name="rocprice" Width="95" />
+                    <Button Content="Reset" Height="23" HorizontalAlignment="Left" Margin="335,242,0,0" Name="button2" VerticalAlignment="Top" Width="75" />
+                    <Label Content="Your Registration ID:" Height="28" HorizontalAlignment="Left" Margin="420,-32,0,0" Name="regid" VerticalAlignment="Top" />
+                    <Button Background="#FFF5DFDF" Content="This program comes with ABSOLUTE NO WARRANTY, for more details please read                        " FontSize="14" FontWeight="SemiBold" Foreground="#FFEF1818" Height="25" HorizontalAlignment="Left" IsEnabled="False" Margin="2,373,0,0" Name="button3" VerticalAlignment="Top" Width="668" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="User Guide" Name="tabItem2" FontFamily="Times New Roman" FontSize="14">
+                <Grid >
+</Grid>           
+            </TabItem>
+            <TabItem Header="  Help " Name="tabItem3" FontFamily="Times New Roman" FontSize="14">
+                <Grid >
+                </Grid>
+            </TabItem>
+            <TabItem Header="Contact us" Name="tabItem4" FontFamily="Times New Roman" FontSize="14">
+                <Grid Height="400" Width="670">
+                    <WebBrowser Height="403" HorizontalAlignment="Left" Margin="2,0,0,0" Name="contactus" VerticalAlignment="Top" Width="668" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

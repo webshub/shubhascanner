@@ -1,0 +1,448 @@
+/************************************************************************************************
+=================================================================================================
+******************************AFL Scanner **************************************
+=================================================================================================
+Version : 1.1
+Date : 14.11.2013
+Copyright : Shubhalabha
+Author: Shantesh Paigude 
+Email : support@shubhalabha.in
+Compatibility : This system is written for AmiBroker Standard, Professional or Ultimate Pack Pro 
+Editions (including free trial edition). It is tested on latest stable AmiBroker Release (5.60)
+
+
+=================================================================================================
+TRADING BRINGS CERTAIN RISKS - you can lose REAL MONEY. Please read following CAREFULLY
+=================================================================================================
+*************************************************************************************************/
+_SECTION_BEGIN("Shubhalabha Pattern Finder ");
+
+
+a=CreateObject("newafltodll.Class1");
+Filter=1;
+
+
+test1 = a.test2(Close );
+//test = a.test( );
+hammer=a.hammer(Open,High,Low,Close);
+Engulfing=a.Engulfing(Open,High,Low,Close);
+Doji=a.Doji(Open,High,Low,Close);
+DojiStar=a.DojiStar(Open,High,Low,Close);
+Piercing=a.Piercing(Open,High,Low,Close);
+
+Crows=a.Crows(Open,High,Low,Close);
+BlackCrows=a.BlackCrows(Open,High,Low,Close);
+Inside1=a.Inside(Open,High,Low,Close);
+LineStrike=a.LineStrike(Open,High,Low,Close);
+Outside1=a.Outside(Open,High,Low,Close);
+
+StarsInSouth=a.StarsInSouth(Open,High,Low,Close);
+WhiteSoldiers=a.WhiteSoldiers(Open,High,Low,Close);
+AdvanceBlock=a.AdvanceBlock(Open,High,Low,Close);
+ConcealBabysWall=a.ConcealBabysWall(Open,High,Low,Close);
+Breakaway=a.Breakaway(Open,High,Low,Close);
+
+
+ClosingMarubozu=a.ClosingMarubozu(Open,High,Low,Close);
+CounterAttack=a.CounterAttack(Open,High,Low,Close);
+DarkCloudCover=a.DarkCloudCover(Open,High,Low,Close);
+DragonflyDoji=a.DragonflyDoji(Open,High,Low,Close);
+EveningDojiStar=a.EveningDojiStar(Open,High,Low,Close);
+
+EveningDojiStar=a.EveningDojiStar(Open,High,Low,Close);
+EveningStar=a.EveningStar(Open,High,Low,Close);
+GravestoneDoji=a.GravestoneDoji(Open,High,Low,Close);
+HangingMan=a.HangingMan(Open,High,Low,Close);
+Harami=a.Harami(Open,High,Low,Close);
+
+
+HaramiCross=a.HaramiCross(Open,High,Low,Close);
+HignWave=a.HignWave(Open,High,Low,Close);
+Hikkake=a.Hikkake(Open,High,Low,Close);
+
+///////////
+
+HikkakeMod=a.HikkakeMod(Open,High,Low,Close);
+HomingPigeon=a.HomingPigeon(Open,High,Low,Close);
+Identical3Crows=a.Identical3Crows(Open,High,Low,Close);
+InNeck=a.InNeck(Open,High,Low,Close);
+InvertedHammer=a.InvertedHammer(Open,High,Low,Close);
+
+Kicking=a.Kicking(Open,High,Low,Close);
+KickingByLength=a.KickingByLength(Open,High,Low,Close);
+LadderBottom=a.LadderBottom(Open,High,Low,Close);
+LongLeggedDoji=a.LongLeggedDoji(Open,High,Low,Close);
+LongLine=a.LongLine(Open,High,Low,Close);
+
+Marubozu=a.Marubozu(Open,High,Low,Close);
+MatchingLow=a.MatchingLow(Open,High,Low,Close);
+MatHold=a.MatHold(Open,High,Low,Close);
+MorningDojiStar=a.MorningDojiStar(Open,High,Low,Close);
+MorningStar=a.MorningStar(Open,High,Low,Close);
+
+
+OnNeck=a.OnNeck(Open,High,Low,Close);
+RickshawMan=a.RickshawMan(Open,High,Low,Close);
+SeperatingLines=a.SeperatingLines(Open,High,Low,Close);
+RiseFall3Methods=a.RiseFall3Methods(Open,High,Low,Close);
+ShootingStar=a.ShootingStar(Open,High,Low,Close);
+
+ShortLine=a.ShortLine(Open,High,Low,Close);
+SpinningTop=a.SpinningTop(Open,High,Low,Close);
+StalledPattern=a.StalledPattern(Open,High,Low,Close);
+StickSandwhich=a.StickSandwhich(Open,High,Low,Close);
+Takuri=a.Takuri(Open,High,Low,Close);
+
+
+
+
+
+TasukiGap=a.TasukiGap(Open,High,Low,Close);
+Thrusting=a.Thrusting(Open,High,Low,Close);
+Tristar=a.Tristar(Open,High,Low,Close);
+Unique3River=a.Unique3River(Open,High,Low,Close);
+UpsideGap2Crows=a.UpsideGap2Crows(Open,High,Low,Close);
+
+XSideGap3Methods=a.XSideGap3Methods(Open,High,Low,Close);
+ceil1=a.Ceil(Open,High,Low,Close);
+Cmo=a.Cmo(Open,High,Low,Close);
+Correl=a.Correl(Open,High,Low,Close);
+cos1=a.Cos(Open,High,Low,Close);
+
+
+//AddColumn(test ,"1 Day Surge Volume" );
+
+
+if(ParamToggle("Crows Pattern?","No,Yes",1))
+{
+AddColumn(Crows,"Crows" );
+}
+
+if(ParamToggle("Engulfing Pattern?","No,Yes",1))
+{
+CurtaStatus = WriteIf(Engulfing[0],"BULL","BEAR");
+AddTextColumn(CurtaStatus ,"C > EMAs",1,colorWhite,PrecoxEmasColor);
+AddColumn(Engulfing,"Engulfing" );
+}
+
+if(ParamToggle("Doji Pattern?","No,Yes",1))
+{
+AddColumn(Doji,"Doji" );
+}
+
+if(ParamToggle("DojiStar Pattern?","No,Yes",1))
+{
+AddColumn(DojiStar,"DojiStar" );
+}
+if(ParamToggle("Piercing Pattern?","No,Yes",1))
+{
+AddColumn(Piercing,"Piercing" );
+}
+
+if(ParamToggle("BlackCrows Pattern?","No,Yes",1))
+{
+AddColumn(BlackCrows,"BlackCrows" );
+}
+
+if(ParamToggle("Inside Pattern?","No,Yes",1))
+{
+AddColumn(Inside1,"Inside" );
+}
+
+
+if(ParamToggle("LineStrike Pattern?","No,Yes",1))
+{
+AddColumn(LineStrike,"LineStrike" );
+}
+
+if(ParamToggle("Outside Pattern?","No,Yes",1))
+{
+AddColumn(Outside1,"Outside" );
+}
+
+
+if(ParamToggle("StarsInSouth Pattern?","No,Yes",1))
+{
+AddColumn(StarsInSouth,"StarsInSouth" );
+}
+
+if(ParamToggle("WhiteSoldiers Pattern?","No,Yes",1))
+{
+AddColumn(WhiteSoldiers,"WhiteSoldiers" );
+}
+
+if(ParamToggle("AdvanceBlock Pattern?","No,Yes",1))
+{
+AddColumn(AdvanceBlock,"AdvanceBlock" );
+}
+
+if(ParamToggle("ConcealBabysWall Pattern?","No,Yes",1))
+{
+AddColumn(ConcealBabysWall,"ConcealBabysWall" );
+}
+
+if(ParamToggle("Breakaway Pattern?","No,Yes",1))
+{
+AddColumn(Breakaway,"Breakaway" );
+}
+
+if(ParamToggle("ClosingMarubozu Pattern?","No,Yes",1))
+{
+AddColumn(ClosingMarubozu,"ClosingMarubozu" );
+}
+
+if(ParamToggle("CounterAttack Pattern?","No,Yes",1))
+{
+AddColumn(CounterAttack,"CounterAttack" );
+}
+
+if(ParamToggle("DarkCloudCover Pattern?","No,Yes",1))
+{
+AddColumn(DarkCloudCover,"DarkCloudCover" );
+}
+
+if(ParamToggle("DragonflyDoji Pattern?","No,Yes",1))
+{
+AddColumn(DragonflyDoji,"DragonflyDoji" );
+}
+
+if(ParamToggle("EveningDojiStar Pattern?","No,Yes",1))
+{
+AddColumn(EveningDojiStar,"EveningDojiStar" );
+}
+
+if(ParamToggle("EveningStar Pattern?","No,Yes",1))
+{
+AddColumn(EveningStar,"EveningStar" );
+}
+
+if(ParamToggle("GravestoneDoji Pattern?","No,Yes",1))
+{
+AddColumn(GravestoneDoji,"GravestoneDoji" );
+}
+
+if(ParamToggle("HangingMan Pattern?","No,Yes",1))
+{
+AddColumn(HangingMan,"HangingMan" );
+}
+
+if(ParamToggle("Harami Pattern?","No,Yes",1))
+{
+AddColumn(Harami,"Harami" );
+}
+
+if(ParamToggle("HaramiCross Pattern?","No,Yes",1))
+{
+AddColumn(HaramiCross,"HaramiCross" );
+}
+
+if(ParamToggle("HignWave Pattern?","No,Yes",1))
+{
+AddColumn(HignWave,"HignWave" );
+}
+
+if(ParamToggle("Hikkake Pattern?","No,Yes",1))
+{
+AddColumn(Hikkake,"Hikkake" );
+}
+
+if(ParamToggle("HikkakeMod Pattern?","No,Yes",1))
+{
+AddColumn(HikkakeMod,"HikkakeMod" );
+}
+
+if(ParamToggle("HomingPigeon Pattern?","No,Yes",1))
+{
+AddColumn(HomingPigeon,"HomingPigeon" );
+}
+
+if(ParamToggle("Identical3Crows Pattern?","No,Yes",1))
+{
+AddColumn(Identical3Crows,"Identical3Crows" );
+}
+
+if(ParamToggle("InNeck Pattern?","No,Yes",1))
+{
+AddColumn(InNeck,"InNeck" );
+}
+
+if(ParamToggle("InvertedHammer Pattern?","No,Yes",1))
+{
+AddColumn(InvertedHammer,"InvertedHammer" );
+}
+
+if(ParamToggle("Kicking Pattern?","No,Yes",1))
+{
+AddColumn(Kicking,"Kicking" );
+}
+
+if(ParamToggle("KickingByLength Pattern?","No,Yes",1))
+{
+AddColumn(KickingByLength,"KickingByLength" );
+}
+
+if(ParamToggle("LadderBottom Pattern?","No,Yes",1))
+{
+AddColumn(LadderBottom,"LadderBottom" );
+}
+
+if(ParamToggle("LongLeggedDoji Pattern?","No,Yes",1))
+{
+AddColumn(LongLeggedDoji,"LongLeggedDoji" );
+}
+
+if(ParamToggle("LongLine Pattern?","No,Yes",1))
+{
+AddColumn(LongLine,"LongLine" );
+}
+
+
+if(ParamToggle("Marubozu Pattern?","No,Yes",1))
+{
+
+AddColumn(Marubozu,"Marubozu" );
+}
+
+if(ParamToggle("MatchingLow Pattern?","No,Yes",1))
+{
+
+AddColumn(MatchingLow,"MatchingLow" );
+}
+
+if(ParamToggle("MatHold Pattern?","No,Yes",1))
+{
+
+AddColumn(MatHold,"MatHold" );
+}
+
+if(ParamToggle("MorningDojiStar Pattern?","No,Yes",1))
+{
+
+AddColumn(MorningDojiStar,"MorningDojiStar" );
+}
+
+if(ParamToggle("MorningStar Pattern?","No,Yes",1))
+{
+
+AddColumn(MorningStar,"MorningStar" );
+}
+
+if(ParamToggle("OnNeck Pattern?","No,Yes",1))
+{
+AddColumn(OnNeck,"OnNeck" );
+}
+
+if(ParamToggle("RickshawMan Pattern?","No,Yes",1))
+{
+AddColumn(RickshawMan,"RickshawMan" );
+}
+
+if(ParamToggle("RickshawMan Pattern?","No,Yes",1))
+{
+AddColumn(RickshawMan,"RickshawMan" );
+}
+
+
+if(ParamToggle("SeperatingLines Pattern?","No,Yes",1))
+{
+AddColumn(SeperatingLines,"SeperatingLines" );
+}
+
+
+if(ParamToggle("RiseFall3Methods Pattern?","No,Yes",1))
+{
+AddColumn(RiseFall3Methods,"RiseFall3Methods" );
+}
+
+
+if(ParamToggle("ShootingStar Pattern?","No,Yes",1))
+{
+AddColumn(ShootingStar,"ShootingStar" );
+}
+
+if(ParamToggle("ShortLine Pattern?","No,Yes",1))
+{
+AddColumn(ShortLine,"ShortLine" );
+}
+
+if(ParamToggle("SpinningTop Pattern?","No,Yes",1))
+{
+AddColumn(SpinningTop,"SpinningTop" );
+}
+
+
+if(ParamToggle("SpinningTop Pattern?","No,Yes",1))
+{
+AddColumn(SpinningTop,"SpinningTop" );
+}
+
+if(ParamToggle("StalledPattern Pattern?","No,Yes",1))
+{
+AddColumn(StalledPattern,"StalledPattern" );
+}
+
+if(ParamToggle("LongLeggedDoji Pattern?","No,Yes",1))
+{
+AddColumn(StickSandwhich,"LongLeggedDoji" );
+}
+
+if(ParamToggle("Takuri Pattern?","No,Yes",1))
+{
+AddColumn(Takuri,"Takuri" );
+}
+
+if(ParamToggle("TasukiGap Pattern?","No,Yes",1))
+{
+AddColumn(TasukiGap,"TasukiGap" );
+}
+
+if(ParamToggle("Thrusting Pattern?","No,Yes",1))
+{
+AddColumn(Thrusting,"Thrusting" );
+}
+
+if(ParamToggle("Tristar Pattern?","No,Yes",1))
+{
+AddColumn(Tristar,"Tristar" );
+}
+
+if(ParamToggle("Unique3River Pattern?","No,Yes",1))
+{
+AddColumn(Unique3River,"Unique3River" );
+}
+
+if(ParamToggle("TasukiGap Pattern?","No,Yes",1))
+{
+AddColumn(XSideGap3Methods,"TasukiGap" );
+}
+
+if(ParamToggle("ceil Pattern?","No,Yes",1))
+{
+AddColumn(ceil1,"ceil" );
+}
+
+if(ParamToggle("Cmo Pattern?","No,Yes",1))
+{
+
+AddColumn(Cmo,"Cmo" );
+}
+
+
+if(ParamToggle("Correl Pattern?","No,Yes",1))
+{
+
+AddColumn(Correl,"Correl" );
+}
+
+
+if(ParamToggle("cos1 Pattern?","No,Yes",1))
+{
+
+AddColumn(cos1,"cos1" );
+}
+
+
+
+
+
+_SECTION_END();
