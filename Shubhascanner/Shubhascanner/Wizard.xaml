@@ -32,8 +32,8 @@
             <Grid Name="contentGrid">
                 <StackPanel Height="266" HorizontalAlignment="Left" Margin="0,5,0,0" Name="stackcontainer" VerticalAlignment="Top" Width="499"></StackPanel>
                 <Label Name="Rsult_lbl" Margin="3,290,11,0" Foreground="#FFF51616" FontWeight="ExtraBold" FontStyle="Normal" FontFamily="Times New Roman" />
-                <RadioButton Content="I accept license agreement " Height="16" HorizontalAlignment="Left" Margin="6,274,0,0" Name="agree" VerticalAlignment="Top" Visibility="Hidden" />
-                <RadioButton Content="I Do not accept license agreement " Height="16" HorizontalAlignment="Right" Margin="0,274,113,0" Name="notagree" VerticalAlignment="Top" Visibility="Hidden" />
+                <RadioButton Content="I accept license agreement " Height="16" HorizontalAlignment="Left" Margin="6,274,0,0" Name="agree" VerticalAlignment="Top" Visibility="Hidden" FontFamily="Times New Roman" FontSize="13" />
+                <RadioButton Content="I Do not accept license agreement " Height="16" HorizontalAlignment="Right" Margin="0,274,113,0" Name="notagree" VerticalAlignment="Top" Visibility="Hidden" FontFamily="Times New Roman" FontSize="13" />
             </Grid>
         </Border>
 

@@ -7,10 +7,10 @@
              d:DesignHeight="303" d:DesignWidth="500" Loaded="UserControl_Loaded">
     <Grid Height="301" Width="502">
         <RichTextBox Height="159" HorizontalAlignment="Left" IsHitTestVisible="True" IsReadOnly="False" Margin="12,103,0,0" Name="richTextBox1" ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" Width="464" />
-        <Label Content="Please read the following LICENSE AGREEMENT.You must accept the terms of this " FontFamily="Times New Roman" FontSize="12" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" Name="label3" VerticalAlignment="Top" FontWeight="Normal" />
-        <Label Content="agreement before continuing with the wizard." FontFamily="Times New Roman" FontSize="12" Height="28" HorizontalAlignment="Left" Margin="10,26,0,0" Name="label" VerticalAlignment="Top" FontWeight="Normal" />
-        <Label Content="For more details refer to our disclaimer" FontFamily="Times New Roman" FontSize="12" Height="28" HorizontalAlignment="Left" Margin="11,68,0,0" Name="label4" VerticalAlignment="Top" FontWeight="Normal" />
+        <Label Content="Please read the following LICENSE AGREEMENT.You must accept the terms of this " FontFamily="Times New Roman" FontSize="13" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" Name="label3" VerticalAlignment="Top" FontWeight="Normal" />
+        <Label Content="agreement before continuing with the wizard." FontFamily="Times New Roman" FontSize="13" Height="28" HorizontalAlignment="Left" Margin="10,26,0,0" Name="label" VerticalAlignment="Top" FontWeight="Normal" />
+        <Label Content="For more details refer to our disclaimer" FontFamily="Times New Roman" FontSize="13" Height="28" HorizontalAlignment="Left" Margin="11,68,0,0" Name="label4" VerticalAlignment="Top" FontWeight="Normal" />
         <TextBlock Margin="228,72,71,203" FontSize="12" FontWeight="Normal" FontFamily="Times New Roman"><Hyperlink NavigateUri="http://shubhalabha.in/disclaimer/license/" RequestNavigate="Hyperlink_RequestNavigate"><TextBlock FontFamily="Times New Roman" FontSize="13" Text="http://shubhalabha.in/disclaimer-2/  " /></Hyperlink></TextBlock>
-        <Label Content="Please note this product comes with absolute NO Warranty / Guarantee ." FontFamily="Times New Roman" FontSize="12" Height="28" HorizontalAlignment="Left" Margin="10,47,0,0" Name="label1" VerticalAlignment="Top" FontWeight="Normal" />
+        <Label Content="Please note this product comes with absolute NO Warranty / Guarantee ." FontFamily="Times New Roman" FontSize="13" Height="28" HorizontalAlignment="Left" Margin="10,47,0,0" Name="label1" VerticalAlignment="Top" FontWeight="Normal" />
     </Grid>
 </UserControl>

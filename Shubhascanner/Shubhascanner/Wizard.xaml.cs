@@ -28,6 +28,8 @@ namespace Shubhascanner
 
         private void nextButtonforterminal_Click(object sender, RoutedEventArgs e)
         {
+            Rsult_lbl.Foreground = Brushes.Red;
+            Rsult_lbl.Content = "";
             if (nextcount == 0)
             {
                 agree.Visibility = Visibility.Visible;
@@ -139,7 +141,8 @@ namespace Shubhascanner
             }
             if (nextcount == 1)
             {
-
+                agree.Visibility = Visibility.Visible;
+                notagree.Visibility = Visibility.Visible;
                 try
                 {
                     stackcontainer.Children.RemoveAt(0);
@@ -155,7 +158,8 @@ namespace Shubhascanner
             }
             if (nextcount == 0)
             {
-
+                agree.Visibility = Visibility.Hidden;
+                notagree.Visibility = Visibility.Hidden;
                 try
                 {
                     stackcontainer.Children.RemoveAt(0);
@@ -180,6 +184,14 @@ namespace Shubhascanner
             string filepath = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
             string processtostart = "";
 
+            bool a = File.Exists(amiexepath + "\\Broker.exe");
+
+            if(a==false )
+            {
+                Rsult_lbl.Foreground = Brushes.Red;
+                Rsult_lbl.Content = "Amibroker exe path is wrong please select correct path ";
+                return;
+            }
 
 
             if (!Directory.Exists("C:\\myshubhalabha\\Scanner\\Donotdelete"))
