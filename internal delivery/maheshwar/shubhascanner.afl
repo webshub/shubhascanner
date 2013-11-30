@@ -2,8 +2,8 @@
 =================================================================================================
 ******************************AFL Scanner **************************************
 =================================================================================================
-Version : 1.2
-Date : 16.11.2013
+Version : 0.1
+Date : 30.11.2013
 Copyright : Shubhalabha 
 Email : support@shubhalabha.in
 Compatibility : This system is written for AmiBroker Standard, Professional or Ultimate Pack Pro 
@@ -32,31 +32,27 @@ NO SIGNALS GENERATED THROUGH ITS PRODUCTS.
 _SECTION_BEGIN("Shubhalabha");
 
 //Taking user input 
-Voluserinput=Param("Select Volume ",500000,1,9000000);
-Lastcloseuserinput=Param("Select Last Close is Greater Than condition ",100,1,10000);
-ATRuserinput=Param("Select ATR is Greater Than condition ",10,1,10000);
-ATRbaruserinput=Param("Select ATR Bar configuration ",1,1,10000);
-// Removing EMA as per new request. 
-//EMA1shorttermuserinput=Param("Select short EMA value ",5,1,100);
-//EMA2longtermuserinput=Param("Select long EMA value ",26,1,100);
-BBrangeuserinput=Param("BB-range ",15,1,100);
-BBwidthuserinput=Param("BB-width ",2,1,100);
-Shorttermuserinput=Param("Select Short term duration", 5,1,400);
-Longtermuserinput=Param("Select Long term duration", 30,1,400);
-shortchangeuserinput=Param("Select % change for short term" ,3.81,-100,100);
-longchangeuserinput=Param("Select % change for one long term", 2.49,-100,100);
-bbup=BBandTop(Close, BBrangeuserinput, BBwidthuserinput );
-bbbot=BBandBot(Close, BBrangeuserinput, BBwidthuserinput );
-bbdiff=Close - bbup;
-bbdiffb=Close - bbbot;
-DROC= ROC( Close, Shorttermuserinput, absmode = False );
-WROC= ROC( Close, Longtermuserinput, absmode = False );
-
+Minprice = Param("Select Minimum price ",100,1,20000);
+Maxprice = Param("Select Maximum price ",1000,1,20000);
+Minvolume = Param("Select Minimum volume ",10000,100,50000000);
+Maxvolume = Param("Select Maximum volume ",500000,100,50000000);
+Daysavgvol = Param("Select no. of days to calculate avg volume ",10,1,400);
+LeadEMA = Param("Select no. of days to calculate lead EMA ",5,1,400);
+MediumEMA = Param("Select no. of days to calculate Mediaum EMA ",13,1,400);
+LagEMA = Param("Select no. of days to calculate Lag EMA ",26,1,400);
+LongEMA = Param("Select no. of days to calculate Long EMA ",200,1,400);
+LeadSMA = Param("Select no. of days to calculate lead SMA ",10,1,400);
+MediumSMA = Param("Select no. of days to calculate Medium SMA ",50,1,400);
+LagSMA = Param("Select no. of days to calculate Lag SMA ",100,1,400);
+LongSMA = Param("Select no. of days to calculate Long SMA ",200,1,400);
 // Buy Sell condition
+DROC = ROC(Volume,5, absmode = False );
 
-Buy =( Close >  Lastcloseuserinput AND   DROC > shortchangeuserinput AND WROC > longchangeuserinput AND  Volume >Voluserinput AND ATR(ATRbaruserinput)>ATRuserinput AND BBandTop( Close, BBrangeuserinput, BBwidthuserinput ) > Close );
-Sell = ( Close >  Lastcloseuserinput AND DROC < shortchangeuserinput AND WROC < longchangeuserinput AND  Volume >Voluserinput AND ATR(ATRbaruserinput)>ATRuserinput AND BBandBot( Close, BBrangeuserinput, BBwidthuserinput ) < Close );
 
+//Buy = (Close > EMA (Close,LongEMA))AND ((EMA (Close,LeadEMA) > EMA (Close,LAGEMA)));
+
+Buy = Cross( EMA(Close,5), EMA(Close,13)) AND Cross( EMA(Close,5), EMA(Close,26));
+Sell = 0;
 
 // Buy Sell condition backup to try anything.
 //Buy =( Close >  Lastcloseuserinput AND   DROC > shortchangeuserinput AND WROC > longchangeuserinput AND  Volume >Voluserinput AND ATR(ATRbaruserinput)>ATRuserinput AND BBandTop( Close, BBrangeuserinput, BBwidthuserinput ) > Close );
@@ -64,8 +60,8 @@ Sell = ( Close >  Lastcloseuserinput AND DROC < shortchangeuserinput AND WROC < 
 
 // Comment following two lines if you want to get signals without swing signals.
 
-Buy=ExRem(Buy,Sell);
-Sell=ExRem(Sell,Buy);
+//Buy=ExRem(Buy,Sell);
+//Sell=ExRem(Sell,Buy);
 Short=0;
 Cover=0;
 // Enable following to get all data without buy sell.
@@ -79,14 +75,14 @@ AddTextColumn( FullName(), "Company name", 77 ,colorGreen);
 AddColumn(Volume,"Last Volume ",1.2,colorGreen);
 AddColumn(Close,"Last Close  ",1.2,colorGreen);
 AddColumn(DROC,"Short term % change",1.2,colorGreen);
-AddColumn(WROC,"Long term % change",1.2,colorGreen);
-AddColumn(ATR(ATRbaruserinput) ,"Last ATR",1.2,colorGreen);
+//AddColumn(WROC,"Long term % change",1.2,colorGreen);
+//AddColumn(ATR(ATRbaruserinput) ,"Last ATR",1.2,colorGreen);
 //AddColumn(EMA(Close, EMA1shorttermuserinput),"EMA1 Short term",1.2, colorGreen);
 //AddColumn(EMA(Close, EMA2longtermuserinput),"EMA2 Long term",1.2, colorGreen);
-AddColumn(BBandTop(Close, BBrangeuserinput, BBwidthuserinput ),"Bollinger band upper  ",1.2,colorGreen );
-AddColumn(bbdiff,"Diff BBup & close   ",1.2,colorGreen );
-AddColumn(BBandBot(Close, BBrangeuserinput, BBwidthuserinput ),"Bollinger band lower  ",1.2,colorGreen );
-AddColumn(bbdiffb,"Diff BBbot & close   ",1.2,colorGreen );
+//AddColumn(BBandTop(Close, BBrangeuserinput, BBwidthuserinput ),"Bollinger band upper  ",1.2,colorGreen );
+//AddColumn(bbdiff,"Diff BBup & close   ",1.2,colorGreen );
+//AddColumn(BBandBot(Close, BBrangeuserinput, BBwidthuserinput ),"Bollinger band lower  ",1.2,colorGreen );
+//ddColumn(bbdiffb,"Diff BBbot & close   ",1.2,colorGreen );
 
 
 
