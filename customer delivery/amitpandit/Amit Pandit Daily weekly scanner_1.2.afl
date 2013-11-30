@@ -1,0 +1,103 @@
+/************************************************************************************************
+=================================================================================================
+******************************AFL Scanner **************************************
+=================================================================================================
+Version : 1.2
+Date : 16.11.2013
+Copyright : Shubhalabha 
+Email : support@shubhalabha.in
+Compatibility : This system is written for AmiBroker Standard, Professional or Ultimate Pack Pro 
+Editions (including free trial edition). It is tested on latest stable AmiBroker Release (5.60)
+
+
+=================================================================================================
+TRADING BRINGS CERTAIN RISKS - you can lose REAL MONEY. Please read following CAREFULLY
+=================================================================================================
+
+1. This scanner provides reports based on following conditions.
+Bullish signal=  Last Close < EMA shortterm AND Last Close Price < bollinger bands upper AND Last Volume > 500000 AND Last Close Price > Rs. 100 AND % change in last one month > 2.49% AND % change in last one week > 3.81% AND ATR > 10 ( if all rules matches then only signal will be Buy) 
+Bearish signal=  Last Close < EMA shortterm AND Last Close Price < bollinger bands lower AND Last Volume > 500000 AND Last Close Price > Rs. 100 AND % change in last one month > 2.49% AND % change in last one week > 3.81% AND ATR > 10 ( if all rules matches then only signal will be Sell)
+
+2.You should check working of your code thoroughly to make sure it works as per your expectations before actually using it with real money.
+
+3. DO NOT LEAVE TRADING UNATTENDED as certain circumstances may occur like internet failure, 
+software crash, etc. which may lead to serious financial losses.
+
+4. While we have rigorously tested this scanner, error-free working IS NOT AT ALL 
+GUARANTEED. UNDER NO CIRCUMSTANCES, Shubhalabha AND ANY OF ITS ASSOCIATES, EMPLOYEES, 
+OWNERS, ETC. WILL BE RESPONSIBLE FOR ANY DIRECT OR CONSEQUENTIAL LOSS DUE TO INCORRECT, FAULTY OR 
+NO SIGNALS GENERATED THROUGH ITS PRODUCTS.
+*************************************************************************************************/
+
+_SECTION_BEGIN("Shubhalabha");
+
+//Taking user input 
+Voluserinput=Param("Select Volume ",500000,1,9000000);
+Lastcloseuserinput=Param("Select Last Close is Greater Than condition ",100,1,10000);
+ATRuserinput=Param("Select ATR is Greater Than condition ",10,1,10000);
+ATRbaruserinput=Param("Select ATR Bar configuration ",1,1,10000);
+// Removing EMA as per new request. 
+//EMA1shorttermuserinput=Param("Select short EMA value ",5,1,100);
+//EMA2longtermuserinput=Param("Select long EMA value ",26,1,100);
+BBrangeuserinput=Param("BB-range ",15,1,100);
+BBwidthuserinput=Param("BB-width ",2,1,100);
+Shorttermuserinput=Param("Select Short term duration", 5,1,400);
+Longtermuserinput=Param("Select Long term duration", 30,1,400);
+shortchangeuserinput=Param("Select % change for short term" ,3.81,-100,100);
+longchangeuserinput=Param("Select % change for one long term", 2.49,-100,100);
+bbup=BBandTop(Close, BBrangeuserinput, BBwidthuserinput );
+bbbot=BBandBot(Close, BBrangeuserinput, BBwidthuserinput );
+bbdiff=Close - bbup;
+bbdiffb=Close - bbbot;
+DROC= ROC( Close, Shorttermuserinput, absmode = False );
+WROC= ROC( Close, Longtermuserinput, absmode = False );
+
+// Buy Sell condition
+
+Buy =( Close >  Lastcloseuserinput AND   DROC > shortchangeuserinput AND WROC > longchangeuserinput AND  Volume >Voluserinput AND ATR(ATRbaruserinput)>ATRuserinput AND BBandTop( Close, BBrangeuserinput, BBwidthuserinput ) > Close );
+Sell = ( Close >  Lastcloseuserinput AND DROC < shortchangeuserinput AND WROC < longchangeuserinput AND  Volume >Voluserinput AND ATR(ATRbaruserinput)>ATRuserinput AND BBandBot( Close, BBrangeuserinput, BBwidthuserinput ) < Close );
+
+
+// Buy Sell condition backup to try anything.
+//Buy =( Close >  Lastcloseuserinput AND   DROC > shortchangeuserinput AND WROC > longchangeuserinput AND  Volume >Voluserinput AND ATR(ATRbaruserinput)>ATRuserinput AND BBandTop( Close, BBrangeuserinput, BBwidthuserinput ) > Close );
+//Sell = ( Close >  Lastcloseuserinput AND DROC < shortchangeuserinput AND WROC < longchangeuserinput AND  Volume >Voluserinput AND ATR(ATRbaruserinput)>ATRuserinput AND BBandBot( Close, BBrangeuserinput, BBwidthuserinput ) < Close );
+
+// Comment following two lines if you want to get signals without swing signals.
+
+Buy=ExRem(Buy,Sell);
+Sell=ExRem(Sell,Buy);
+Short=0;
+Cover=0;
+// Enable following to get all data without buy sell.
+//Filter = 1;
+
+Filter= Buy OR Sell;
+//Adding column to report
+
+AddTextColumn(Interval(2),"Time interval",1,colorGreen);
+AddTextColumn( FullName(), "Company name", 77 ,colorGreen);
+AddColumn(Volume,"Last Volume ",1.2,colorGreen);
+AddColumn(Close,"Last Close  ",1.2,colorGreen);
+AddColumn(DROC,"Short term % change",1.2,colorGreen);
+AddColumn(WROC,"Long term % change",1.2,colorGreen);
+AddColumn(ATR(ATRbaruserinput) ,"Last ATR",1.2,colorGreen);
+//AddColumn(EMA(Close, EMA1shorttermuserinput),"EMA1 Short term",1.2, colorGreen);
+//AddColumn(EMA(Close, EMA2longtermuserinput),"EMA2 Long term",1.2, colorGreen);
+AddColumn(BBandTop(Close, BBrangeuserinput, BBwidthuserinput ),"Bollinger band upper  ",1.2,colorGreen );
+AddColumn(bbdiff,"Diff BBup & close   ",1.2,colorGreen );
+AddColumn(BBandBot(Close, BBrangeuserinput, BBwidthuserinput ),"Bollinger band lower  ",1.2,colorGreen );
+AddColumn(bbdiffb,"Diff BBbot & close   ",1.2,colorGreen );
+
+
+
+// This prints report with Buy and Sell.
+
+AddColumn( Buy, "Buy", 1.2,colorGreen  );
+AddColumn(Sell, "Sell", 1.2,colorGreen );
+
+// This marks buy and sell on charts.
+
+PlotShapes(IIf(Buy, shapeSquare, shapeNone),colorGreen, 0, L, Offset=-30);
+PlotShapes(IIf(Sell, shapeSquare, shapeNone),colorRed, 0, H, Offset=30);
+
+_SECTION_END();
