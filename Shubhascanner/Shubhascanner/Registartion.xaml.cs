@@ -79,7 +79,11 @@ namespace Shubhascanner
 
                 RegistryKey regKey = Registry.CurrentUser;
                 regKey = regKey.CreateSubKey(@"amis\");
-              
+                
+                regKey.SetValue("sd", DateTime.Today.Day + "-" + DateTime.Today.Month + "-" + DateTime.Today.Year);
+                regKey.SetValue("Login", "done");
+
+               
                 regKey.SetValue("crm", "done");
                 this.Hide();
                 Shubhascanner.Mainapplication  s = new Mainapplication();

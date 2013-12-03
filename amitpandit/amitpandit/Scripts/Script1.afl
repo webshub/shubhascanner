@@ -1,0 +1,5 @@
+// call the plugin
+aPlugInResult = amitpanditFunc1(Close, 5);
+abc();
+// plot plugin's result
+Plot(aPlugInResult, "aPlugInResult", colorRed);

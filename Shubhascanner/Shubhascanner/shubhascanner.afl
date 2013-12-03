@@ -1,0 +1,22 @@
+//Taking user input 
+Minprice = Param("Select Minimum price ",100,1,20000);
+Maxprice = Param("Select Maximum price ",1000,1,20000);
+Minvolume = Param("Select Minimum volume ",10000,100,50000000);
+Maxvolume = Param("Select Maximum volume ",500000,100,50000000);
+Daysavgvol = Param("Select no. of days to calculate avg volume ",10,1,400);
+LeadEMA = Param("Select no. of days to calculate lead EMA ",5,1,400);
+MediumEMA = Param("Select no. of days to calculate Mediaum EMA ",13,1,400);
+LagEMA = Param("Select no. of days to calculate Lag EMA ",26,1,400);
+LongEMA = Param("Select no. of days to calculate Long EMA ",200,1,400);
+LeadSMA = Param("Select no. of days to calculate lead SMA ",10,1,400);
+MediumSMA = Param("Select no. of days to calculate Medium SMA ",50,1,400);
+LagSMA = Param("Select no. of days to calculate Lag SMA ",100,1,400);
+LongSMA = Param("Select no. of days to calculate Long SMA ",200,1,400);
+
+// call the plugin
+//aPlugInResult = ShubhascannerdllFunc1(Open,High,Low,Close, 5);
+Engulfing=ShubhascannerdllFunc1(Open,High,Low,Close, 5);
+
+shubhascanner();
+// plot plugin's result
+//Plot(aPlugInResult, "aPlugInResult", colorRed);

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Shubha scanner " Height="490" Width="726" Loaded="Window_Loaded" Background="#FFB3B8F2">
     <Grid>
-            <Label Content="Your Registration ID:" Height="28" HorizontalAlignment="Left" Margin="464,6,0,0" Name="regid" VerticalAlignment="Top" FontFamily="Times New Roman" />
+            <Label Content="Your Registration ID:" Height="28" HorizontalAlignment="Left" Margin="513,12,0,0" Name="regid" VerticalAlignment="Top" FontFamily="Times New Roman" />
         
         <TabControl Height="427" HorizontalAlignment="Left" Margin="13,13,0,0" Name="tabControl1" VerticalAlignment="Top" Width="675" Background="#FFB3B8F2">
 
@@ -24,7 +24,7 @@
                     <Label Content="SAR acceleration :" Height="28" HorizontalAlignment="Left" Margin="338,66,0,0" Name="label5" VerticalAlignment="Top" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="458,126,0,0" Name="macdfastavg" VerticalAlignment="Top" Width="95" PreviewTextInput="enternoonly"/>
                     <Label Content="MACD fast avg :" Height="28" HorizontalAlignment="Left" Margin="347,124,0,0" Name="label6" VerticalAlignment="Top" />
-                    <Label Content="MACD fast avg :" Height="28" HorizontalAlignment="Left" Margin="348,156,0,0" Name="label7" VerticalAlignment="Top" />
+                    <Label Content="MACD slow avg :" Height="28" HorizontalAlignment="Left" Margin="341,156,0,0" Name="label7" VerticalAlignment="Top" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="458,156,0,0" Name="macdslowavg" VerticalAlignment="Top" Width="95" PreviewTextInput="enternoonly"/>
                     <Label Content="MACD signal avg :" Height="28" HorizontalAlignment="Left" Margin="335,187,0,0" Name="label8" VerticalAlignment="Top" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="458,187,0,0" Name="macdsignal" VerticalAlignment="Top" Width="95" PreviewTextInput="enternoonly"/>
@@ -38,17 +38,14 @@
                     <Button Background="#FFB3B8F2" Content="                This program comes with ABSOLUTE NO WARRANTY, for more details please read                        " FontSize="14" FontWeight="SemiBold" Foreground="#FFEF1818" Height="25" HorizontalAlignment="Left" IsEnabled="False" Margin="7,373,0,0" Name="button3" VerticalAlignment="Top" Width="654" BorderBrush="#FFB3B8F2" />
                 </Grid>
             </TabItem>
-            <TabItem Header="User Guide" Name="tabItem2" FontFamily="Times New Roman" FontSize="14">
-                <Grid >
-</Grid>           
-            </TabItem>
             <TabItem Header="  Help " Name="tabItem3" FontFamily="Times New Roman" FontSize="14">
                 <Grid >
+                    <TextBlock Margin="11,17,530,361"><Hyperlink NavigateUri="http://www.youtube.com/user/shubhalabha" RequestNavigate="Hyperlink_RequestNavigate"><TextBlock FontSize="14" Text="Watch video " /></Hyperlink></TextBlock>
                 </Grid>
             </TabItem>
             <TabItem Header="Contact us" Name="tabItem4" FontFamily="Times New Roman" FontSize="14">
                 <Grid Height="400" Width="670">
-                    <WebBrowser Height="403" Source="http://shubhalabha.in/contact-us/"  HorizontalAlignment="Left" Margin="2,0,0,0" Name="contactus" VerticalAlignment="Top" Width="668" />
+                    <WebBrowser Height="403" Source="http://shubhalabha.in/about-us/contact-us/"  HorizontalAlignment="Left" Margin="2,0,0,0" Name="contactus" VerticalAlignment="Top" Width="668" />
                 </Grid>
             </TabItem>
         </TabControl>

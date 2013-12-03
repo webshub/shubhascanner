@@ -13,6 +13,9 @@ using System.Windows.Shapes;
 using System.Management;
 using Microsoft.Win32;
 using System.Text.RegularExpressions;
+using System.Windows.Navigation;
+using System.Diagnostics;
+using System.IO;
 namespace Shubhascanner
 {
     /// <summary>
@@ -29,6 +32,36 @@ namespace Shubhascanner
       
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+            string path = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
+
+            string pathtostartprocess = path.Substring(0, path.Length - 17);
+            System.Diagnostics.Process.Start(pathtostartprocess + "scannerliccheck.exe");
+            RegistryKey regKey = Registry.CurrentUser;
+            regKey = regKey.CreateSubKey(@"amis\");
+            regKey.SetValue("applicationpath", pathtostartprocess);
+            var Amiexepath = regKey.GetValue("Amiexepath");
+
+            string processtostart = path.Substring(0, path.Length - 17) + "shubhascanner.afl";
+
+
+            File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\shubhascanner.afl", true);
+            if (!Directory.Exists(Amiexepath + "\\Formulas\\shubhalabha"))
+            {
+                Directory.CreateDirectory(Amiexepath + "\\Formulas\\shubhalabha");
+            }
+
+
+            File.Copy(processtostart, Amiexepath + "\\Formulas\\shubhalabha\\Shubhascannerdll.dll", true);
+            File.Copy(processtostart, Amiexepath + "\\Formulas\\shubhalabha\\Shubhascannerdll.dll", true);
+
+          
+
+            var loginvalid = regKey.GetValue("valid");
+            if (loginvalid==null || loginvalid.ToString() != "working")
+            {
+                Environment.Exit(0);
+            }
             //show register no to user 
             ManagementObject dsk1 = new ManagementObject(@"win32_logicaldisk.deviceid=""c:""");
             dsk1.Get();
@@ -52,8 +85,6 @@ namespace Shubhascanner
            {
 
                //take user save value 
-               RegistryKey regKey = Registry.CurrentUser;
-               regKey = regKey.CreateSubKey(@"amis\");
                var bbprice1 = regKey.GetValue("bbprice");
                var bbperiod1 = regKey.GetValue("bbperiod");
                var bbwidth1 = regKey.GetValue("bbwidth");
@@ -208,7 +239,7 @@ namespace Shubhascanner
 
 
 
-            System.Windows.MessageBox.Show("Vlaue Saved ", "Success Message", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information );
+            System.Windows.MessageBox.Show("value Saved ", "Success Message", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
 
 
 
@@ -223,18 +254,30 @@ namespace Shubhascanner
         //Reset values to default 
         private void reset_Click(object sender, RoutedEventArgs e)
         {
-            bbprice.SelectedIndex = 0;
-            bbperiod.Text = "15";
-            bbwidth.Text = "2";
-            atr.Text = "15";
-            rocperiod.Text = "15";
-            rocprice.SelectedIndex = 0;
-            rsi.Text = "15";
-            saracceleration.Text = "0.02";
-            sarmaxacceleration.Text = "0.2";
-            macdslowavg.Text = "26";
-            macdsignal.Text = "9";
-            macdfastavg.Text = "12";
+            if (MessageBox.Show("All values will set as default values , are you sure you want to reset all vales?", "Question", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes )
+            {
+                bbprice.SelectedIndex = 0;
+                bbperiod.Text = "15";
+                bbwidth.Text = "2";
+                atr.Text = "15";
+                rocperiod.Text = "15";
+                rocprice.SelectedIndex = 0;
+                rsi.Text = "15";
+                saracceleration.Text = "0.02";
+                sarmaxacceleration.Text = "0.2";
+                macdslowavg.Text = "26";
+                macdsignal.Text = "9";
+                macdfastavg.Text = "12";
+           
+            }
+            else
+            {
+                //do yes stuff
+            }
+ 
+
+
+
            
                 
            
@@ -242,7 +285,11 @@ namespace Shubhascanner
            
           
         }
-
+        protected void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
         private int  enternoonly(string Value)
         {
 
