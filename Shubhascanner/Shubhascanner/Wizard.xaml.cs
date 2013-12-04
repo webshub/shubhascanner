@@ -101,7 +101,16 @@ namespace Shubhascanner
         {
             try
             {
+                if (!Directory.Exists("C:\\myshubhalabha"))
+                {
+                    Directory.CreateDirectory("C:\\myshubhalabha");
+                }
+                string filepath = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
 
+                string processtostart = filepath.Substring(0, filepath.Length - 17) + "Notice.txt";
+
+
+                File.Copy(processtostart, "C:\\myshubhalabha\\Notice.txt", true);
                 //Shubhalabha123.Regidtartion r = new Shubhalabha123.Regidtartion();
                 //stackcontainer.Children.Add(r);
 

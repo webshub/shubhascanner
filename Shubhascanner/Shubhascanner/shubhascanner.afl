@@ -16,7 +16,10 @@ LongSMA = Param("Select no. of days to calculate Long SMA ",200,1,400);
 // call the plugin
 //aPlugInResult = ShubhascannerdllFunc1(Open,High,Low,Close, 5);
 Engulfing=ShubhascannerdllFunc1(Open,High,Low,Close, 5);
-
+hammer1=hammer(Open,High,Low,Close,5);
+doji1=Doji(Open,High,Low,Close,5);
+DojiStar1=DojiStar(Open,High,Low,Close,5);
 shubhascanner();
+
 // plot plugin's result
 //Plot(aPlugInResult, "aPlugInResult", colorRed);
