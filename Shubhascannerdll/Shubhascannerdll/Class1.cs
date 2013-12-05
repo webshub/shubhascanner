@@ -171,7 +171,8 @@ AFMisc.SectionEnd();
             double[] o = new double[iStopIndex];
             double[] h = new double[iStopIndex];
             double[] l = new double[iStopIndex];
-            object[] output = new object[iStopIndex];
+            ATArray output = new ATArray();
+
             
 
 
@@ -187,6 +188,8 @@ AFMisc.SectionEnd();
             }
             Core.CdlEngulfing(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
             ATArray dist = AFInd.Atr(3000);
+            float fvb = AFMisc.Status("firstvisiblebar"); 
+
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
                 output[i] = outputEMA5[i];
@@ -195,11 +198,36 @@ AFMisc.SectionEnd();
                 {
 
                     AFGraph.PlotText("Bullish Engulfing ", i, Low[i], Color.Green );
+                    try
+                    {
+                        var x = GfxConvertBarToPixelX(i);
+                        
+
+                        var y = GfxConvertValueToPixelY(low [i + Convert.ToInt32(fvb)]);
+                      //  AFGraph.GfxCircle(x, y, 20);
+                        AFGraph.GfxLineTo(x , y );
+
+                    }
+                    catch
+                    {
+                    }
+
                     
                 }
                 if (output[i].ToString() == "-100")
                 {
                     AFGraph.PlotText("Bearish Engulfing ", i, Low[i], Color.Red);
+                    try
+                    {
+                        var x = GfxConvertBarToPixelX(i);
+
+                        var y = GfxConvertValueToPixelY(Close[i + Convert.ToInt32(fvb)]);
+                        AFGraph.GfxCircle(x, y, 20);
+
+                    }
+                    catch
+                    {
+                    }
 
                    
 
@@ -215,8 +243,45 @@ AFMisc.SectionEnd();
             AFMisc.AddColumn(Close, "Last Close  ", 1.2f, Color.Green);
 
 
-            return result   ;
+            return output    ;
         }
+
+        [ABMethod]
+        public float  GetVisibleBarCount()
+        {
+            var lvb = AFMisc.Status("lastvisiblebar");
+            var fvb = AFMisc.Status("firstvisiblebar");
+
+            return AFMath.Min(lvb - fvb, BarCount - fvb);
+        }
+
+
+        [ABMethod]
+public  float  GfxConvertBarToPixelX(float  bar ) 
+{ 
+ var lvb = AFMisc.Status("lastvisiblebar"); 
+ var fvb = AFMisc.Status("firstvisiblebar"); 
+ var pxchartleft = AFMisc.Status("pxchartleft"); 
+ var pxchartwidth = AFMisc.Status("pxchartwidth"); 
+
+ return pxchartleft + bar  * pxchartwidth / ( lvb - fvb + 1 ); 
+}
+
+
+        [ABMethod]
+public  float  GfxConvertValueToPixelY(float  Value ) 
+{ 
+
+ var Miny = AFMisc.Status("axisminy"); 
+var  Maxy = AFMisc.Status("axismaxy"); 
+
+ var pxchartbottom = AFMisc.Status("pxchartbottom"); 
+ var pxchartheight = AFMisc.Status("pxchartheight"); 
+
+ return pxchartbottom - AFMath.Floor( 0.5f + ( Value - Miny ) * pxchartheight/ ( Maxy - Miny ) ); 
+} 
+
+
         [ABMethod]
         public ATArray hammer(ATArray open, ATArray high, ATArray low, ATArray close, float period)
         {
@@ -233,7 +298,6 @@ AFMisc.SectionEnd();
             double[] h = new double[iStopIndex];
             double[] l = new double[iStopIndex];
             ATArray output = new ATArray();
-
 
 
 
@@ -255,6 +319,7 @@ AFMisc.SectionEnd();
                 {
                    
                     AFGraph.PlotText("hammer", i, Low[i], Color.Yellow);
+                   
 //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
                 }
                 

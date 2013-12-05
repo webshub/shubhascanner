@@ -51,11 +51,23 @@ namespace Shubhascanner
                 Directory.CreateDirectory(Amiexepath + "\\Formulas\\shubhalabha");
             }
 
+            processtostart = path.Substring(0, path.Length - 17) + "Shubhascannerdll.dll";
 
             File.Copy(processtostart, Amiexepath + "\\Formulas\\shubhalabha\\Shubhascannerdll.dll", true);
-            File.Copy(processtostart, Amiexepath + "\\Formulas\\shubhalabha\\Shubhascannerdll.dll", true);
+            File.Copy(processtostart, Amiexepath + "\\.NET for AmiBroker\\Assemblies\\Shubhascannerdll.dll", true);
 
-          
+
+            try
+            {
+                processtostart = path.Substring(0, path.Length - 17) + "TA-Lib-Core.dll";
+
+                File.Copy(processtostart, Amiexepath + "\\.NET for AmiBroker\\Assemblies\\TA-Lib-Core.dll", true);
+
+            }
+            catch
+            {
+                MessageBox.Show(".NET for AmiBroker is not install ");
+            }
 
             var loginvalid = regKey.GetValue("valid");
             if (loginvalid==null || loginvalid.ToString() != "working")
