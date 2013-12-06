@@ -19,6 +19,7 @@ Engulfing=ShubhascannerdllFunc1(Open,High,Low,Close, 5);
 hammer1=hammer(Open,High,Low,Close,5);
 doji1=Doji(Open,High,Low,Close,5);
 DojiStar1=DojiStar(Open,High,Low,Close,5);
+
 AddColumn(Engulfing,"Engulfing" );
 AddColumn(hammer1,"hammer" );
 AddColumn(doji1,"doji" );

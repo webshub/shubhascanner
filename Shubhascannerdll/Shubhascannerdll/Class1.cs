@@ -331,6 +331,165 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             return output ;
         }
+
+        [ABMethod]
+        public ATArray Piercing(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlPiercing(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                output[i] = outputEMA5[i];
+
+                if (output[i].ToString() == "100")
+                {
+
+                    AFGraph.PlotText("Piercing", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+           // AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+        [ABMethod]
+        public ATArray DarkCloudCover(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlDarkCloudCover(1, iStopIndex - 1, o, h, l, c, 5, out outBegIdx, out outNbElement, outputEMA5);
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                output[i] = outputEMA5[i];
+
+                if (output[i].ToString() == "100")
+                {
+
+                    AFGraph.PlotText("DarkCloudCover", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+        [ABMethod]
+        public ATArray DragonflyDoji(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlDragonflyDoji(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                output[i] = outputEMA5[i];
+
+                if (output[i].ToString() == "100")
+                {
+
+                    AFGraph.PlotText("DragonflyDoji", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+
+
         [ABMethod]
         public ATArray Doji(ATArray open, ATArray high, ATArray low, ATArray close, float period)
         {
@@ -377,7 +536,7 @@ var  Maxy = AFMisc.Status("axismaxy");
             }
             // This prints report with Buy and Sell.
 
-            AFMisc.AddColumn(output, "signal", 77, Color.Green);
+          //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
 
             return output;
         }
@@ -428,7 +587,7 @@ var  Maxy = AFMisc.Status("axismaxy");
             }
             // This prints report with Buy and Sell.
 
-            AFMisc.AddColumn(output, "signal", 77, Color.Green);
+          //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
 
             return output;
         }
