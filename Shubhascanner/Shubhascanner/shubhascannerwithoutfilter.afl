@@ -105,7 +105,7 @@ hammer1=hammer(Open,High,Low,Close,5);
 AddColumn(hammer1,"hammer" );
 }
 
-shubhascanner();
+
 
 
 

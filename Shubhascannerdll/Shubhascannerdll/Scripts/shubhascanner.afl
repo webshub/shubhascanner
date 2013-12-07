@@ -1,30 +1,113 @@
-//Taking user input 
-Minprice = Param("Select Minimum price ",100,1,20000);
-Maxprice = Param("Select Maximum price ",1000,1,20000);
-Minvolume = Param("Select Minimum volume ",10000,100,50000000);
-Maxvolume = Param("Select Maximum volume ",500000,100,50000000);
-Daysavgvol = Param("Select no. of days to calculate avg volume ",10,1,400);
-LeadEMA = Param("Select no. of days to calculate lead EMA ",5,1,400);
-MediumEMA = Param("Select no. of days to calculate Mediaum EMA ",13,1,400);
-LagEMA = Param("Select no. of days to calculate Lag EMA ",26,1,400);
-LongEMA = Param("Select no. of days to calculate Long EMA ",200,1,400);
-LeadSMA = Param("Select no. of days to calculate lead SMA ",10,1,400);
-MediumSMA = Param("Select no. of days to calculate Medium SMA ",50,1,400);
-LagSMA = Param("Select no. of days to calculate Lag SMA ",100,1,400);
-LongSMA = Param("Select no. of days to calculate Long SMA ",200,1,400);
 
 // call the plugin
-//aPlugInResult = ShubhascannerdllFunc1(Open,High,Low,Close, 5);
-Engulfing=ShubhascannerdllFunc1(Open,High,Low,Close, 5);
-hammer1=hammer(Open,High,Low,Close,5);
-doji1=Doji(Open,High,Low,Close,5);
-DojiStar1=DojiStar(Open,High,Low,Close,5);
 
+
+            AddTextColumn(FullName(), "Company Name");
+			
+            AddColumn(Volume, "Last Volume ");
+            AddColumn(Close, "Last Close  ");
+			
+
+
+if(ParamToggle("HaramiCross Pattern?","No,Yes",1))
+{
+HaramiCross1=HaramiCross(Open,High,Low,Close, 5);
+AddColumn(HaramiCross1,"HaramiCross" );
+}
+if(ParamToggle("ShortLine Pattern?","No,Yes",1))
+{
+ShortLine1=ShortLine(Open,High,Low,Close, 5);
+AddColumn(ShortLine1,"ShortLine" );
+}
+
+
+if(ParamToggle("ShootingStar Pattern?","No,Yes",1))
+{
+ShootingStar1=ShootingStar(Open,High,Low,Close, 5);
+AddColumn(ShootingStar1,"ShootingStar" );
+}
+
+if(ParamToggle("Engulfing Pattern?","No,Yes",1))
+{
+Engulfing=ShubhascannerdllFunc1(Open,High,Low,Close, 5);
 AddColumn(Engulfing,"Engulfing" );
-AddColumn(hammer1,"hammer" );
+}
+
+if(ParamToggle("Harami Pattern?","No,Yes",1))
+{
+Harami1=Harami(Open,High,Low,Close, 5);
+AddColumn(Harami1,"Harami" );
+}
+if(ParamToggle("MorningStar Pattern?","No,Yes",1))
+{
+MorningStar1=MorningStar(Open,High,Low,Close, 5);
+AddColumn(MorningStar1,"MorningStar" );
+}
+
+if(ParamToggle("InvertedHammer Pattern?","No,Yes",1))
+{
+InvertedHammer1=InvertedHammer(Open,High,Low,Close, 5);
+AddColumn(InvertedHammer1,"InvertedHammer" );
+}
+if(ParamToggle("MorningDojiStar Pattern?","No,Yes",1))
+{
+MorningDojiStar1=MorningDojiStar(Open,High,Low,Close, 5);
+AddColumn(MorningDojiStar1,"MorningDojiStar" );
+}
+
+
+if(ParamToggle("EveningDojiStar Pattern?","No,Yes",1))
+{
+EveningDojiStar1=EveningDojiStar(Open,High,Low,Close, 5);
+AddColumn(EveningDojiStar1,"EveningDojiStar" );
+}
+if(ParamToggle("EveningStar Pattern?","No,Yes",1))
+{
+EveningStar1=EveningStar(Open,High,Low,Close, 5);
+AddColumn(EveningStar1,"EveningStar" );
+}
+if(ParamToggle("HangingMan Pattern?","No,Yes",1))
+{
+HangingMan1=HangingMan(Open,High,Low,Close, 5);
+AddColumn(HangingMan1,"HangingMan" );
+}
+
+if(ParamToggle("Piercing Pattern?","No,Yes",1))
+{
+Piercing1=Piercing(Open,High,Low,Close,5);
+AddColumn(Piercing1,"Piercing" );
+}
+if(ParamToggle("doji Pattern?","No,Yes",1))
+{
+doji1=Doji(Open,High,Low,Close,5);
 AddColumn(doji1,"doji" );
+}
+if(ParamToggle("DojiStar Pattern?","No,Yes",1))
+{
+DojiStar1=DojiStar(Open,High,Low,Close,5);
 AddColumn(DojiStar1,"DojiStar" );
+}
+if(ParamToggle("DragonflyDoji Pattern?","No,Yes",1))
+{
+DragonflyDoji1=DragonflyDoji(Open,High,Low,Close,5);
+AddColumn(DragonflyDoji1,"DragonflyDoji" );
+}
+
+if(ParamToggle("DarkCloudCover Pattern?","No,Yes",1))
+{
+DarkCloudCover1=DarkCloudCover(Open,High,Low,Close,5);
+AddColumn(DarkCloudCover1,"DarkCloudCover" );
+}
+
+if(ParamToggle("hammer Pattern?","No,Yes",1))
+{
+hammer1=hammer(Open,High,Low,Close,5);
+AddColumn(hammer1,"hammer" );
+}
+
 shubhascanner();
+
+
 
 // plot plugin's result
 //Plot(aPlugInResult, "aPlugInResult", colorRed);

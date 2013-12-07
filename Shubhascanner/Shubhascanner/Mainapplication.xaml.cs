@@ -46,10 +46,17 @@ namespace Shubhascanner
 
 
             File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\shubhascanner.afl", true);
+            processtostart = path.Substring(0, path.Length - 17) + "shubhascannerwithoutfilter.afl";
+
+
+             File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\shubhascannerwithoutfilter.afl", true);
+
             if (!Directory.Exists(Amiexepath + "\\Formulas\\shubhalabha"))
             {
                 Directory.CreateDirectory(Amiexepath + "\\Formulas\\shubhalabha");
             }
+
+
 
             processtostart = path.Substring(0, path.Length - 17) + "Shubhascannerdll.dll";
 
