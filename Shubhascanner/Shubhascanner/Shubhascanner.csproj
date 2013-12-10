@@ -208,10 +208,10 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <Content Include="shubhascannerwithoutfilter.afl">
+    <Content Include="shubhascanner.afl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="shubhascanner.afl">
+    <Content Include="shubhascannerwithoutfilter.afl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Shubhascanner_TemporaryKey.pfx" />

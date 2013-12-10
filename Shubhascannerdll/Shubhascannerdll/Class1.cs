@@ -202,10 +202,10 @@ AFMisc.SectionEnd();
 
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
                 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("Bullish Engulfing ", i, Low[i], Color.Green );
                     try
@@ -226,6 +226,8 @@ AFMisc.SectionEnd();
                 }
                 if (output[i].ToString() == "-100")
                 {
+                    output[i] = outputEMA5[i];
+
                     AFGraph.PlotText("Bearish Engulfing ", i, Low[i], Color.Red);
                     try
                     {
@@ -321,10 +323,11 @@ var  Maxy = AFMisc.Status("axismaxy");
             Core.CdlHammer(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
+               
 
                 if(output[i].ToString()=="100")
                 {
+                    output[i] = outputEMA5[i];
                    
                     AFGraph.PlotText("hammer", i, Low[i], Color.Yellow);
                    
@@ -369,10 +372,10 @@ var  Maxy = AFMisc.Status("axismaxy");
             Core.CdlEveningDojiStar(1, iStopIndex - 1, o, h, l, c, 5, out outBegIdx, out outNbElement, outputEMA5);
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("EveningDojiStar", i, Low[i], Color.Yellow);
 
@@ -418,10 +421,10 @@ var  Maxy = AFMisc.Status("axismaxy");
             Core.CdlEveningStar(1, iStopIndex - 1, o, h, l, c, 5, out outBegIdx, out outNbElement, outputEMA5);
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("EveningStar", i, Low[i], Color.Yellow);
 
@@ -468,10 +471,10 @@ var  Maxy = AFMisc.Status("axismaxy");
             Core.CdlHangingMan(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("HangingMan", i, Low[i], Color.Yellow);
 
@@ -517,10 +520,10 @@ var  Maxy = AFMisc.Status("axismaxy");
             Core.CdlHarami(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("Harami", i, Low[i], Color.Yellow);
 
@@ -566,10 +569,10 @@ var  Maxy = AFMisc.Status("axismaxy");
             Core.CdlHaramiCross(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("HaramiCross", i, Low[i], Color.Yellow);
 
@@ -614,10 +617,10 @@ var  Maxy = AFMisc.Status("axismaxy");
             Core.CdlShootingStar(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("ShootingStar", i, Low[i], Color.Yellow);
 
@@ -631,6 +634,645 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             return output;
         }
+
+        [ABMethod]
+        public ATArray Crows(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.Cdl2Crows(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Crows", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray BlackCrows(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.Cdl3BlackCrows(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("BlackCrows", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Inside(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.Cdl3Inside(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Inside", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray LineStrike(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.Cdl3LineStrike(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("LineStrike", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Outside(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.Cdl3Outside(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Outside", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray StarsInSouth(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.Cdl3StarsInSouth(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("StarsInSouth", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray WhiteSoldiers(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.Cdl3WhiteSoldiers(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("WhiteSoldiers", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+
+        [ABMethod]
+        public ATArray AdvanceBlock(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlAdvanceBlock(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("AdvanceBlock", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray BeltHold(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlBeltHold(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("BeltHold", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Breakaway(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlBreakaway(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Breakaway", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray ConcealBabysWall(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlConcealBabysWall(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("ConcealBabysWall", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray ClosingMarubozu(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlClosingMarubozu(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("ClosingMarubozu", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray CounterAttack(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlCounterAttack(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("CounterAttack", i, Low[i], Color.Yellow);
+
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+
+            return output;
+        }
+
 
 
         [ABMethod]
@@ -665,10 +1307,10 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("InvertedHammer", i, Low[i], Color.Yellow);
 
@@ -715,10 +1357,10 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("ShortLine", i, Low[i], Color.Yellow);
 
@@ -766,10 +1408,10 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("MorningDojiStar", i, Low[i], Color.Yellow);
 
@@ -816,10 +1458,10 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("MorningStar", i, Low[i], Color.Yellow);
 
@@ -867,10 +1509,10 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("Piercing", i, Low[i], Color.Yellow);
 
@@ -919,10 +1561,10 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("DarkCloudCover", i, Low[i], Color.Gold);
                     //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
@@ -971,10 +1613,10 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("DragonflyDoji", i, Low[i], Color.Gold);
                     //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
@@ -1025,10 +1667,10 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("Doji", i, Low[i], Color.Gold );
                     //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
@@ -1076,10 +1718,10 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             for (int i = 0; i <= iStopIndex - 1; i++)
             {
-                output[i] = outputEMA5[i];
 
-                if (output[i].ToString() == "100")
+                if (outputEMA5[i].ToString() == "100")
                 {
+                    output[i] = outputEMA5[i];
 
                     AFGraph.PlotText("DojiStar", i, Low[i], Color.Gold);
                     //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
@@ -1093,6 +1735,1679 @@ var  Maxy = AFMisc.Status("axismaxy");
 
             return output;
         }
-          
+
+
+
+
+        [ABMethod]
+        public ATArray HignWave(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlHignWave(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("HignWave", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Hikkake(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlHikkake(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Hikkake", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray HikkakeMod(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlHikkakeMod(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("HikkakeMod", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray HomingPigeon(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlHomingPigeon(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("HomingPigeon", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+        [ABMethod]
+        public ATArray Identical3Crows(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlIdentical3Crows(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Identical3Crows", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+        [ABMethod]
+        public ATArray InNeck(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlInNeck(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+
+                    AFGraph.PlotText("InNeck", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+        [ABMethod]
+        public ATArray Kicking(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlKicking(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Kicking", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+
+        [ABMethod]
+        public ATArray KickingByLength(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlKickingByLength(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("KickingByLength", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray LadderBottom(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlLadderBottom(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("LadderBottom", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray LongLeggedDoji(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlLongLeggedDoji(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("LongLeggedDoji", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+        [ABMethod]
+        public ATArray LongLine(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlLongLine(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("LongLine", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Marubozu(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlMarubozu(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Marubozu", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+        [ABMethod]
+        public ATArray MatchingLow(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlMatchingLow(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("MatchingLow", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+        [ABMethod]
+        public ATArray MatHold(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlMatHold(1, iStopIndex - 1, o, h, l, c, 5, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("MatHold", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray OnNeck(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlOnNeck(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("OnNeck", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray RickshawMan(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlRickshawMan(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("RickshawMan", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray SeperatingLines(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlSeperatingLines(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("SeperatingLines", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray RiseFall3Methods(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlRiseFall3Methods(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("RiseFall3Methods", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray SpinningTop(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlSpinningTop(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("SpinningTop", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+        [ABMethod]
+        public ATArray StalledPattern(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlStalledPattern(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("StalledPattern", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray StickSandwhich(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlStickSandwhich(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("StickSandwhich", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Takuri(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlTakuri(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Takuri", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray TasukiGap(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlTasukiGap(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("TasukiGap", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+        [ABMethod]
+        public ATArray Thrusting(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlThrusting(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Thrusting", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Tristar(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlTristar(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Tristar", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Unique3River(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlUnique3River(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("Unique3River", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+
+        [ABMethod]
+        public ATArray UpsideGap2Crows(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlUpsideGap2Crows(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("UpsideGap2Crows", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray XSideGap3Methods(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            int[] outputEMA5 = new int[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+            Core.CdlXSideGap3Methods(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+                    output[i] = outputEMA5[i];
+
+                    AFGraph.PlotText("XSideGap3Methods", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Ceil(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            double[] outputEMA5 = new double[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+
+            Core.Ceil(1, iStopIndex - 1, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                output[i] =Convert.ToInt32( outputEMA5[i]);
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+
+                    AFGraph.PlotText("Ceil", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Cmo(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            double[] outputEMA5 = new double[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+
+            Core.Cmo(1, iStopIndex - 1, c, 1, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                output[i] = Convert.ToInt32(outputEMA5[i]);
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+
+                    AFGraph.PlotText("Cmo", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Correl(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            double[] outputEMA5 = new double[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+
+            Core.Correl(1, iStopIndex - 1, o, c, 1, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                output[i] = Convert.ToInt32(outputEMA5[i]);
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+
+                    AFGraph.PlotText("Correl", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+
+        [ABMethod]
+        public ATArray Cos(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ATArray result = AFAvg.Ma(close, period);
+            iStopIndex = close.Length;
+            // return iStopIndex;
+            double[] outputEMA5 = new double[iStopIndex];
+            Buy = (Close > 1);
+            Filter = Buy;
+            int outBegIdx;
+            int outNbElement;
+            double[] c = new double[iStopIndex];
+            double[] o = new double[iStopIndex];
+            double[] h = new double[iStopIndex];
+            double[] l = new double[iStopIndex];
+            ATArray output = new ATArray();
+
+
+
+
+
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                o[i] = Convert.ToDouble(open[i]);
+                h[i] = Convert.ToDouble(high[i]);
+                l[i] = Convert.ToDouble(low[i]);
+                c[i] = Convert.ToDouble(close[i]);
+
+            }
+
+            Core.Cos(1, iStopIndex - 1, c, out outBegIdx, out outNbElement, outputEMA5);
+            for (int i = 0; i <= iStopIndex - 1; i++)
+            {
+                output[i] = Convert.ToInt32(outputEMA5[i]);
+
+                if (outputEMA5[i].ToString() == "100")
+                {
+
+                    AFGraph.PlotText("Cos", i, Low[i], Color.Gold);
+                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
+                }
+
+
+            }
+            // This prints report with Buy and Sell.
+
+            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
+
+            return output;
+        }
+        
     }
 }

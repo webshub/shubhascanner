@@ -20,12 +20,304 @@ ShortLine1=ShortLine(Open,High,Low,Close, 5);
 AddColumn(ShortLine1,"ShortLine" );
 }
 
+if(ParamToggle("Crows Pattern?","No,Yes",1))
+{
+Crows1=Crows(Open,High,Low,Close, 5);
+AddColumn(Crows1,"Crows" );
+}
+if(ParamToggle("BlackCrows Pattern?","No,Yes",1))
+{
+BlackCrows1=BlackCrows(Open,High,Low,Close, 5);
+AddColumn(BlackCrows1,"BlackCrows" );
+}
+if(ParamToggle("Inside Pattern?","No,Yes",1))
+{
+Inside1=Inside(Open,High,Low,Close, 5);
+AddColumn(Inside1,"Inside" );
+}
+
+if(ParamToggle("LineStrike Pattern?","No,Yes",1))
+{
+LineStrike1=LineStrike(Open,High,Low,Close, 5);
+AddColumn(LineStrike1,"LineStrike" );
+}
+
+if(ParamToggle("Outside Pattern?","No,Yes",1))
+{
+Outside1=Outside(Open,High,Low,Close, 5);
+AddColumn(Outside1,"Outside" );
+}
+
+if(ParamToggle("StarsInSouth Pattern?","No,Yes",1))
+{
+StarsInSouth1=StarsInSouth(Open,High,Low,Close, 5);
+AddColumn(StarsInSouth1,"StarsInSouth" );
+}
+if(ParamToggle("AdvanceBlock Pattern?","No,Yes",1))
+{
+AdvanceBlock1=AdvanceBlock(Open,High,Low,Close, 5);
+AddColumn(AdvanceBlock1,"AdvanceBlock" );
+}
+
+if(ParamToggle("BeltHold Pattern?","No,Yes",1))
+{
+BeltHold1=BeltHold(Open,High,Low,Close, 5);
+AddColumn(BeltHold1,"BeltHold" );
+}
+
+if(ParamToggle("HignWave Pattern?","No,Yes",1))
+{
+HignWave1=HignWave(Open,High,Low,Close, 5);
+AddColumn(HignWave1,"HignWave" );
+}
+
+if(ParamToggle("Hikkake Pattern?","No,Yes",1))
+{
+Hikkake1=Hikkake(Open,High,Low,Close, 5);
+AddColumn(Hikkake1,"Hikkake" );
+}
+
+
+if(ParamToggle("HomingPigeon Pattern?","No,Yes",1))
+{
+HomingPigeon1=HomingPigeon(Open,High,Low,Close, 5);
+AddColumn(HomingPigeon1,"HomingPigeon" );
+}
+
+
+if(ParamToggle("Identical3Crows Pattern?","No,Yes",1))
+{
+Identical3Crows1=Identical3Crows(Open,High,Low,Close, 5);
+AddColumn(Identical3Crows1,"Identical3Crows" );
+}
+
+
+if(ParamToggle("HikkakeMod Pattern?","No,Yes",1))
+{
+HikkakeMod1=HikkakeMod(Open,High,Low,Close, 5);
+AddColumn(HikkakeMod1,"HikkakeMod" );
+}
+
+
+if(ParamToggle("Kicking Pattern?","No,Yes",1))
+{
+Kicking1=Kicking(Open,High,Low,Close, 5);
+AddColumn(Kicking1,"Kicking" );
+}
+
+
+if(ParamToggle("KickingByLength Pattern?","No,Yes",1))
+{
+KickingByLength1=KickingByLength(Open,High,Low,Close, 5);
+AddColumn(KickingByLength1,"KickingByLength" );
+}
+
+if(ParamToggle("LadderBottom Pattern?","No,Yes",1))
+{
+LadderBottom1=LadderBottom(Open,High,Low,Close, 5);
+AddColumn(LadderBottom1,"LadderBottom" );
+}
+if(ParamToggle("LongLeggedDoji Pattern?","No,Yes",1))
+{
+LongLeggedDoji1=LongLeggedDoji(Open,High,Low,Close, 5);
+AddColumn(LongLeggedDoji1,"LongLeggedDoji" );
+}
+
+if(ParamToggle("LongLine Pattern?","No,Yes",1))
+{
+LongLine1=LongLine(Open,High,Low,Close, 5);
+AddColumn(LongLine1,"LongLine" );
+}
+
+if(ParamToggle("Marubozu Pattern?","No,Yes",1))
+{
+Marubozu1=Marubozu(Open,High,Low,Close, 5);
+AddColumn(Marubozu1,"Marubozu" );
+}
+
+if(ParamToggle("MatchingLow Pattern?","No,Yes",1))
+{
+MatchingLow1=MatchingLow(Open,High,Low,Close, 5);
+AddColumn(MatchingLow1,"MatchingLow" );
+}
+
+if(ParamToggle("MatHold Pattern?","No,Yes",1))
+{
+MatHold1=MatHold(Open,High,Low,Close, 5);
+AddColumn(MatHold1,"MatHold" );
+}
+
+if(ParamToggle("OnNeck Pattern?","No,Yes",1))
+{
+OnNeck1=OnNeck(Open,High,Low,Close, 5);
+AddColumn(OnNeck1,"OnNeck" );
+}
+
+if(ParamToggle("RickshawMan Pattern?","No,Yes",1))
+{
+RickshawMan1=RickshawMan(Open,High,Low,Close, 5);
+AddColumn(RickshawMan1,"RickshawMan" );
+}
+
+if(ParamToggle("SeperatingLines Pattern?","No,Yes",1))
+{
+SeperatingLines1=SeperatingLines(Open,High,Low,Close, 5);
+AddColumn(SeperatingLines1,"SeperatingLines" );
+}
+
+if(ParamToggle("RiseFall3Methods Pattern?","No,Yes",1))
+{
+RiseFall3Methods1=RiseFall3Methods(Open,High,Low,Close, 5);
+AddColumn(RiseFall3Methods1,"RiseFall3Methods" );
+}
+
+if(ParamToggle("SpinningTop Pattern?","No,Yes",1))
+{
+SpinningTop1=SpinningTop(Open,High,Low,Close, 5);
+AddColumn(SpinningTop1,"SpinningTop" );
+}
+
+if(ParamToggle("StalledPattern Pattern?","No,Yes",1))
+{
+StalledPattern1=StalledPattern(Open,High,Low,Close, 5);
+AddColumn(StalledPattern1,"StalledPattern" );
+}
+
+if(ParamToggle("StickSandwhich Pattern?","No,Yes",1))
+{
+StickSandwhich1=StickSandwhich(Open,High,Low,Close, 5);
+AddColumn(StickSandwhich1,"StickSandwhich" );
+}
+
+if(ParamToggle("Takuri Pattern?","No,Yes",1))
+{
+Takuri1=Takuri(Open,High,Low,Close, 5);
+AddColumn(Takuri1,"Takuri" );
+}
+
+if(ParamToggle("TasukiGap Pattern?","No,Yes",1))
+{
+TasukiGap1=TasukiGap(Open,High,Low,Close, 5);
+AddColumn(TasukiGap1,"TasukiGap" );
+}
+
+if(ParamToggle("Thrusting Pattern?","No,Yes",1))
+{
+Thrusting1=Thrusting(Open,High,Low,Close, 5);
+AddColumn(Thrusting1,"Thrusting" );
+}
+
+
+if(ParamToggle("Tristar Pattern?","No,Yes",1))
+{
+Tristar1=Tristar(Open,High,Low,Close, 5);
+AddColumn(Tristar1,"Tristar" );
+}
+
+if(ParamToggle("Unique3River Pattern?","No,Yes",1))
+{
+Unique3River1=Unique3River(Open,High,Low,Close, 5);
+AddColumn(Unique3River1,"Unique3River" );
+}
+
+if(ParamToggle("UpsideGap2Crows Pattern?","No,Yes",1))
+{
+UpsideGap2Crows1=UpsideGap2Crows(Open,High,Low,Close, 5);
+AddColumn(UpsideGap2Crows1,"UpsideGap2Crows" );
+}
+
+if(ParamToggle("XSideGap3Methods Pattern?","No,Yes",1))
+{
+XSideGap3Methods1=XSideGap3Methods(Open,High,Low,Close, 5);
+AddColumn(XSideGap3Methods1,"XSideGap3Methods" );
+}
+
+if(ParamToggle("Ceil Pattern?","No,Yes",1))
+{
+Ceil1=Ceil(Open,High,Low,Close, 5);
+AddColumn(Ceil1,"Ceil" );
+}
+
+if(ParamToggle("Cmo Pattern?","No,Yes",1))
+{
+Cmo1=Cmo(Open,High,Low,Close, 5);
+AddColumn(Cmo1,"Cmo" );
+}
+
+if(ParamToggle("Correl Pattern?","No,Yes",1))
+{
+Correl1=Correl(Open,High,Low,Close, 5);
+AddColumn(Correl1,"Correl" );
+}
+if(ParamToggle("Cos Pattern?","No,Yes",1))
+{
+Cos1=Cos(Open,High,Low,Close, 5);
+AddColumn(Cos1,"Cos" );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if(ParamToggle("InNeck Pattern?","No,Yes",1))
+{
+InNeck1=InNeck(Open,High,Low,Close, 5);
+AddColumn(InNeck1,"InNeck" );
+}
+
+
+if(ParamToggle("ConcealBabysWall Pattern?","No,Yes",1))
+{
+ConcealBabysWall1=ConcealBabysWall(Open,High,Low,Close, 5);
+AddColumn(ConcealBabysWall1,"ConcealBabysWall" );
+}
+
+if(ParamToggle("CounterAttack Pattern?","No,Yes",1))
+{
+CounterAttack1=CounterAttack(Open,High,Low,Close, 5);
+AddColumn(CounterAttack1,"CounterAttack" );
+}
+
+if(ParamToggle("ClosingMarubozu Pattern?","No,Yes",1))
+{
+ClosingMarubozu1=ClosingMarubozu(Open,High,Low,Close, 5);
+AddColumn(ClosingMarubozu1,"ClosingMarubozu" );
+}
+
+
+
+
+if(ParamToggle("Breakaway Pattern?","No,Yes",1))
+{
+Breakaway1=Breakaway(Open,High,Low,Close, 5);
+AddColumn(Breakaway1,"Breakaway" );
+}
 
 if(ParamToggle("ShootingStar Pattern?","No,Yes",1))
 {
 ShootingStar1=ShootingStar(Open,High,Low,Close, 5);
 AddColumn(ShootingStar1,"ShootingStar" );
 }
+
+if(ParamToggle("WhiteSoldiers Pattern?","No,Yes",1))
+{
+WhiteSoldiers1=WhiteSoldiers(Open,High,Low,Close, 5);
+AddColumn(WhiteSoldiers1,"WhiteSoldiers" );
+}
+
 
 if(ParamToggle("Engulfing Pattern?","No,Yes",1))
 {
@@ -105,7 +397,7 @@ hammer1=hammer(Open,High,Low,Close,5);
 AddColumn(hammer1,"hammer" );
 }
 
-shubhascanner();
+
 
 
 
