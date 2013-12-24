@@ -1,0 +1,926 @@
+_SECTION_BEGIN("Price");
+SetChartOptions(0,chartShowArrows|chartShowDates);
+_N(Title = StrFormat("{{NAME}} - {{INTERVAL}} {{DATE}} Open %g, Hi %g, Lo %g, Close %g (%.1f%%) {{VALUES}}", O, H, L, C, SelectedValue( ROC( C, 1 ) ) ));
+Plot( C, "Close", ParamColor("Color", colorDefault ), styleNoTitle | ParamStyle("Style") | GetPriceStyle() ); 
+_SECTION_END(); 
+
+
+
+      x1Rrect = Param("X1 - x-coordinate of the upper left corner", 10, 0, 1200, 1);
+             y1Rrect = Param("y1 - y-coordinate of the upper left corner", 20, 0, 900, 1);
+             x2Rrect = Param("x2 - x-coordinate of the lower right corner", 300, 0, 400, 1);
+             y2Rrect = Param("y2 - y-coordinate of the lower right corner", 150, 0, 600, 1);
+             FontSize = Param("Fonts Size", 9, 8, 13, 1);
+
+          GfxSetBkMode(1);
+/*
+     //       GfxSetOverlayMode(0);
+           // GfxSelectPen(colorLightBlue, 3); 		// round box 
+           // GfxSelectSolidBrush(colorLightYellow);  // inside box
+
+           GfxRoundRect(x1Rrect, y1Rrect , x2Rrect + x1Rrect, y2Rrect + y1Rrect, 15, 15);
+*/
+            // size of the big box
+            GfxSetBkMode(1);
+            GfxSelectFont("Arial", FontSize, 700, False);
+            GfxSetTextColor(ParamColor("Fonts Color", colorWhite));
+            GfxSetTextAlign(0.0);
+
+             DX = GetCursorXPosition();
+             DY=GetCursorYPosition();
+             DT = DateTimeToStr(DX);
+GfxSelectFont("Arial", FontSize+10, 700, False);
+
+    GfxTextOut("Current Price " + C,5 + x1Rrect, 20 + y1Rrect + FontSize);
+GfxSelectFont("Arial", FontSize, 700, False);
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+O1 = Ref(Open, -1);  O2 = Ref(Open, -2);O3 = Ref(Open, -3); O4 = Ref(Open, -4);  O5 = Ref(Open, -5);O6 = Ref(Open, -6); O7 = Ref(Open, -7);  O8 = Ref(Open, -8); O9 = Ref(Open, -9);
+
+             H1 = Ref(High, -1);  H2 = Ref(High, -2); H3 = Ref(High, -3);  H4 = Ref(High, -4);  H5 = Ref(High, -5); H6 = Ref(High, -6); H6 = Ref(High, -6);  H7 = Ref(High, -7); H8 = Ref(High, -8); H9 = Ref(High, -9);
+
+             L1 = Ref(Low, -1);  L2 = Ref(Low, -2);L3 = Ref(Low, -3); L4 = Ref(Low, -4);  L5 = Ref(Low, -5);L6 = Ref(Low, -6); L7 = Ref(Low, -7);  L8 = Ref(Low, -8);L9 = Ref(Low, -9);
+
+
+             C1 = Ref(Close, -1);  C2 = Ref(Close, -2);C3 = Ref(Close, -3);C4 = Ref(Close, -4);  C5 = Ref(Close, -5);C6 = Ref(Close, -6);C7 = Ref(Close, -7);  C8 = Ref(Close, -8);C9 = Ref(Close, -9);
+   
+/*Body Colors*/         
+WhiteCandle=C>=O;
+BlackCandle=O>C;
+B1=O1-C1;
+B2=O2-C2;
+B3=O3-C3;
+Avgbody=((B1+B2+B3)/3);
+XBODY=Avgbody*3;
+
+BODY=O-C;
+
+
+
+
+
+
+/*Single candle Pattern */
+smallBodyMaximum=0.0025;//less than 0.25%
+LargeBodyMinimum=0.01;//greater than 1.0%
+smallBody=(O>=C*(1-smallBodyMaximum) AND WhiteCandle) OR (C>=O*(1-smallBodyMaximum) AND BlackCandle);
+largeBody=(C>=O*(1+largeBodyMinimum) AND WhiteCandle) OR C<=O*(1-largeBodyMinimum) AND BlackCandle;
+mediumBody=NOT LargeBody AND NOT smallBody;
+identicalBodies=abs(abs(Ref(O,-1)-Ref(C,-1))-abs(O-C)) < abs(O-C)*smallBodyMaximum;
+realBodySize=abs(O-C);
+
+
+
+/*Shadows*/
+smallUpperShadow=(WhiteCandle AND H<=C*(1+smallBodyMaximum)) OR (BlackCandle AND H<=O*(1+smallBodyMaximum));
+smallLowerShadow=(WhiteCandle AND L>=O*(1-smallBodyMaximum)) OR (BlackCandle AND L>=C*(1-smallBodyMaximum));
+largeUpperShadow=(WhiteCandle AND H>=C*(1+largeBodyMinimum)) OR (BlackCandle AND H>=O*(1+largeBodyMinimum));
+largeLowerShadow=(WhiteCandle AND L<=O*(1-largeBodyMinimum)) OR (BlackCandle AND L<=C*(1-largeBodyMinimum));
+
+/*Gaps*/
+upGap= IIf(Ref(BlackCandle ,-1)AND WhiteCandle AND O>Ref(O,-1),1,
+IIf(Ref(BlackCandle ,-1) AND BlackCandle AND C>Ref(O,-1),1,
+IIf(Ref(WhiteCandle,-1) AND WhiteCandle AND O>Ref(C,-1),1,
+IIf(Ref(WhiteCandle,-1) AND BlackCandle AND C>Ref(C,-1),1,0))));
+
+downGap=IIf(Ref(BlackCandle,-1)AND WhiteCandle AND C<Ref(C,-1),1,
+IIf(Ref(BlackCandle,-1) AND BlackCandle AND O<Ref(C,-1),1,
+IIf(Ref(WhiteCandle,-1) AND WhiteCandle AND C<Ref(O,-1),1,
+IIf(Ref(WhiteCandle,-1) AND BlackCandle AND O<Ref(O,-1),1,0))));
+
+
+
+
+/*Maximum High Today - (MHT)
+Today is the maximum High in the last 5 days*/
+MHT= HHV(H,5)==H;
+
+/*Maximum High Yesterday - (MHY)
+Yesterday is the maximum High in the last 5 days*/
+MHY= HHV(H,5)==Ref ( H, -1);
+
+/*Minimum Low Today - (MLT)
+Today is the minimum Low in the last 5 days*/
+MLT= LLV(L,5)==L;
+
+/*Minimum Low Yesterday - (MLY)
+Yesterday is the minimum Low in the last 5 days*/
+MLY= LLV(L,5)==Ref(L,-1);
+
+/*DOJI1 definitions*/
+
+/*Doji1 Today - (DT)*/
+DT = abs(C-O) <= (C*smallBodyMaximum) OR (abs(O-C)<=((H-L)*0.1));
+
+/* Doji1 Yesterday - (DY)*/
+DY = abs(Ref ( C, -1)-Ref(O,-1)) <= Ref ( C, -1) *smallBodyMaximum OR abs (Ref ( O, -1)-Ref(C,-1)) <= (Ref ( H, -1 ) - Ref ( L, -1 ) )*0.1;
+
+
+
+ShortWhitecandle=((C>O)AND((H-L)>(3*(C-O)))) ;
+ ShortblackCandle=((O>C)AND((H-L)>(3*(O-C))));
+Close1=(O-C)*(0.002);
+Open1=(O*0.002);
+
+LongblackCandle=(C<=O*(1-largeBodyMinimum) AND BlackCandle) AND (O>C)AND((O-C)/(.001+H-L)>.6);
+LongwhiteCandle=(C>=O*(1+largeBodyMinimum) AND WhiteCandle) AND ((C>O)AND((C-O)/(.001+H-L)>.6));
+Doji1 =  O==C OR (abs(O-C)<=((H-L)*0.1));
+
+whitemarubozu=((C>O)AND(H==C)AND(O==L));
+blackmarubozu=((O>C)AND(H==O)AND(C==L));
+
+marubozuclosingblack= BlackCandle AND  High> Open AND   Low ==Close;
+marubozuopeningblack=BlackCandle AND     High== Open AND   Low < Close;
+marubozuclosingwhite=WhiteCandle AND   High== Close AND Open > Low;
+marubozuopeningwhite=WhiteCandle AND      High > Close AND Open == Low;
+BlackSpinningTop = ((O>C) AND ((H-L)>(3*(O-C))) AND (((H-O)/(0.001+H-L))<0.4) AND (((C-L)/(0.001+H-L))<0.4)); 
+WhiteSpinningTop = ((C>O) AND ((H-L)>(3*(C-O))) AND (((H-C)/(0.001+H-L))<0.4) AND (((O-L)/(0.001+H-L))<0.4)); 
+
+
+hammer1= (((H-L)>3*(O-C))AND((C-L)/(.001+H-L)>0.6)AND((O-L)/(.001+H-L)>0.6));
+InvertedHammer1= (((High - Low) > 3 * (Open - Close)) & ((High - Close) / (0.001 + High - Low) > 0.6) & ((High - Open) / (0.001 + High - Low) > 0.6));
+HangingMan1=(((H-L)>4*(O-C))AND((C-L)/(.001+H-L)>=0.75)AND((O-L)/(.001+H-L)>=0.75));
+ShootingStar1 = (((H-L)>4*(O-C)) AND ((H-C)/(0.001+H-L)>= 0.75) AND ((H-O)/(0.001+H-L)>= 0.75)); 
+ BearishEngulfing = ((C1 > O1) & (Open > Close) & (Open >= C1) & (O1 >= Close) & ((Open - Close) > (C1 - O1)));
+ BullishEngulfing = ((O1 > C1) & (Close > Open) & (Close >= O1) & (C1 >= Open) & ((Close - Open) > (O1 - C1)));
+BearishEveningDojiStar = ((C2>O2) AND ((C2-O2)/(0.001+H2-L2)>0.6) AND (C2<O1) AND (C1>O1) AND ((H1-L1)>(3*(C1-O1))) AND (O>C) AND (O<O1)); 
+BullishMorningDojiStar = ((O2>C2) AND ((O2-C2)/(0.001+H2-L2)>0.6) AND (C2>O1) AND (O1>C1) AND ((H1-L1)>(3*(C1-O1))) AND (C>O) AND (O>O1)); 
+BullishHarami = ((O1>C1) AND (C>O) AND (C<= O1) AND (C1<= O) AND ((C-O)<(O1-C1))); 
+BearishHarami = ((C1>O1) AND (O>C) AND (O<= C1) AND (O1<= C) AND ((O-C)<(C1-O1))); 
+
+
+
+DarkCloudCover1 = (C1>O1 AND ((C1+O1)/2)>C AND O>C AND O>C1 AND C>O1 AND (O-C)/(0.001+(H-L)>0.6)); 
+BullishAbandonedBaby = ((C1 == O1) AND (O2>C2) AND (C>O) AND (L2>H1) AND (L>H1)); 
+BearishAbandonedBaby = ((C1=O1)AND(C2>O2)AND(O>C)AND(L1>H2)AND(L1>H));
+ThreeOutsideUpPattern = ((O2>C2) AND (C1>O1) AND (C1>= O2) AND (C2>= O1) AND ((C1-O1)>(O2-C2)) AND (C>O) AND (C>C1)); 
+ThreeOutsideDownPattern = ((C2>O2)AND(O1>C1)AND(O1>=C2)AND(O2>=C1)AND((O1-C1)>(C2-O2))AND(O>C)AND (C<C1));
+ThreeInsideUpPattern = ((O2>C2) AND (C1>O1) AND (C1<= O2) AND (C2<= O1) AND ((C1-O1)<(O2-C2)) AND (C>O) AND (C>C1) AND (O>O1)); 
+ThreeInsideDownPattern = ((C2>O2)AND(O1>C1)AND(O1<=C2)AND(O2<=C1)AND((O1-C1)<(C2-O2))AND(O>C)AND(C<C1)AND(O<O1));
+ThreeWhiteSoldiers = (C>O*1.01) AND (C1>O1*1.01) AND (C2>O2*1.01) AND (C>C1) AND (C1>C2) AND (O<C1) AND (O>O1) AND (O1<C2) AND (O1>O2) AND (((H-C)/(H-L))<0.2) AND (((H1-C1)/(H1-L1))<0.2) AND (((H2-C2)/(H2-L2))<0.2); 
+ThreeBlackCrows = (O>C*1.01) AND (O1>C1*1.01) AND (O2>C2*1.01) AND (C<C1) AND (C1<C2) AND (O>C1) AND (O<O1) AND (O1>C2) AND (O1<O2) AND (((C-L)/(H-L))<0.2) AND (((C1-L1)/(H1-L1))<0.2) AND (((C2-L2)/(H2-L2))<0.2);
+
+
+
+PiercingLine = ((C1<O1) AND (((O1+C1)/2)<C) AND (O<C) AND (O<C1) AND (C<O1) AND ((C-O)/(0.001+(H-L))>0.6)); 
+
+EveningStar1=Ref(LargeBody,-2) AND Ref(WhiteCandle,-2) AND Ref(upGap,-1) AND NOT Ref(largeBody,-1) AND BlackCandle AND NOT smallBody AND (MHT OR MHY);
+MorningStar1 =Ref(largeBody,-2) AND Ref(BlackCandle,-2) AND Ref(downGap,-1) AND WhiteCandle AND LargeBody AND C>Ref(C,-2) AND MLY;
+MATCHLOW = LLV(Low,8)==LLV(Low,2) AND Ref(Close,-1)<=Ref(Open,-1)*.99 AND abs(Close-Ref(Close,-1))<=Close*.0025 AND Open>Ref(Close,-1) AND Open<=(High-((High-Low)*.5));
+GapUpx = GapUp(); 
+GapDownx = GapDown(); 
+BigGapUp = L>1.01*H1; 
+BigGapDown = H<0.99*L1; 
+HugeGapUp = L>1.02*H1; 
+HugeGapDown = H<0.98*L1; 
+DoubleGapUp = GapUp() AND Ref(GapUp(),-1); 
+DoubleGapDown = GapDown() AND Ref(GapDown(),-1); 
+
+consecutave5up=(H>H1)AND(H1>H2)AND(H2>H3)AND(H3>H4)AND(H4>H5);
+consecutave10up=(H>H1)AND(H1>H2)AND(H2>H3)AND(H3>H4)AND(H4>H5)AND (H5>H6)AND (H6>H7)AND(H7>H8)AND (H8>H9);
+
+consecutave5down=(L<L1)AND(L1<L2)AND(L2<L3)AND(L3<L4)AND(L4<L5);
+consecutave10down=(L<L1)AND(L1<L2)AND(L2<L3)AND(L3<L4)AND(L4<L5)AND (L5<L6)AND (L6<L7)AND(L7<L8)AND (L8<L9);
+Abovethestomach=(O1>C1)AND (C>O) AND C>=Median(C1,1);
+Belowthestomch=LongwhiteCandle AND O<Median(C1,1) AND C<=Median(C1,1);
+TweezerTop=abs(H-Ref(H,-1))<=H*0.0025 AND O >C AND (Ref(C,-1) > Ref(O,-1))AND (MHT OR MHY);
+
+/*Tweezer Bottom*/
+tweezerBottom= (abs(L-Ref(L,-1))/L<0.0025 OR abs(L-Ref(L,-2))/L<0.0025) AND O < C AND (Ref( O,-1) > Ref(C,-1)) AND (MLT OR MLY);
+
+
+
+
+/* Detecting double tops and bottoms (come into view, by Isfandi)*/
+percdiff = 5; /* peak detection threshold */
+fwdcheck = 5; /* forward validity check */
+mindistance = 10; 
+validdiff = percdiff/400; 
+ 
+PK= Peak( H, percdiff, 1 ) == High; 
+TR= Trough( L, percdiff, 1 ) == Low; 
+ 
+ 
+x = Cum( 1 ); 
+XPK1 = ValueWhen( PK, x, 1 ); 
+XPK2 = ValueWhen( PK, x, 2 ); 
+xTR1 = ValueWhen( Tr, x, 1 ); 
+xTr2 = ValueWhen( Tr, x, 2 ); 
+ 
+peakdiff = ValueWhen( PK, H, 1 )/ValueWhen( PK, H, 2 ); 
+Troughdiff=ValueWhen( tr, L, 1 )/ValueWhen( tr, L, 2 ); 
+ 
+doubletop = PK AND abs( peakdiff - 1 ) < validdiff AND (Xpk1 -Xpk2)>mindistance AND High > HHV( Ref( H, fwdcheck ), fwdcheck - 1 ); 
+doubleBot=tr AND abs( troughdiff - 1 ) < validdiff AND (Xtr1 -Xtr2)>mindistance AND Low < LLV( Ref( L, fwdcheck ), fwdcheck - 1 );
+
+
+
+////////////////////////////////////////////////
+MINO10=LLV(O,10);
+AVGH10=MA(H,10);
+AVGL10=MA(L,10);
+MAXO10=HHV(O,10);
+MINL10=LLV(L,10);
+MAXH10=HHV(H,10);
+AVGH21=MA(H,21);
+AVGL21=MA(L,21);
+MINL5=LLV(L,5);
+BullishBeltHold=(O=MINO10) AND (O<L1) AND (C-O)>=.7*(H-L) AND (H-L)>=1.2*(AVGH10-AVGL10) AND (O-L)<=.01*(H-L) AND (C<=H1-.5*(H1-L1)) AND (H1>L1) AND (H>L) AND (C1<C2) AND (C2<C3);
+BearishBeltHold=(O=MAXO10) AND (O>H1) AND (O-C)>=.7*(H-L) AND (H-L)>=1.2*(AVGH10-AVGL10) AND (H-O)<=.01*(H-L) AND (C>=H1-.5*(H1-L1)) AND (H1>L1) AND (H>L) AND (C1>C2) AND (C2<C3);
+BullishBreakaway=C4 < O4 AND abs(C4 - O4) > .5 * (H4 - L4) AND C3 < O3 AND H3 < L4 AND C2 < C3 AND C1 < C2 AND abs(C - O) > .6 * (H - L) AND C > O AND C > H3;
+BearishBreakaway=abs(C4 - O4) > .5 * (H4 - L4) AND C4 > O4 AND C3 > O3 AND L3 > H4 AND C2 > C3 AND C1 > C2 AND C < O AND L < H4 AND H > L3;
+ConcealingBabySwallow=O3 = H3 AND C3 = L3 AND O2 = H2 AND C2 = L2 AND C1 < O1 AND O1 < C2 AND H1 > C2 AND O = H AND C = L AND H > H1 AND L < L1;
+DojiDragonfly=abs(O-C)<=.02*(H-L) AND (H-C)<=.3*(H-L) AND (H-L)>=(AVGH10-AVGL10) AND (H>L) AND (L=MINL10);
+//BullishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (L<=L1+.3*(H1-L1)) AND (H-L)>=(AVGH10-AVGL10);
+
+
+
+
+//BearishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (H=MAXH10) AND (H-L)>=(AVGH10-AVGL10);
+BullishHaramiCross=abs(C1 - O1) > .5 * (H1 - L1) AND C1 < O1 AND H < O1 AND L > C1 AND (C + O) / 2 - L > .4 * (H - L) AND (C + O) / 2 - L < .6 * (H - L) AND abs(C - O) < .2 * (H - L);
+BearishHaramiCross=abs(C1 - O1) > .5 * (H - L) AND C1 > O1 AND H < C1 AND L > O1 AND abs(C - O) < .2 * (H - L);
+HomingPigeon=C1 < O1 AND abs(C - O) >= .6 * (H1 - L1) AND abs(C1 - O1) >.5 * (H1 - L1) AND H < O1 AND L > C1 AND C < O;
+BullishKicking=O3 - C3 > .6 * (H3 - L3) AND O2 - C2 > .6 * (H2 - L2) AND O1 - C1 > .6 * (H1 - L1) AND C3 < O3 AND C2 < O2 AND C1 < O1 AND C > O AND O2 < C3 AND O1 < C2 AND O > O1 AND C - O > .6 * (H - L);
+BearishKicking=C = L AND O = H AND H > L AND H < L1 AND C1 = H1 AND O1 = L1 AND H1 > L1;
+
+
+
+
+
+LadderBottom=O4 > C4 AND O3 < O4 AND C3 < C4 AND O2 < O3 AND C2 < C3 AND C1 < O1 AND H1 > O1 AND C > O AND O > O1;
+MatHold=C4 > O4 AND abs(C4 - O4) > .5 * (H4 - L4) AND C3 < H4 AND C2 < H4 AND C1 < H4 AND C3 > L4 AND C2 > L4 AND C1 > L4 AND C > C4 AND C > O AND H - L > AVGH21 - AVGL21 AND C2 < C3 AND C1 < C2 AND abs(C3 - O3) <= .75 * abs(C4 - O4) AND abs(C2 - O2) <= .75 * abs(C4 - O4) AND abs(C2 - O2) <= .75 * abs(C4 - O4);
+RisingThreeMethod=(C4-O4)>=.7*(H4-L4) AND (H4-L4)>=(AVGH21-AVGL21) AND (H4=MAXH10*.4) AND (C3<C4) AND (C3>=O4+.5*(H4-L4)) AND (O2<O3) AND (C2<O3) AND (O2<C3) OR (C2<C3) AND (O1<O2) OR (O1<C2) AND (C1<O2) AND (C1<C2) AND (C1>O4) AND (O>O4) AND O<=L4+.6*(H4-L4) AND (C>C4);
+BullishSeparatingLines=C1 < O1 AND C > O AND abs(O / O1 - 1) < .01;
+BearishSeparatingLines=C1 > O1 AND C < O AND O = O1;
+StickSandwich=C2 < O2 AND C1 > O1 AND L1 > C2 AND C < O AND abs(C / C2 - 1) < .02;
+ThreeStarsintheSouth=C2 < O2 AND abs(C2 - O2) > .5 * (H2 - L2) AND C2 - L2 > O2 - C2 AND C1 < O1 AND abs(C1 - O1) > .5 * (H1 - L1) AND C1 - L1 > O1 - C1 AND H1 - L1 < H2 - L2 AND L1 > L2 AND O = H AND C = L AND H < H1 AND L > L1;
+
+BullishTriStar=abs(C - O) <= .05 * (H - L) AND (C + O) / 2 - L >= .4 * (H - L) AND (C + O) / 2 - L <= .6 * (H - L) AND abs(C1 - O1) <= .05 * (H1 - L1) AND (C1 + O1) / 2 - L1 >= .4 * (H1 - L1) AND (C1 + O1) / 2 - L1 <= .6 * (H1 - L1) AND abs(C2  -O2) <= .05 * (H2 - L2) AND (C2 + O2) / 2 - L2 >= .4 * (H2 - L2) AND (C2 + O2) / 2 -L2 <= .6 * (H2 - L2) AND H1 < L3 AND H1 < L1;
+BearishTriStar=abs(C - O) < .05 * (H - L) AND H - L < .2 * (AVGH21 - AVGL21) AND abs(C1 - O1) < .05 * (H1 - L1) AND H1 - L < .2 * (AVGH21*.1-AVGL21*.1) AND abs(C2 - O2) < .05 * (H2 - L2) AND H2 - L2 < .2 * (AVGH21*.2 - AVGL21*.2) AND L2 > H1 AND L2 > H;
+
+UniqueThreeRiverBottom=abs(C2 - O2) >= .7 * (H2 - L2) AND abs(C2 - O2) > .5 * (H2 - L2) AND C1 < O1 AND O1 < O2 AND C1 > C2 AND L1 = MINL5*.1 AND C > O AND C < C1;
+
+AdvanceBlock=H - L > AVGH21 - AVGL21 AND abs(C1 - O1) > .5 * (H1 - L1) AND abs(C2 - O2) > .5 * (H2 - L2) AND C > C1 AND C1 > C2 AND O1 > O2 AND O1 < C2 AND O > O1 AND O < C1 AND H - L < .8 * (H1 - L1) AND H1 - L1 < .8 * (H2 - L2) AND H - C > O - L AND H1 - C1 > O1 - L1;
+Deliberation=abs(C2-O2) > .5 * (H2 - L2) AND abs(C1 - O1) > .5 * (H1 - L1) AND C1 > C2 AND C2 > O2 AND C1 > O1 AND O > H1 AND (C + O) / 2 - L > .4 * (H - L) AND (C + O) / 2 - L < .6 * (H - L) AND abs(C - O) < .6 * (H - L);
+InNeck=abs(C1 - O1) >.5 * (H1 - L1) AND C1 < O1 AND O < L1 AND C >= C1 AND C < 1.05 * C1;
+OnNeck=abs(C1 - O1) > .5 * (H1 - L1) AND C1 < O1 AND O < L1 AND C = L1;
+
+Thrusting=abs(C1 - O1) > .5 * (H1 - L1) AND C1 < O1 AND O < L1 AND C > C1 AND C < (C1 + O1) / 2;
+
+
+//////////////////////////////price 
+MAXC20=HHV(C,20);
+AVGC40=MA(C,40);
+AVGH5=MA(H,5);
+AVGL5=MA(L,5);
+AVGH34=MA(H,34);
+AVGL34=MA(L,43);
+MAXH5=HHV(H,5);
+MAXH10=HHV(H,10);
+MAXH20=HHV(H,20);
+MINL20=LLV(L,20);
+MINL42=LLV(L,42);
+MAXH42=HHV(H,42);
+
+Pennant =MAXC20 >= C * 1.15 AND C >= AVGC40 AND ( AVGH5 - AVGL5 ) / 2 - (AVGH34 - AVGL34 ) / 2 AND (MAXH5<MAXH10)AND(MAXH10<MAXH20)AND(MINL5>MINL10)AND(MINL10>MINL20);
+DeadCatBounce=(L < (L1 * 0.89) OR L < (L2 * 0.89) OR L < (L3 * 0.89));
+BullishIslandReversals=(O<L1) AND (O<MINL42*.1) AND (C>=((H-L)*0.5)+L) AND (C>=O);
+BearishIslandReversals=(O>H1) AND (O>MAXH42*.1) AND (C<=((H-L)*0.5)+L) AND (C<=O);
+OutsideDay=O<C AND O1>C1 AND O<C1 AND C>O1 AND L2<L3 AND L3<L4;
+BullishTrendKnockOutLong=((L<L1)AND(L<L2));
+BearishTrendKnockOutLong=((H<H1)AND(H<H2));
+
+
+
+
+
+
+/* Add name in column*/        
+
+     c_Status =
+WriteIf(BullishBeltHold, "BullishBeltHold",
+WriteIf(BearishBeltHold, "BearishBeltHold",
+WriteIf(BullishBreakaway, "BullishBreakaway",
+WriteIf(BearishBreakaway, "BearishBreakaway",
+WriteIf(ConcealingBabySwallow, "ConcealingBabySwallow",
+WriteIf(DojiDragonfly, "DojiDragonfly",
+WriteIf(BullishHaramiCross, "BullishHaramiCross",
+WriteIf(BearishHaramiCross, "BearishHaramiCross",
+WriteIf(HomingPigeon, "HomingPigeon",
+WriteIf(BullishKicking, "BullishKicking",
+WriteIf(LadderBottom, "LadderBottom",
+WriteIf(MatHold, "MatHold",
+WriteIf(RisingThreeMethod, "RisingThreeMethod",
+WriteIf(BullishSeparatingLines, "BullishSeparatingLines",
+WriteIf(BearishSeparatingLines, "BearishSeparatingLines",
+WriteIf(StickSandwich, "StickSandwich",
+WriteIf(ThreeStarsintheSouth, "ThreeStarsintheSouth",
+WriteIf(BullishTriStar, "BullishTriStar",
+WriteIf(BearishTriStar, "BearishTriStar",
+WriteIf(UniqueThreeRiverBottom, "UniqueThreeRiverBottom",
+WriteIf(AdvanceBlock, "AdvanceBlock",
+WriteIf(Deliberation, "Deliberation",
+WriteIf(InNeck, "InNeck",
+WriteIf(OnNeck, "OnNeck",
+WriteIf(Thrusting, "Thrusting",
+WriteIf(Pennant , "Pennant ",
+WriteIf(BullishIslandReversals, "BullishIslandReversals",
+WriteIf(BearishIslandReversals, "BearishIslandReversals",
+WriteIf(OutsideDay, "OutsideDay",
+WriteIf(BullishTrendKnockOutLong, "BullishTrendKnockOutLong",
+WriteIf(BearishTrendKnockOutLong, "BearishTrendKnockOutLong",
+
+
+
+WriteIf(doubletop , "doubletop ",
+WriteIf(doubleBot, "doubleBot",
+WriteIf(TweezerTop, "TweezerTop",
+WriteIf(tweezerBottom, "tweezerBottom",
+WriteIf(Belowthestomch, "Belowthestomch",
+WriteIf(Abovethestomach, "Abovethestomach",
+WriteIf(consecutave5down, "consecutave5down",
+WriteIf(consecutave10down, "consecutave10down",
+WriteIf(consecutave5up, "consecutave5up",
+WriteIf(consecutave10up, "consecutave10up",
+WriteIf(MATCHLOW , "MATCHLOW ",
+WriteIf(GapUpx , "GapUpx ",
+
+WriteIf(GapDownx , "GapDownx ",
+WriteIf(BigGapUp , "BigGapUp ",
+WriteIf(HugeGapUp , "HugeGapUp ",
+WriteIf(HugeGapDown , "HugeGapDown ",
+WriteIf(DoubleGapUp , "DoubleGapUp ",
+WriteIf(DoubleGapDown , "DoubleGapDown ",
+
+
+
+WriteIf(EveningStar1, "EveningStar",
+WriteIf(MorningStar1 , "MorningStar",
+
+WriteIf(ThreeInsideDownPattern , "ThreeInsideDownPattern ",
+WriteIf(ThreeOutsideDownPattern , "ThreeOutsideDownPattern ",
+WriteIf(BearishAbandonedBaby , "BearishAbandonedBaby ",
+WriteIf(HangingMan1, "HangingMan",
+WriteIf(ThreeBlackCrows , "ThreeBlackCrows ",
+WriteIf(ThreeWhiteSoldiers , "ThreeWhiteSoldiers ",
+WriteIf(ThreeInsideUpPattern , "ThreeInsideUpPattern ",
+WriteIf(ThreeOutsideUpPattern , "ThreeOutsideUpPattern ",
+WriteIf(BullishAbandonedBaby , "BullishAbandonedBaby ",
+WriteIf(DarkCloudCover1 , "DarkCloudCover ",
+WriteIf(BullishMorningDojiStar , "BullishMorningDojiStar ",
+ WriteIf(BearishEveningDojiStar , "BearishEveningDojiStar ",
+ WriteIf(BullishHarami , "BullishHarami ",
+WriteIf(PiercingLine , "PiercingLine ",
+
+ WriteIf(BearishHarami , "BearishHarami ",
+WriteIf(Doji1 , "Doji",
+
+ WriteIf(BlackSpinningTop , "BlackSpinningTop ",
+ WriteIf(WhiteSpinningTop , "WhiteSpinningTop ",
+WriteIf(ShootingStar1 , "ShootingStar ",
+
+ WriteIf(marubozuclosingwhite, "marubozuclosingwhite",
+ WriteIf(marubozuopeningwhite, "marubozuopeningwhite",
+WriteIf(marubozuopeningblack, "marubozuopeningblack",
+           WriteIf(marubozuclosingblack, "Marubozuclosingblack",
+           WriteIf(blackmarubozu, "Blackmarubozu",
+            WriteIf(whitemarubozu, "Whitemarubozu",
+            WriteIf(ShortWhitecandle, "ShortWhitecandle",
+            WriteIf(ShortblackCandle, "ShortblackCandle",
+            WriteIf(LongwhiteCandle, "LongwhiteCandle",
+            WriteIf(LongBlackCandle, "LongBlackCandle",
+
+            WriteIf(BearishEngulfing, "Bearish Engulfing",
+            WriteIf(hammer1, "hammer",
+            WriteIf(InvertedHammer1, "Inverted hammer",
+            WriteIf(BullishEngulfing, "Bullish Engulfing", "No pattern"))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Filter=1;
+          AddTextColumn(c_Status, "Candle Pattern", 5.6, colorBlack, colorWhite);
+ 
+
+
+
+
+
+
+
+
+
+
+price_trand =
+WriteIf(BullishBeltHold, "Downward leading to the candlestick.",
+WriteIf(BearishBeltHold, "Upward leading to the candle line.",
+WriteIf(BullishBreakaway, "Downward leading to the start of the candle pattern.",
+WriteIf(BearishBreakaway, "Upward leading to the start of the candle pattern.",
+WriteIf(ConcealingBabySwallow, "Downward leading to the start of the candle pattern.",
+WriteIf(DojiDragonfly, "--",
+WriteIf(BullishHaramiCross, "Downward leading to the start of the candle pattern.",
+WriteIf(BearishHaramiCross, "Upward leading to the start of the candle pattern.",
+WriteIf(HomingPigeon, "Downward leading to the start of the candle pattern.",
+WriteIf(BullishKicking, "--",
+WriteIf(LadderBottom, "LadderBottom",
+WriteIf(MatHold, "MatHold",
+WriteIf(RisingThreeMethod, "Upward leading to the start of the candle pattern.",
+WriteIf(BullishSeparatingLines, "Upward leading to the start of the candle pattern.",
+WriteIf(BearishSeparatingLines, "Downward leading to the start of the candle pattern.",
+WriteIf(StickSandwich, "Downward leading to the start of the candle pattern.",
+WriteIf(ThreeStarsintheSouth, "Downward leading to the start of the candle.",
+WriteIf(BullishTriStar, "Downward leading to the start of the candle pattern.",
+WriteIf(BearishTriStar, "Upward leading to the start of the candle pattern.",
+WriteIf(UniqueThreeRiverBottom, "Downward leading to the start of the candle pattern.",
+WriteIf(AdvanceBlock, "Upward leading to the start of the candlestick pattern.",
+WriteIf(Deliberation, "Upward leading to the start of the candle pattern.",
+WriteIf(InNeck, "Downward leading to the start of the candle pattern.",
+WriteIf(OnNeck, "Downward leading to the start of the candle pattern.",
+WriteIf(Thrusting, "Downward leading to the start of the candle pattern.",
+WriteIf(Pennant , "Pennant ",
+WriteIf(BullishIslandReversals, "BullishIslandReversals",
+WriteIf(BearishIslandReversals, "BearishIslandReversals",
+WriteIf(OutsideDay, "OutsideDay",
+WriteIf(BullishTrendKnockOutLong, "BullishTrendKnockOutLong",
+WriteIf(BearishTrendKnockOutLong, "BearishTrendKnockOutLong",
+
+
+
+WriteIf(doubletop , "doubletop ",
+WriteIf(doubleBot, "doubleBot",
+WriteIf(TweezerTop, "TweezerTop",
+WriteIf(tweezerBottom, "tweezerBottom",
+WriteIf(Belowthestomch, "Upward leading to the start of the candlestick.",
+WriteIf(Abovethestomach, "Downward.",
+WriteIf(consecutave5down, "consecutave5down",
+WriteIf(consecutave10down, "consecutave10down",
+WriteIf(consecutave5up, "consecutave5up",
+WriteIf(consecutave10up, "consecutave10up",
+WriteIf(MATCHLOW , "Downward leading to the start of the candle pattern.",
+WriteIf(GapUpx , "GapUpx ",
+
+WriteIf(GapDownx , "GapDownx ",
+WriteIf(BigGapUp , "BigGapUp ",
+WriteIf(HugeGapUp , "HugeGapUp ",
+WriteIf(HugeGapDown , "HugeGapDown ",
+WriteIf(DoubleGapUp , "DoubleGapUp ",
+WriteIf(DoubleGapDown , "DoubleGapDown ",
+
+
+
+WriteIf(EveningStar1, "Upward leading to the start of the candle pattern.",
+WriteIf(MorningStar1 , "Downward leading to the start of the candle pattern.",
+
+WriteIf(ThreeInsideDownPattern , "Upward leading to the start of the candle pattern.",
+WriteIf(ThreeOutsideDownPattern , "Upward leading to the start of the candle pattern.",
+WriteIf(BearishAbandonedBaby , "Upward leading to the first candle.",
+WriteIf(HangingMan1, "Upward leading to the start of the hanging man.",
+WriteIf(ThreeBlackCrows , "Upward leading to the start of the candle pattern.",
+WriteIf(ThreeWhiteSoldiers , "Downward leading to the start of the candle pattern.",
+WriteIf(ThreeInsideUpPattern , "Downward leading to the start of the candle pattern.",
+WriteIf(ThreeOutsideUpPattern , "Downward leading to the start of the candle pattern.",
+WriteIf(BullishAbandonedBaby , "Downward leading to the start of the candlestick pattern.",
+WriteIf(DarkCloudCover1 , "Upward leading to the start of the candle pattern.",
+WriteIf(BullishMorningDojiStar , "Downward leading to the start of the candle pattern.",
+ WriteIf(BearishEveningDojiStar , "Upward leading to the start of the candle pattern.",
+ WriteIf(BullishHarami , "Downward leading to the candle pattern.",
+WriteIf(PiercingLine , "Downward leading to the start of the candle pattern. ",
+
+ WriteIf(BearishHarami , "Upward leading to the candle pattern.",
+WriteIf(Doji1 , "Doji",
+
+ WriteIf(BlackSpinningTop , "-- ",
+ WriteIf(WhiteSpinningTop , "-- ",
+WriteIf(ShootingStar1 , "Upward leading to the start of the candle pattern.",
+
+ WriteIf(marubozuclosingwhite, "--",
+ WriteIf(marubozuopeningwhite, "--",
+WriteIf(marubozuopeningblack, "--",
+           WriteIf(marubozuclosingblack, "--",
+           WriteIf(blackmarubozu, "--",
+            WriteIf(whitemarubozu, "--",
+            WriteIf(ShortWhitecandle, "--",
+            WriteIf(ShortblackCandle, "--",
+            WriteIf(LongwhiteCandle, "--",
+            WriteIf(LongBlackCandle, "--",
+
+            WriteIf(BearishEngulfing, "Upward leading to the start of the candle pattern.",
+            WriteIf(hammer1, "Downward leading to the candle pattern.",
+            WriteIf(InvertedHammer1, "Downward leading to the candle pattern.",
+            WriteIf(BullishEngulfing, "Downward leading to the start of the candlestick pattern.", "No pattern"))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+
+
+
+
+
+TimeFrameRestore();
+
+
+/***************************************
+Commentary
+***************************************
+Bullish Candles
+****************************************/
+C_firstday =
+WriteIf(BullishBeltHold, "A tall white candle with price opening at the low and closing near the high.",
+WriteIf(BearishBeltHold, "Price opens at the high and closes near the low, creating a tall black candle.",
+WriteIf(BullishBreakaway, "A tall black candle.",
+WriteIf(BearishBreakaway, "A tall white candle.",
+WriteIf(ConcealingBabySwallow, "Two long black candles without any shadows (both are black marubozu candles).",
+WriteIf(DojiDragonfly, "Price opens and closes at or near the high for the day while having a long lower shadow.",
+WriteIf(BullishHaramiCross, "A tall black candle.",
+WriteIf(BearishHaramiCross, "A tall white candle.",
+WriteIf(HomingPigeon, "A tall black body.",
+WriteIf(BullishKicking, "A black marubozu candle: a tall black candle with no shadows.",
+WriteIf(LadderBottom, "LadderBottom",
+WriteIf(MatHold, "MatHold",
+WriteIf(RisingThreeMethod, "A tall white-bodied candle.",
+WriteIf(BullishSeparatingLines, "A tall black candle.",
+WriteIf(BearishSeparatingLines, "A tall white candle.",
+WriteIf(StickSandwich, "A black candle.",
+WriteIf(ThreeStarsintheSouth, "A tall black candle with a long lower shadow.",
+WriteIf(BullishTriStar, "Three doji. The middle one has a body below the other two.",
+WriteIf(BearishTriStar, "Look for three doji, the middle one has a body above the other two",
+WriteIf(UniqueThreeRiverBottom, "A tall-bodied black candle.",
+WriteIf(AdvanceBlock, "White for all three candles.",
+WriteIf(Deliberation, " long-bodied white candles.",
+WriteIf(InNeck, "A long black candle.",
+WriteIf(OnNeck, "A tall black candle.",
+WriteIf(Thrusting, "A black candle.",
+WriteIf(Pennant , "Pennant ",
+WriteIf(BullishIslandReversals, "BullishIslandReversals",
+WriteIf(BearishIslandReversals, "BearishIslandReversals",
+WriteIf(OutsideDay, "OutsideDay",
+WriteIf(BullishTrendKnockOutLong, "BullishTrendKnockOutLong",
+WriteIf(BearishTrendKnockOutLong, "BearishTrendKnockOutLong",
+WriteIf(doubletop , "doubletop ",
+WriteIf(doubleBot, "doubleBot",
+WriteIf(TweezerTop, "TweezerTop",
+WriteIf(tweezerBottom, "tweezerBottom",
+WriteIf(Belowthestomch, "A tall white day.",
+WriteIf(Abovethestomach, "Black candle.",
+WriteIf(consecutave5down, "consecutave5down",
+WriteIf(consecutave10down, "consecutave10down",
+WriteIf(consecutave5up, "consecutave5up",
+WriteIf(consecutave10up, "consecutave10up",
+WriteIf(MATCHLOW , "A tall-bodied black candle.",
+WriteIf(GapUpx , "GapUpx ",
+
+WriteIf(GapDownx , "GapDownx ",
+WriteIf(BigGapUp , "BigGapUp ",
+WriteIf(HugeGapUp , "HugeGapUp ",
+WriteIf(HugeGapDown , "HugeGapDown ",
+WriteIf(DoubleGapUp , "DoubleGapUp ",
+WriteIf(DoubleGapDown , "DoubleGapDown ",
+
+
+
+WriteIf(EveningStar1, "A tall white day.",
+WriteIf(MorningStar1 , "A tall black candle.",
+
+WriteIf(ThreeInsideDownPattern , "A tall white candle.",
+WriteIf(ThreeOutsideDownPattern , "A white candle.",
+WriteIf(BearishAbandonedBaby , "A white candle, either short or tall.",
+WriteIf(HangingMan1, "Price opens at or near the high, forms a long lower shadow, and closes near, but not at, the high. A small body remains, either white or black, near the top of the trading range with a long lower shadow.",
+WriteIf(ThreeBlackCrows , "Three tall black candles, each closing at a new low. The last two candles open within the body of the previous candle. All should close at or near their lows.",
+WriteIf(ThreeWhiteSoldiers , "Tall white candles with higher closes and price that opens within the previous body. Price should close near the high each day.",
+WriteIf(ThreeInsideUpPattern , "A tall black candle.",
+WriteIf(ThreeOutsideUpPattern , "A black candle.",
+WriteIf(BullishAbandonedBaby , "Black candle.",
+WriteIf(DarkCloudCover1 , "A tall white candle.",
+WriteIf(BullishMorningDojiStar , "A tall black candle.",
+ WriteIf(BearishEveningDojiStar , "A tall white day.",
+ WriteIf(BullishHarami , "A tall black candle.",
+WriteIf(PiercingLine , "A black candle",
+
+ WriteIf(BearishHarami , "A tall white candle. Some ignore the candle color, but I don’t.",
+WriteIf(Doji1 , "Doji",
+
+ WriteIf(BlackSpinningTop , "A small black body with shadows longer than the body.",
+ WriteIf(WhiteSpinningTop , "A small white body with shadows longer than the body.",
+WriteIf(ShootingStar1 , "Look for a tall upper shadow at least twice the body height above a small body. The body should be at or near the candle’s low, with no lower shadow (or a very small one).",
+
+ WriteIf(marubozuclosingwhite, "A tall white body with a close at the high and a lower shadow.",
+ WriteIf(marubozuopeningwhite, "A tall white candle with an upper shadow but no lower one.",
+WriteIf(marubozuopeningblack, "A tall black candle with a lower shadow but no upper shadow.",
+           WriteIf(marubozuclosingblack, "A tall black candle with an upper shadow but no lower shadow.",
+           WriteIf(blackmarubozu, "A tall black body with no shadows.",
+            WriteIf(whitemarubozu, "A tall White body with no shadows.",
+            WriteIf(ShortWhitecandle, "A short candlestick with each shadow shorter than the body height.",
+            WriteIf(ShortblackCandle, "A short candle with upper and lower shadows each shorter than the body.",
+            WriteIf(LongwhiteCandle, "A tall white candle with a body three times the average of the prior week or two and with shadows shorter than the body.",
+            WriteIf(LongBlackCandle, "The candle is black and the body height is at least three times the average body height of recent candles, with shadows shorter than the body.",
+
+            WriteIf(BearishEngulfing, "A white candle.",
+            WriteIf(hammer1, "Has a lower shadow between two and three times the height of a small body and little or no upper shadow. Body color is unimportant.",
+            WriteIf(InvertedHammer1, "A tall black candle with a close near the low of the day.",
+            WriteIf(BullishEngulfing, "First day :A white candle.", "No pattern"))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+
+C_secondday =
+WriteIf(BullishBeltHold, "--",
+WriteIf(BearishBeltHold, "--",
+WriteIf(BullishBreakaway, "A black candle that has a gap between the two candle bodies, but the shadows can overlap.",
+WriteIf(BearishBreakaway, "A white candle that has a gap between the two candle bodies, but the shadows can overlap.",
+WriteIf(ConcealingBabySwallow, "Two long black candles without any shadows (both are black marubozu candles).",
+WriteIf(DojiDragonfly, "--",
+WriteIf(BullishHaramiCross, "A doji (open and closing prices are the same or nearly so) with a high-low price range that fits inside the range of the black candle.",
+WriteIf(BearishHaramiCross, "A doji (open and close are equal or nearly so) with a trading range inside the price range of the prior day.",
+WriteIf(HomingPigeon, "A short black body that is inside the body of the first day.",
+WriteIf(BullishKicking, "Price gaps higher and a white marubozu candle forms: a tall white candle with no shadows.",
+WriteIf(LadderBottom, "LadderBottom",
+WriteIf(MatHold, "MatHold",
+WriteIf(RisingThreeMethod, "Small-bodied candles that trend lower and close within the high-low range of the first candle. Day 3 can be black or white, but days 2 and 4 are black candles.",
+WriteIf(BullishSeparatingLines, "A tall white candle that opens at or near the prior day’s open.",
+WriteIf(BearishSeparatingLines, "A tall black candle that opens at or near the same price as the prior candle opened.",
+WriteIf(StickSandwich, "A white candle that trades above the close of the first day.",
+WriteIf(ThreeStarsintheSouth, "Similar to the first day but smaller and with a low above the previous day’s low.",
+WriteIf(BullishTriStar, "--",
+WriteIf(BearishTriStar, "--",
+WriteIf(UniqueThreeRiverBottom, "The black body is inside the prior body, but the low price (long lower shadow) is below the prior day’s low.",
+WriteIf(AdvanceBlock, "Tends to get shorter from the first candle to the last candle, but this is an observation, not a requirement.",
+WriteIf(Deliberation, "long-bodied white candles.",
+WriteIf(InNeck, "A white candle with an open below the low of the first day and a close that is into the body of the first day but not by much. ",
+WriteIf(OnNeck, "Price gaps lower but forms a white candle with a close that matches the prior low.",
+WriteIf(Thrusting, "A white candle opens below the prior low and closes near but below the midpoint of the prior body.",
+WriteIf(Pennant , "Pennant ",
+WriteIf(BullishIslandReversals, "BullishIslandReversals",
+WriteIf(BearishIslandReversals, "BearishIslandReversals",
+WriteIf(OutsideDay, "OutsideDay",
+WriteIf(BullishTrendKnockOutLong, "BullishTrendKnockOutLong",
+WriteIf(BearishTrendKnockOutLong, "BearishTrendKnockOutLong",
+WriteIf(doubletop , "doubletop ",
+WriteIf(doubleBot, "doubleBot",
+WriteIf(TweezerTop, "TweezerTop",
+WriteIf(tweezerBottom, "tweezerBottom",
+WriteIf(Belowthestomch, "The candle opens below the middle of the white candle’s body and closes at or below the middle, too.",
+WriteIf(Abovethestomach, "White candle opening and closing at or above the midpoint of the prior black candle’s body.",
+WriteIf(consecutave5down, "consecutave5down",
+WriteIf(consecutave10down, "consecutave10down",
+WriteIf(consecutave5up, "consecutave5up",
+WriteIf(consecutave10up, "consecutave10up",
+WriteIf(MATCHLOW , "A black body with a close that matches the prior close.",
+WriteIf(GapUpx , "GapUpx ",
+
+WriteIf(GapDownx , "GapDownx ",
+WriteIf(BigGapUp , "BigGapUp ",
+WriteIf(HugeGapUp , "HugeGapUp ",
+WriteIf(HugeGapDown , "HugeGapDown ",
+WriteIf(DoubleGapUp , "DoubleGapUp ",
+WriteIf(DoubleGapDown , "DoubleGapDown ",
+
+
+
+WriteIf(EveningStar1, "A small-bodied candle that gaps above the bodies of the adjacent candles. It can be either black or white.",
+WriteIf(MorningStar1 , "A small-bodied candle that gaps lower from the prior body. The color can be either black or white.",
+
+WriteIf(ThreeInsideDownPattern , "A small black candle. The open and close must be within the body of the first day, but ignore the shadows. Either the tops or the bottoms of the bodies can be equal, but not both.",
+WriteIf(ThreeOutsideDownPattern , "A black candle opens higher and closes lower than the prior candle’s body, engulfing it.",
+WriteIf(BearishAbandonedBaby , "A doji whose lower shadow gaps above the prior and following days’ highs (above their upper shadows).",
+WriteIf(HangingMan1, "--",
+WriteIf(ThreeBlackCrows , "-- ",
+WriteIf(ThreeWhiteSoldiers , "-- ",
+WriteIf(ThreeInsideUpPattern , "A small-bodied white candle. The body must be within the prior candle’s body. The tops or bottoms of the two bodies can be the same price but not both.",
+WriteIf(ThreeOutsideUpPattern , "A white candle opens below the prior body and closes above the body, too. Price need not engulf the shadows.",
+WriteIf(BullishAbandonedBaby , "A white candle whose shadow gaps above the doji. ",
+WriteIf(DarkCloudCover1 , "A black candle with the open above the prior high and a close below the midpoint of the prior day’s body.",
+WriteIf(BullishMorningDojiStar , "A doji whose body gaps below the prior body.",
+ WriteIf(BearishEveningDojiStar , "A doji that gaps above the bodies of the two adjacent candle lines. The shadows are not important; only the doji body need remain above the surrounding candles.",
+ WriteIf(BullishHarami , "A small-bodied white candle. The body must be within the prior candle’s body. The tops or bottoms of the two bodies can be the same price but not both.",
+WriteIf(PiercingLine , "A white candle that opens below the prior candle’s low and closes in the black body, between the midpoint and the open.",
+
+ WriteIf(BearishHarami , "A small black candle. The open and close must be within the body of the first day, but ignore the shadows. Either the tops or the bottoms of the bodies can be equal but not both.",
+WriteIf(Doji1 , "Doji",
+
+ WriteIf(BlackSpinningTop , "-- ",
+ WriteIf(WhiteSpinningTop , "-- ",
+WriteIf(ShootingStar1 , "-- ",
+
+ WriteIf(marubozuclosingwhite, "--",
+ WriteIf(marubozuopeningwhite, "--",
+WriteIf(marubozuopeningblack, "--",
+           WriteIf(marubozuclosingblack, "--",
+           WriteIf(blackmarubozu, "--",
+            WriteIf(whitemarubozu, "--",
+            WriteIf(ShortWhitecandle, "--",
+            WriteIf(ShortblackCandle, "--",
+            WriteIf(LongwhiteCandle, "--",
+            WriteIf(LongBlackCandle, "--",
+
+            WriteIf(BearishEngulfing, "A black candle, the body of which overlaps the white candle’s body.",
+            WriteIf(hammer1, "--",
+            WriteIf(InvertedHammer1, "A small-bodied candle with a tall upper shadow and little or no lower shadow. Body cannot be a doji (otherwise it’s a gravestone doji). The open must be below the prior day’s close. Candle color is unimportant.",
+            WriteIf(BullishEngulfing, "A black candle, the body of which overlaps the white candle’s body.", "No pattern"))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+
+C_thirdday =
+WriteIf(BullishBeltHold, "--",
+WriteIf(BearishBeltHold, "--",
+WriteIf(BullishBreakaway, "A candle with a lower close, but the candle can be any color.",
+WriteIf(BearishBreakaway, "A candle with a higher close, but the candle can be any color.",
+WriteIf(ConcealingBabySwallow, "A black day with a tall upper shadow. The candle gaps open downward and yet trades into the body of the prior day.",
+WriteIf(DojiDragonfly, "--",
+WriteIf(BullishHaramiCross, "--",
+WriteIf(BearishHaramiCross, "--",
+WriteIf(HomingPigeon, "--",
+WriteIf(BullishKicking, "--",
+WriteIf(LadderBottom, "LadderBottom",
+WriteIf(MatHold, "MatHold",
+WriteIf(RisingThreeMethod, "A tall white candle that closes above the close of the first day.",
+WriteIf(BullishSeparatingLines, "--",
+WriteIf(BearishSeparatingLines, "--",
+WriteIf(StickSandwich, "A black candle that closes at or near the close of the first day.",
+WriteIf(ThreeStarsintheSouth, "A black marubozu type candle fits inside the high-low trading range of the prior day.",
+WriteIf(BullishTriStar, "--",
+WriteIf(BearishTriStar, "--",
+WriteIf(UniqueThreeRiverBottom, "A short-bodied white candle, which is below the body of the prior day.",
+WriteIf(AdvanceBlock, "Taller on days 2 and 3.",
+WriteIf(Deliberation, "A small body that opens near the second day’s close.",
+WriteIf(InNeck, "--",
+WriteIf(OnNeck, "--",
+WriteIf(Thrusting, "--",
+WriteIf(Pennant , "Pennant ",
+WriteIf(BullishIslandReversals, "BullishIslandReversals",
+WriteIf(BearishIslandReversals, "BearishIslandReversals",
+WriteIf(OutsideDay, "OutsideDay",
+WriteIf(BullishTrendKnockOutLong, "BullishTrendKnockOutLong",
+WriteIf(BearishTrendKnockOutLong, "BearishTrendKnockOutLong",
+WriteIf(doubletop , "doubletop ",
+WriteIf(doubleBot, "doubleBot",
+WriteIf(TweezerTop, "TweezerTop",
+WriteIf(tweezerBottom, "tweezerBottom",
+WriteIf(Belowthestomch, "--",
+WriteIf(Abovethestomach, "--",
+WriteIf(consecutave5down, "consecutave5down",
+WriteIf(consecutave10down, "consecutave10down",
+WriteIf(consecutave5up, "consecutave5up",
+WriteIf(consecutave10up, "consecutave10up",
+WriteIf(MATCHLOW , "-- ",
+WriteIf(GapUpx , "GapUpx ",
+
+WriteIf(GapDownx , "GapDownx ",
+WriteIf(BigGapUp , "BigGapUp ",
+WriteIf(HugeGapUp , "HugeGapUp ",
+WriteIf(HugeGapDown , "HugeGapDown ",
+WriteIf(DoubleGapUp , "DoubleGapUp ",
+WriteIf(DoubleGapDown , "DoubleGapDown ",
+
+
+
+WriteIf(EveningStar1, "A tall black candle that gaps below the prior candle and closes at least halfway down the body of the white candle.",
+WriteIf(MorningStar1 , "A tall white candle that gaps above the body of the second day and closes at least midway into the black body of the first day.",
+
+WriteIf(ThreeInsideDownPattern , "Price must close lower.",
+WriteIf(ThreeOutsideDownPattern , "A candle with a lower close.",
+WriteIf(BearishAbandonedBaby , "A black candle, either short or tall, with the upper shadow remaining below the doji’s lower shadow.",
+WriteIf(HangingMan1, "--",
+WriteIf(ThreeBlackCrows , "-- ",
+WriteIf(ThreeWhiteSoldiers , "-- ",
+WriteIf(ThreeInsideUpPattern , "A white candle that closes above the prior day’s close.",
+WriteIf(ThreeOutsideUpPattern , "A white candle in which price closes higher.",
+WriteIf(BullishAbandonedBaby , "Doji that gaps below the shadows of the candle lines on either side.",
+WriteIf(DarkCloudCover1 , "-- ",
+WriteIf(BullishMorningDojiStar , "A tall white candle whose body remains above the doji’s body.",
+ WriteIf(BearishEveningDojiStar , "A tall black candle that closes at or below the midpoint (well into the body) of the white candle.",
+ WriteIf(BullishHarami , "-- ",
+WriteIf(PiercingLine , "-- ",
+
+ WriteIf(BearishHarami , "-- ",
+WriteIf(Doji1 , "Doji",
+
+ WriteIf(BlackSpinningTop , "-- ",
+ WriteIf(WhiteSpinningTop , "-- ",
+WriteIf(ShootingStar1 , "-- ",
+
+ WriteIf(marubozuclosingwhite, "--",
+ WriteIf(marubozuopeningwhite, "--",
+WriteIf(marubozuopeningblack, "--",
+           WriteIf(marubozuclosingblack, "--",
+           WriteIf(blackmarubozu, "--",
+            WriteIf(whitemarubozu, "--",
+            WriteIf(ShortWhitecandle, "--",
+            WriteIf(ShortblackCandle, "--",
+            WriteIf(LongwhiteCandle, "--",
+            WriteIf(LongBlackCandle, "--",
+
+            WriteIf(BearishEngulfing, "--",
+            WriteIf(hammer1, "--",
+            WriteIf(InvertedHammer1, "--",
+            WriteIf(BullishEngulfing, "---", "No pattern"))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))));
+
+
+Buy=Pennant ;;
+
+
+PlotShapes(IIf(Buy, shapeCircle , shapeNone),colorWhite , 0, Low,30);
+//PlotShapes(IIf(Sell, shapeHollowSquare  , shapeNone),colorGreen, 0, Low,30);
+
+
+
+
+
+  Version(5.40); // you need to upgrade Amibroker
+            RequestTimedRefresh(0.1);   // replace from (0.1) to (1) if you have Error in
+
+
+
+            // ---- GFX Tool Tip ---- big box 
+
+            // parameters
+       
+
+
+
+
+
+
+
+           // GfxSetTextColor(colorOrange );
+            GfxTextOut("*********** Shubhalabha pattern finder *********** ", 5 + x1Rrect, y1Rrect + FontSize);
+          //  GfxSetTextColor(colorWhite);
+
+       //     GfxTextOut("Day " + NumToStr( DateTime(), formatDateTime ), 5 + x1Rrect, 20 + y1Rrect + FontSize);
+
+ 
+
+
+GfxSelectFont("Arial", FontSize, 700, False);
+                              GfxTextOut("Candlestick Pattern  : \n" +c_Status, 5 + x1Rrect, 50 + y1Rrect + FontSize);
+if(ParamToggle("Add Comments?","No,Yes",1))
+{
+ GfxTextOut( " Treand : "+price_trand, 5 + x1Rrect, 70 + y1Rrect + FontSize);
+ GfxTextOut( " First day : "+ C_firstday, 5 + x1Rrect, 90 + y1Rrect + FontSize);
+ GfxTextOut(" Second  day : "+ C_secondday , 5 + x1Rrect, 110 + y1Rrect + FontSize);
+ GfxTextOut( " Third  day : "+C_thirdday , 5 + x1Rrect, 130+ y1Rrect + FontSize);
+
+}
+
+
+ 
+
+
+ 
+
+       
+
+
+
+///
+/*GfxSetBkMode( 1 );
+GfxSetOverlayMode( 0 );
+RequestTimedRefresh( 0.1 );
+
+MX         = GetCursorXPosition( 1 );
+MY         = GetCursorYPosition( 1 );
+PxWidth    = Status( "pxwidth" );
+PxHeight    = Status( "pxheight" );
+
+D  = 30; // Rounding Diameter
+TipColor          = ParamColor( "Tip Background Color", colorWhite );
+TipOutlineColor = ParamColor( "Tip Outline Color", colorBlack );
+TipTextColor   = ParamColor( "Tip Text Color", colorBlack );
+TipsOn             = ParamToggle( "Tips On", "OFF|ON", 1 );
+TipFontSize    = Param( "Font Size", 9, 0, 24, 1 );
+TipWidth          = Param( "Tip Width", 220, 50, 500, 10 );
+TipHeight         = Param( "Tip Height", 80, 50, 500, 10 );
+TipFontName       = ParamStr( "Tip Font name", "Lucida Console" );
+X1 = MX;
+Y1 = MY + D * 0.75;
+X2 = MX + TipWidth;
+Y2 = MY + TipHeight + D * 0.75;
+X3 = MX + D * 0.75;
+Y3 = Y1;
+X4 = MX + D * 2;
+Y4 = Y1;
+X5 = MX;
+Y5 = MY;
+
+
+GfxSetBkMode( 0 );
+ 
+GfxSelectPen( TipOutlineColor );
+GfxSetTextColor( TipTextColor );
+GfxSelectFont( TipFontname, TipFontSize );
+GfxSelectSolidBrush( TipColor );
+GfxRoundRect( X1, y1, x2, y2, D, D );
+GfxPolygon(   X3, Y3 , X4 , Y4, X5, Y5 );     // Pointer
+GfxSelectPen( TipColor ); // Hide line between RoundRect and Pointer
+GfxMoveTo( X3, Y3 );
+GfxLineTo( X4, Y4 );
+ToolTipmsg=""+Lookup(C,dx) + "\nVolume" +Lookup(V,dx)+"\n"+Lookup(C,dx);
+GfxDrawText( ToolTipmsg, x1 + 10, y1 + 3, x2 - 10, y2 - 5, 16 + 65 );
+
+
+*/
