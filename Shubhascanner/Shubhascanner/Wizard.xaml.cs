@@ -217,9 +217,37 @@ namespace Shubhascanner
 
 
             File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\scanner.afl", true);
-            
-            
+
+          /////////////////////////////
+            processtostart = filepath.Substring(0, filepath.Length - 17) + "setup_dotnetforab_x86_5.60.5.exe";
+
+
+            File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\setup_dotnetforab_x86_5.60.5.exe", true);
+
+            string path = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
+
+            string pathtostartprocess = path.Substring(0, path.Length - 17);
+            regKey.SetValue("applicationpath", pathtostartprocess);
+            var Amiexepath = regKey.GetValue("Amiexepath");
+            File.Copy(processtostart, Amiexepath + "\\Formulas\\shubhalabha\\Shubhascannerdll.dll", true);
+            try
+            {
+                File.Copy(processtostart, Amiexepath + "\\.NET for AmiBroker\\Assemblies\\Shubhascannerdll.dll", true);
+
+
+
+                processtostart = path.Substring(0, path.Length - 17) + "TA-Lib-Core.dll";
+
+                File.Copy(processtostart, Amiexepath + "\\.NET for AmiBroker\\Assemblies\\TA-Lib-Core.dll", true);
+
+            }
+            catch
+            {
+                MessageBox.Show(".NET for AmiBroker is not install Please install \nYou can find setup file in C:\\myshubhalabha\\Scanner\\Donotdelete folder  ");
+                
+            }
            
+            ///////////////////////////
             regKey.SetValue("Wizart", "done");
             this.Hide();
             Shubhascanner.Registartion r = new Registartion();

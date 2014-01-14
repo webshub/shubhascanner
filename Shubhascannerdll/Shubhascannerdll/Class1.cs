@@ -165,3249 +165,2407 @@ AFGraph.PlotShapes(AFTools.Iif(Sell, Shape.Square, Shape.None),Color.Red, 0, Hig
 
 AFMisc.SectionEnd();
         }
-       
+
+      
+
         [ABMethod]
-        public ATArray ShubhascannerdllFunc1(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        public ATArray Shubhapatternfinder(ATArray open, ATArray high, ATArray low, ATArray close, float period)
         {
-            ATArray result = AFAvg.Ma(close , period);
-            iStopIndex = close.Length ;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-            
 
 
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlEngulfing(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            ATArray dist = AFInd.Atr(3000);
-            float fvb = AFMisc.Status("firstvisiblebar"); 
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Bullish Engulfing ", i, Low[i], Color.Green );
-                    try
-                    {
-                        var x = GfxConvertBarToPixelX(i);
-                        
-
-                        var y = GfxConvertValueToPixelY(low [i + Convert.ToInt32(fvb)]);
-                      //  AFGraph.GfxCircle(x, y, 20);
-                       // AFGraph.GfxLineTo(x , y );
-
-                    }
-                    catch
-                    {
-                    }
-
-                    
-                }
-                if (output[i].ToString() == "-100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Bearish Engulfing ", i, Low[i], Color.Red);
-                    try
-                    {
-                        var x = GfxConvertBarToPixelX(i);
-
-                        var y = GfxConvertValueToPixelY(Close[i + Convert.ToInt32(fvb)]);
-                     //   AFGraph.GfxCircle(x, y, 20);
-
-                    }
-                    catch
-                    {
-                    }
-
-                   
-
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
            
 
+            var x1Rrect = AFTools.Param("X1 - var x-coordinate of the upper left corner", 10, 0, 1200, 1);
+            var y1Rrect = AFTools.Param("y1 - y-coordinate of the upper left corner", 20, 0, 900, 1);
+            var x2Rrect = AFTools.Param("x2 - x-coordinate of the lower right corner", 300, 0, 400, 1);
+            var y2Rrect = AFTools.Param("y2 - y-coordinate of the lower right corner", 150, 0, 600, 1);
+            var FontSize = AFTools.Param("Fonts Size", 9, 8, 13, 1);
+            var perchange = AFMath.Prec(AFInd.Roc(Close, 1), 2);
+            var changevalue = AFMath.Prec(Close - AFTools.Ref(Close, -1), 2);
+
+            AFGraph.GfxSetBkMode(1);
+            /*
+                 //       GfxSetOverlayMode(0);
+                       // GfxSelectPen(colorLightBlue, 3); 		// round box 
+                       // GfxSelectSolidBrush(colorLightYellow);  // inside box
+
+                       AFGraph.GfxRoundRect(x1Rrect, y1Rrect , x2Rrect + x1Rrect, y2Rrect + y1Rrect, 15, 15);
+            */
+            // size of the big box
+            AFGraph.GfxSetBkMode(1);
+            AFGraph.GfxSelectFont("Arial", FontSize, 700, ATFloat.False);
+            AFGraph.GfxSetTextColor(AFTools.ParamColor("Fonts Color", Color.White));
+            AFGraph.GfxSetTextAlign(0.0f);
+
+            var DX = AFMisc.GetCursorXPosition();
+            var DY = AFMisc.GetCursorYPosition();
+            var DT = AFStr.DateTimeToStr(DX);
+            AFGraph.GfxSelectFont("Arial", FontSize + 12, 700, ATFloat.False);
+
+            //    GfxTextOut("Current Price " + C + "    "+changevalue +"("+perchange +"%)" ,5 + x1Rrect, 20 + y1Rrect + FontSize);
+            AFGraph.GfxTextOut(" " + Close, 5 + x1Rrect, 20 + y1Rrect + FontSize);
+
+
+            AFGraph.GfxSelectFont("Arial", FontSize + 4, 700, ATFloat.False);
+
+            AFGraph.GfxTextOut("  " + changevalue + "(" + perchange + "%)", 5 + x1Rrect, 50 + y1Rrect + FontSize);
+            AFGraph.GfxSelectFont("Arial", FontSize, 700, ATFloat.False);
 
 
 
-            return output    ;
-        }
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            var O1 = AFTools.Ref(Open, -1); var O2 = AFTools.Ref(Open, -2); var O3 = AFTools.Ref(Open, -3); var O4 = AFTools.Ref(Open, -4); var O5 = AFTools.Ref(Open, -5); var O6 = AFTools.Ref(Open, -6); var O7 = AFTools.Ref(Open, -7); var O8 = AFTools.Ref(Open, -8); var O9 = AFTools.Ref(Open, -9);
 
-        [ABMethod]
-        public float  GetVisibleBarCount()
-        {
-            var lvb = AFMisc.Status("lastvisiblebar");
-            var fvb = AFMisc.Status("firstvisiblebar");
+            var H1 = AFTools.Ref(High, -1); var H2 = AFTools.Ref(High, -2); var H3 = AFTools.Ref(High, -3); var H4 = AFTools.Ref(High, -4); var H5 = AFTools.Ref(High, -5); var H6 = AFTools.Ref(High, -6); H6 = AFTools.Ref(High, -6); var H7 = AFTools.Ref(High, -7); var H8 = AFTools.Ref(High, -8); var H9 = AFTools.Ref(High, -9);
 
-            return AFMath.Min(lvb - fvb, BarCount - fvb);
-        }
+            var L1 = AFTools.Ref(Low, -1); var L2 = AFTools.Ref(Low, -2); var L3 = AFTools.Ref(Low, -3); var L4 = AFTools.Ref(Low, -4); var L5 = AFTools.Ref(Low, -5); var L6 = AFTools.Ref(Low, -6); var L7 = AFTools.Ref(Low, -7); var L8 = AFTools.Ref(Low, -8); var L9 = AFTools.Ref(Low, -9);
 
 
-        [ABMethod]
-public  float  GfxConvertBarToPixelX(float  bar ) 
-{ 
- var lvb = AFMisc.Status("lastvisiblebar"); 
- var fvb = AFMisc.Status("firstvisiblebar"); 
- var pxchartleft = AFMisc.Status("pxchartleft"); 
- var pxchartwidth = AFMisc.Status("pxchartwidth"); 
+            var C1 = AFTools.Ref(Close, -1); var C2 = AFTools.Ref(Close, -2); var C3 = AFTools.Ref(Close, -3); var C4 = AFTools.Ref(Close, -4); var C5 = AFTools.Ref(Close, -5); var C6 = AFTools.Ref(Close, -6); var C7 = AFTools.Ref(Close, -7); var C8 = AFTools.Ref(Close, -8); var C9 = AFTools.Ref(Close, -9);
 
- return pxchartleft + bar  * pxchartwidth / ( lvb - fvb + 1 ); 
+            /*var BODY Colors*/
+            var WhiteCandle = Close >= Open;
+            var BlackCandle = Open > Close;
+            var B1 = O1 - C1;
+            var B2 = O2 - C2;
+            var B3 = O3 - C3;
+            var Avgbody = ((B1 + B2 + B3) / 3);
+            var XBODY = Avgbody * 3;
+
+          var   BODY = Open - Close;
+
+
+
+
+
+            /*Single candle Pattern */
+            var smallBodyMaximum = 0.0025f;//less than 0.25%
+            var LargeBodyMinimum = 0.01f;//greater than 1.0%
+            var smallBody = (Open >= Close * (1 - smallBodyMaximum) & WhiteCandle) | (Close >= Open * (1 - smallBodyMaximum) & BlackCandle);
+            var largeBody = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) | Close <= Open * (1 - LargeBodyMinimum) & BlackCandle;
+            var mediumBody = !largeBody & !smallBody;
+            var identicalBodies = AFMath.Abs(AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) - AFMath.Abs(Open - Close)) < AFMath.Abs(Open - Close) * smallBodyMaximum;
+            var realBodySize = AFMath.Abs(Open - Close);
+
+
+
+            /*Shadows*/
+            var smallUpperShadow = (WhiteCandle & High <= Close * (1 + smallBodyMaximum)) | (BlackCandle & High <= Open * (1 + smallBodyMaximum));
+            var smallLowerShadow = (WhiteCandle & Low >= Open * (1 - smallBodyMaximum)) | (BlackCandle & Low >= Close * (1 - smallBodyMaximum));
+            var largeUpperShadow = (WhiteCandle & High >= Close * (1 + LargeBodyMinimum)) | (BlackCandle & High >= Open * (1 + LargeBodyMinimum));
+            var largeLowerShadow = (WhiteCandle & Low <= Open * (1 - LargeBodyMinimum)) | (BlackCandle & Low <= Close * (1 - LargeBodyMinimum));
+
+            /*Gaps*/
+            var upGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Open > AFTools.Ref(Open, -1), 1,
+            AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Close > AFTools.Ref(Open, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Open > AFTools.Ref(Close, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Close > AFTools.Ref(Close, -1), 1, 0))));
+
+            var downGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Close < AFTools.Ref(Close, -1), 1,
+            AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Open < AFTools.Ref(Close, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Close < AFTools.Ref(Open, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Open < AFTools.Ref(Open, -1), 1, 0))));
+
+
+
+
+            /*Maximum High Today - (var MHT)
+            Today is the maximum High in the last 5 days*/
+           var MHT = AFHL.Hhv(High, 5) == High;
+
+            /*Maximum High Yesterday - (var MHY)
+            Yesterday is the maximum High in the last 5 days*/
+           var  MHY = AFHL.Hhv(High, 5) == AFTools.Ref(High, -1);
+
+            /*Minimum Low Today - (var MLT)
+            Today is the minimum Low in the last 5 days*/
+           var  MLT = AFHL.Llv(Low, 5) == Low;
+
+            /*Minimum Low Yesterday - (var MLY)
+            Yesterday is the minimum Low in the last 5 days*/
+          var   MLY = AFHL.Llv(Low, 5) == AFTools.Ref(Low, -1);
+
+            /*var Doji1 definitions*/
+
+            /*Doji1 Today - (DT)*/
+           //var   DT = AFMath.Abs(Close - Open) <= (Close * smallBodyMaximum) | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+
+            /* Doji1 Yesterday - (DY)*/
+       // var  DY = AFMath.Abs(AFTools.Ref(Close, -1) - AFTools.Ref(Open, -1)) <= AFTools.Ref(Close, -1) * smallBodyMaximum | AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) <= (AFTools.Ref(High, -1) - AFTools.Ref(Low, -1)) * 0.1f;
+
+
+
+            var ShortWhitecandle = ((Close > Open) & ((High - Low) > (3 * (Close - Open))));
+            var ShortblackCandle = ((Open > Close) & ((High - Low) > (3 * (Open - Close))));
+            var Close1 = (Open - Close) * (0.002f);
+            var Open1 = (Open * 0.002f);
+
+            var LongblackCandle = (Close <= Open * (1 - LargeBodyMinimum) & BlackCandle) & (Open > Close) & ((Open - Close) / (.001f + High - Low) > .6f);
+            var LongwhiteCandle = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) & ((Close > Open) & ((Close - Open) / (.001f + High - Low) > .6f));
+           var  Doji1 = Open == Close | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+
+            //almost equal needs to be reviewd and implemented 
+            var whitemarubozu = ((Close > Open) & AFMisc.AlmostEqual(High, Close, 5) & AFMisc.AlmostEqual(Open, Low, 5));
+            var blackmarubozu = ((Open > Close) & (High == Open) & (Close == Low));
+
+            var marubozuclosingblack = BlackCandle & High > Open & Low == Close;
+            var marubozuopeningblack = BlackCandle & High == Open & Low < Close;
+            var marubozuclosingwhite = WhiteCandle & High == Close & Open > Low;
+            var marubozuopeningwhite = WhiteCandle & High > Close & Open == Low;
+            var BlackSpinningTop = ((Open > Close) & ((High - Low) > (3 * (Open - Close))) & (((High - Open) / (0.001f + High - Low)) < 0.4f) & (((Close - Low) / (0.001f + High - Low)) < 0.4f));
+            var WhiteSpinningTop = ((Close > Open) & ((High - Low) > (3 * (Close - Open))) & (((High - Close) / (0.001f + High - Low)) < 0.4f) & (((Open - Low) / (0.001f + High - Low)) < 0.4f));
+
+
+            var hammer1 = (((High - Low) > 3 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) > 0.6f) & ((Open - Low) / (.001f + High - Low) > 0.6f));
+            var InvertedHammer1 = (((High - Low) > 3 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) > 0.6f) & ((High - Open) / (0.001f + High - Low) > 0.6f));
+            var HangingMan1 = (((High - Low) > 4 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) >= 0.75f) & ((Open - Low) / (.001f + High - Low) >= 0.75f));
+            var ShootingStar1 = (((High - Low) > 4 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) >= 0.75f) & ((High - Open) / (0.001f + High - Low) >= 0.75f));
+            var BearishEngulfing = ((C1 > O1) & (Open > Close) & (Open >= C1) & (O1 >= Close) & ((Open - Close) > (C1 - O1)));
+            var BullishEngulfing = ((O1 > C1) & (Close > Open) & (Close >= O1) & (C1 >= Open) & ((Close - Open) > (O1 - C1)));
+            var BearishEveningDojiStar = ((C2 > O2) & ((C2 - O2) / (0.001f + H2 - L2) > 0.6f) & (C2 < O1) & (C1 > O1) & ((H1 - L1) > (3 * (C1 - O1))) & (Open > Close) & (Open < O1));
+            var BullishMorningDojiStar = ((O2 > C2) & ((O2 - C2) / (0.001f + H2 - L2) > 0.6f) & (C2 > O1) & (O1 > C1) & ((H1 - L1) > (3 * (C1 - O1))) & (Close > Open) & (Open > O1));
+            var BullishHarami = ((O1 > C1) & (Close > Open) & (Close <= O1) & (C1 <= Open) & ((Close - Open) < (O1 - C1)));
+            var BearishHarami = ((C1 > O1) & (Open > Close) & (Open <= C1) & (O1 <= Close) & ((Open - Close) < (C1 - O1)));
+
+
+
+            var DarkCloudCover1 = (C1 > O1 & ((C1 + O1) / 2) > Close & Open > Close & Open > C1 & Close > O1 & (Open - Close) / (0.001f + (High - Low) > 0.6f));
+            var BullishAbandonedBaby = ((C1 == O1) & (O2 > C2) & (Close > Open) & (L2 > H1) & (Low > H1));
+            var BearishAbandonedBaby = ((C1 = O1) & (C2 > O2) & (Open > Close) & (L1 > H2) & (L1 > High));
+            var ThreeOutsideUpPattern = ((O2 > C2) & (C1 > O1) & (C1 >= O2) & (C2 >= O1) & ((C1 - O1) > (O2 - C2)) & (Close > Open) & (Close > C1));
+            var ThreeOutsideDownPattern = ((C2 > O2) & (O1 > C1) & (O1 >= C2) & (O2 >= C1) & ((O1 - C1) > (C2 - O2)) & (Open > Close) & (Close < C1));
+            var ThreeInsideUpPattern = ((O2 > C2) & (C1 > O1) & (C1 <= O2) & (C2 <= O1) & ((C1 - O1) < (O2 - C2)) & (Close > Open) & (Close > C1) & (Open > O1));
+            var ThreeInsideDownPattern = ((C2 > O2) & (O1 > C1) & (O1 <= C2) & (O2 <= C1) & ((O1 - C1) < (C2 - O2)) & (Open > Close) & (Close < C1) & (Open < O1));
+            var ThreeWhiteSoldiers = (Close > Open * 1.01f) & (C1 > O1 * 1.01f) & (C2 > O2 * 1.01f) & (Close > C1) & (C1 > C2) & (Open < C1) & (Open > O1) & (O1 < C2) & (O1 > O2) & (((High - Close) / (High - Low)) < 0.2f) & (((H1 - C1) / (H1 - L1)) < 0.2f) & (((H2 - C2) / (H2 - L2)) < 0.2f);
+            var ThreeBlackCrows = (Open > Close * 1.01f) & (O1 > C1 * 1.01f) & (O2 > C2 * 1.01f) & (Close < C1) & (C1 < C2) & (Open > C1) & (Open < O1) & (O1 > C2) & (O1 < O2) & (((Close - Low) / (High - Low)) < 0.2f) & (((C1 - L1) / (H1 - L1)) < 0.2f) & (((C2 - L2) / (H2 - L2)) < 0.2f);
+
+
+
+            var PiercingLine = ((C1 < O1) & (((O1 + C1) / 2) < Close) & (Open < Close) & (Open < C1) & (Close < O1) & ((Close - Open) / (0.001f + (High - Low)) > 0.6f));
+
+            var EveningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(WhiteCandle, -2) & AFTools.Ref(upGap, -1) & !AFTools.Ref(largeBody, -1) & BlackCandle & !smallBody & (MHT | MHY);
+            var MorningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(BlackCandle, -2) & AFTools.Ref(downGap, -1) & WhiteCandle & largeBody & Close > AFTools.Ref(Close, -2) & MLY;
+            var MATCHLOW = AFHL.Llv(Low, 8) == AFHL.Llv(Low, 2) & AFTools.Ref(Close, -1) <= AFTools.Ref(Open, -1) * .99f & AFMath.Abs(Close - AFTools.Ref(Close, -1)) <= Close * .0025f & Open > AFTools.Ref(Close, -1) & Open <= (High - ((High - Low) * .5f));
+            var GapUpx = AFPattern.GapUp();
+            var GapDownx = AFPattern.GapDown();
+            var BigGapUp = Low > 1.01f * H1;
+            var BigGapDown = High < 0.99f * L1;
+            var HugeGapUp = Low > 1.02f * H1;
+            var HugeGapDown = High < 0.98f * L1;
+            var DoubleGapUp = AFPattern.GapUp() & AFTools.Ref(AFPattern.GapUp(), -1);
+            var DoubleGapDown = AFPattern.GapDown() & AFTools.Ref(AFPattern.GapDown(), -1);
+
+            var consecutave5up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5);
+            var consecutave10up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5) & (H5 > H6) & (H6 > H7) & (H7 > H8) & (H8 > H9);
+
+            var consecutave5down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5);
+            var consecutave10down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5) & (L5 < L6) & (L6 < L7) & (L7 < L8) & (L8 < L9);
+            var Abovethestomach = (O1 > C1) & (Close > Open) & Close >= AFStat.Median(C1, 1);
+            var Belowthestomch = LongwhiteCandle & Open < AFStat.Median(C1, 1) & Close <= AFStat.Median(C1, 1);
+            var TweezerTop = AFMath.Abs(High - AFTools.Ref(High, -1)) <= High * 0.0025f & Open > Close & (AFTools.Ref(Close, -1) > AFTools.Ref(Open, -1)) & (MHT | MHY);
+
+            /*Tweezer Bottom*/
+            var tweezerBottom = (AFMath.Abs(Low - AFTools.Ref(Low, -1)) / Low < 0.0025f | AFMath.Abs(Low - AFTools.Ref(Low, -2)) / Low < 0.0025f) & Open < Close & (AFTools.Ref(Open, -1) > AFTools.Ref(Close, -1)) & (MLT | MLY);
+
+
+
+
+            /* Detecting double tops & bottoms (come into view, by Isfandi)*/
+            var percdiff = 5; /* peak detection threshold */
+            var fwdcheck = 5; /* forward validity check */
+            var mindistance = 10;
+            var validdiff = percdiff / 400;
+
+            var PK = AFPattern.Peak(High, percdiff, 1) == High;
+            var TR = AFPattern.Trough(Low, percdiff, 1) == Low;
+
+
+         var    x = AFAvg.Cum(1);
+            var XPK1 = AFTools.ValueWhen(PK, x, 1);
+            var XPK2 = AFTools.ValueWhen(PK, x, 2);
+            var xTR1 = AFTools.ValueWhen(TR, x, 1);
+            var xTr2 = AFTools.ValueWhen(TR, x, 2);
+
+            var peakdiff = AFTools.ValueWhen(PK, High, 1) / AFTools.ValueWhen(PK, High, 2);
+            var Troughdiff = AFTools.ValueWhen(TR, Low, 1) / AFTools.ValueWhen(TR, Low, 2);
+
+            var doubletop = PK & AFMath.Abs(peakdiff - 1) < validdiff & (XPK1 - XPK2) > mindistance & High > AFHL.Hhv(AFTools.Ref(High, fwdcheck), fwdcheck - 1);
+            var doubleBot = TR & AFMath.Abs(Troughdiff - 1) < validdiff & (xTR1 - xTr2) > mindistance & Low < AFHL.Llv(AFTools.Ref(Low, fwdcheck), fwdcheck - 1);
+
+
+
+            ////////////////////////////////////////////////
+            var MINO10 = AFHL.Llv(Open, 10);
+            var AVGH10 = AFAvg.Ma(High, 10);
+            var AVGL10 = AFAvg.Ma(Low, 10);
+            var MAXO10 = AFHL.Hhv(Open, 10);
+            var MINL10 = AFHL.Llv(Low, 10);
+            var MAXH10 = AFHL.Hhv(High, 10);
+            var AVGH21 = AFAvg.Ma(High, 21);
+            var AVGL21 = AFAvg.Ma(Low, 21);
+            var MINL5 = AFHL.Llv(Low, 5);
+            var BullishBeltHold = (Open = MINO10) & (Open < L1) & (Close - Open) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (Open - Low) <= .01f * (High - Low) & (Close <= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 < C2) & (C2 < C3);
+            var BearishBeltHold = (Open = MAXO10) & (Open > H1) & (Open - Close) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (High - Open) <= .01f * (High - Low) & (Close >= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 > C2) & (C2 < C3);
+            var BullishBreakaway = C4 < O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < O3 & H3 < L4 & C2 < C3 & C1 < C2 & AFMath.Abs(Close - Open) > .6f * (High - Low) & Close > Open & Close > H3;
+            var BearishBreakaway = AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C4 > O4 & C3 > O3 & L3 > H4 & C2 > C3 & C1 > C2 & Close < Open & Low < H4 & High > L3;
+           
+            var DojiDragonfly = AFMath.Abs(Open - Close) <= .02f * (High - Low) & (High - Close) <= .3f * (High - Low) & (High - Low) >= (AVGH10 - AVGL10) & (High > Low) & (Low = MINL10);
+            //BullishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (L<=L1+.3*(H1-L1)) AND (H-L)>=(AVGH10-AVGL10);
+
+
+
+
+            //BearishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (H=MAXH10) AND (H-L)>=(AVGH10-AVGL10);
+            var BullishHaramiCross = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & High < O1 & Low > C1 & (Close + Open) / 2 - Low > .4f * (High - Low) & (Close + Open) / 2 - Low < .6f * (High - Low) & AFMath.Abs(Close - Open) < .2f * (High - Low);
+            var BearishHaramiCross = AFMath.Abs(C1 - O1) > .5f * (High - Low) & C1 > O1 & High < C1 & Low > O1 & AFMath.Abs(Close - Open) < .2f * (High - Low);
+            var HomingPigeon = C1 < O1 & AFMath.Abs(Close - Open) >= .6f * (H1 - L1) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & High < O1 & Low > C1 & Close < Open;
+            var BullishKicking = O3 - C3 > .6f * (H3 - L3) & O2 - C2 > .6f * (H2 - L2) & O1 - C1 > .6f * (H1 - L1) & C3 < O3 & C2 < O2 & C1 < O1 & Close > Open & O2 < C3 & O1 < C2 & Open > O1 & Close - Open > .6f * (High - Low);
+            //var BearishKicking = Close == Low & Open = High & High > Low & High < L1 & C1 = H1 & O1 = L1 & H1 > L1;
+
+
+
+
+
+            var LadderBottom = O4 > C4 & O3 < O4 & C3 < C4 & O2 < O3 & C2 < C3 & C1 < O1 & H1 > O1 & Close > Open & Open > O1;
+            var MatHold = C4 > O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < H4 & C2 < H4 & C1 < H4 & C3 > L4 & C2 > L4 & C1 > L4 & Close > C4 & Close > Open & High - Low > AVGH21 - AVGL21 & C2 < C3 & C1 < C2 & AFMath.Abs(C3 - O3) <= .75f * AFMath.Abs(C4 - O4) & AFMath.Abs(C2 - O2) <= .75f * AFMath.Abs(C4 - O4) & AFMath.Abs(C2 - O2) <= .75f * AFMath.Abs(C4 - O4);
+            var RisingThreeMethod = (C4 - O4) >= .7f * (H4 - L4) & (H4 - L4) >= (AVGH21 - AVGL21) & (H4 = MAXH10 * .4f) & (C3 < C4) & (C3 >= O4 + .5f * (H4 - L4)) & (O2 < O3) & (C2 < O3) & (O2 < C3) | (C2 < C3) & (O1 < O2) | (O1 < C2) & (C1 < O2) & (C1 < C2) & (C1 > O4) & (Open > O4) & Open <= L4 + .6f * (H4 - L4) & (Close > C4);
+            var BullishSeparatingLines = C1 < O1 & Close > Open & AFMath.Abs(Open / O1 - 1) < .01f;
+            var BearishSeparatingLines = C1 > O1 & Close < Open & Open == O1;
+            var StickSandwich = C2 < O2 & C1 > O1 & L1 > C2 & Close < Open & AFMath.Abs(Close / C2 - 1) < .02f;
+            var ThreeStarsintheSouth = C2 < O2 & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 - L2 > O2 - C2 & C1 < O1 & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 - L1 > O1 - C1 & H1 - L1 < H2 - L2 & L1 > L2 & Open == High & Close == Low & High < H1 & Low > L1;
+
+            var BullishTriStar = AFMath.Abs(Close - Open) <= .05f * (High - Low) & (Close + Open) / 2 - Low >= .4f * (High - Low) & (Close + Open) / 2 - Low <= .6f * (High - Low) & AFMath.Abs(C1 - O1) <= .05f * (H1 - L1) & (C1 + O1) / 2 - L1 >= .4f * (H1 - L1) & (C1 + O1) / 2 - L1 <= .6f * (H1 - L1) & AFMath.Abs(C2 - O2) <= .05f * (H2 - L2) & (C2 + O2) / 2 - L2 >= .4f * (H2 - L2) & (C2 + O2) / 2 - L2 <= .6f * (H2 - L2) & H1 < L3 & H1 < L1;
+            var BearishTriStar = AFMath.Abs(Close - Open) < .05f * (High - Low) & High - Low < .2f * (AVGH21 - AVGL21) & AFMath.Abs(C1 - O1) < .05f * (H1 - L1) & H1 - Low < .2f * (AVGH21 * .1f - AVGL21 * .1f) & AFMath.Abs(C2 - O2) < .05f * (H2 - L2) & H2 - L2 < .2f * (AVGH21 * .2f - AVGL21 * .2f) & L2 > H1 & L2 > High;
+
+            var UniqueThreeRiverBottom = AFMath.Abs(C2 - O2) >= .7f * (H2 - L2) & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C1 < O1 & O1 < O2 & C1 > C2 & L1 == MINL5 * .1f & Close > Open & Close < C1;
+
+            var AdvanceBlock = High - Low > AVGH21 - AVGL21 & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & Close > C1 & C1 > C2 & O1 > O2 & O1 < C2 & Open > O1 & Open < C1 & High - Low < .8f * (H1 - L1) & H1 - L1 < .8f * (H2 - L2) & High - Close > Open - Low & H1 - C1 > O1 - L1;
+            var Deliberation = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 > C2 & C2 > O2 & C1 > O1 & Open > H1 & (Close + Open) / 2 - Low > .4f * (High - Low) & (Close + Open) / 2 - Low < .6f * (High - Low) & AFMath.Abs(Close - Open) < .6f * (High - Low);
+            var InNeck = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close >= C1 & Close < 1.05f * C1;
+            var OnNeck = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close == L1;
+
+            var Thrusting = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close > C1 & Close < (C1 + O1) / 2;
+
+
+            //////////////////////////////price 
+            var MAXC20 = AFHL.Hhv(Close, 20);
+            var AVGC40 = AFAvg.Ma(Close, 40);
+            var AVGH5 = AFAvg.Ma(High, 5);
+            var AVGL5 = AFAvg.Ma(Low, 5);
+            var AVGH34 = AFAvg.Ma(High, 34);
+            var AVGL34 = AFAvg.Ma(Low, 43);
+            var MAXH5 = AFHL.Hhv(High, 5);
+            MAXH10 = AFHL.Hhv(High, 10);
+            var MAXH20 = AFHL.Hhv(High, 20);
+            var MINL20 = AFHL.Llv(Low, 20);
+            var MINL42 = AFHL.Llv(Low, 42);
+            var MAXH42 = AFHL.Hhv(High, 42);
+            var MINL21 = AFHL.Llv(Low, 21);
+
+            var Pennant = MAXC20 >= Close * 1.15f & Close >= AVGC40 & (AVGH5 - AVGL5) / 2 - (AVGH34 - AVGL34) / 2 & (MAXH5 < MAXH10) & (MAXH10 < MAXH20) & (MINL5 > MINL10) & (MINL10 > MINL20);
+            var DeadCatBounce = (Low < (L1 * 0.89f) | Low < (L2 * 0.89f) | Low < (L3 * 0.89f));
+            var BullishIslandReversals = (Open < L1) & (Open < MINL42 * .1f) & (Close >= ((High - Low) * 0.5f) + Low) & (Close >= Open);
+            var BearishIslandReversals = (Open > H1) & (Open > MAXH42 * .1f) & (Close <= ((High - Low) * 0.5f) + Low) & (Close <= Open);
+            var OutsideDay = AFPattern.Outside();
+            //needs to be check
+            //OutsideDay=O<C AND O1>C1 AND O<C1 AND C>O1 AND L2<L3 AND L3<L4;
+            var BullishTrendKnockOutLong = ((Low < L1) & (Low < L2));
+            var BearishTrendKnockOutLong = ((High < H1) & (High < H2));
+
+            ////////////////////////////////////
+            //to be reveiewd 
+            var AVGV4 = AFAvg.Ma(Volume, 4);
+            var MINL3 = AFHL.Llv(Low, 3);
+            var oneDayreversal = ((L3 <= MINL21) & (L6 > L5) & (L5 > L4) & (L4 > L3) & (L2 > L3) & (L1 > L2) & (Low > L1));
+            var SharkScanLong = (H3 > H2) & (H2 > H1) & (L3 < L2) & (L2 < L1) & (High > H3);
+            var SharkScanShort = (H3 > H2) & (H2 > H1) & (L3 < L2) & (L2 < L1) & (Low < L3);
+            //to be reveiewd 
+            var TurnAroundDay = ((C1 < C2) | (H1 < H2 & L1 > L2)) & Volume > 1.1f * AVGV4 * 1 & ((High + Low) / 2) < Close & ((High - Low) / 8 - Open) < Close;
+            //FibonacciRetracement=(MAXH10-((MAXH10-MINL35)*.382));
+            //projectedFibonacciRetracement=(MINL10+((MAXH35-MINL10)*.618));
+
+            var counterattack = C1 > O1 & Close < Open & H1 - L1 > AVGH21 - AVGL21 & Open > H1 & Close == C1;
+            var HighWave = High - Close >= 3 * AFMath.Abs(Open - Close) & High - Open >= 3 * AFMath.Abs(Open - Close) & Close - Low >= 3 * AFMath.Abs(Open - Close) & Open - Low >= 3 * AFMath.Abs(Open - Close);
+            var MeetingLinesBullish = C1 < O1 & (H1 - L1) > (AVGH21 * .1f - AVGL21 * .1f) & O1 < MINL3 * .3f & Close > Open & Close < C1 * 1.01f & Close > C1 * 0.99f;
+            var ThreeLineStrikeBullish = C2 > C3 & C1 > C2 & (H3 - L3) > (AVGH21 * .3f - AVGL21 * .3f) & (H2 - L2) > (AVGH21 * .2f - AVGL21 * .2f) & (H1 - L1) > (AVGH21 * .1f - AVGL21 * .1f) & Open > O3 & Close < O3;
+            var ThreeLineStrikeBearish = C3 < O3 & C2 < O2 & C2 < C3 & C1 < O1 & C1 < C2 & Open < C1 & Close > O3;
+            var MeetingLinesBearish = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 > O1 & (C1 + O1) / 2 > H2 & AFMath.Abs(Close - Open) > .5f * (High - Low) & Close < Open & (Close + Open) / 2 > H1 & Close == C1;
+            var DojiGravestone = AFMath.Abs(Open - Close) <= .01f * (High - Low) & (High - Close) >= .95f * (High - Low) & (High > Low) & (Low <= L1 + .3f * (H1 - L1)) & (High - Low) >= (AVGH10 - AVGL10);
+            var SidebySideWhiteLines = C2 > O2 & C1 > O1 & L1 > H2 & AFMath.Abs(Close / C1 - 1) < .1f & AFMath.Abs(AFMath.Abs(Close - Open) / AFMath.Abs(C1 - O1) - 1) < .15f;
+            var UpsideGapThreeMethods = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & L1 > H2 & Close < C2 & Open > O1;
+            var UpsideTasukiGap = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & L1 > H2 & Close < Open & Close < O1 & Close > C2;
+            var DownsideTasukiGap = C2 < O2 & C1 < O1 & H1 < L2 & Open > C1 & Open < O1 & Close > H1 & Close < L2;
+            var IdenticalThreeCrows = C2 < O2 & C1 < O1 & Close < Open & Close < L1 & C1 < L2 & Open == C1 & O1 == C2;
+            var TwoCrows = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 > O2 & L1 > H2 & C1 < O1 & Open > C1 & Open < O1 & Close < C2 & Close > O2;
+            var UpsideGapTwoCrows = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 > O2 & L1 > H2 & C1 < O1 & Open > O1 & Close < C1 & Close > H2;
+
+            ///////////////////////
+            var AVGC20 = AFAvg.Ma(Close, 20);
+            var AVGC50 = AFAvg.Ma(Close, 50);
+            var MAXH3 = AFHL.Hhv(High, 3);
+            var NarrowestRangefor7days = ((High - Low) <= (H1 - L1)) & ((High - Low) <= (H2 - L2)) & ((High - Low) <= (H3 - L3)) & ((High - Low) <= (H4 - L4)) & ((High - Low) <= (H5 - L5)) & ((High - Low) <= (H6 - L6));
+            var BullFlag = AVGC20 > AVGC50 & H1 < H4 & L1 > L4 & H2 < H4 & L2 > L4 & H3 < H4 & L3 > L4 & MINL3 > (H4 + L4) / 2 & C4 > O4 & C4 > C5;
+            var BearFlag = AVGC20 < AVGC50 & H1 < H4 & L1 > L4 & H2 < H4 & L2 > L4 & H3 < H4 & L3 > L4 & MAXH3 < (H4 + L4) / 2 & C4 < O4 & C4 < C5;
+            //in report for last 7 days 
+            var fiftytwoweekhigh = AFTools.Iif(Close > AFHL.Hhv(Close, 260), 1, 0);
+            var fiftytwoweeklow = AFTools.Iif(Close < AFHL.Llv(Close, 260), 1, 0);
+            var fiftytwoweekhighvolume = AFTools.Iif(Volume > AFHL.Hhv(Volume, 260), 1, 0);
+            var fiftytwoweeklowvolume = AFTools.Iif(Volume < AFHL.Llv(Volume, 260), 1, 0);
+
+            var alltimehigh = AFTools.Iif(Close > AFHL.Highest(Close), 1, 0);
+            var alltimelow = AFTools.Iif(Close < AFHL.Lowest(Close), 1, 0);//IIf( C < Ref(Highest(C),-1), C , Ref(Highest(C),-1));
+            var alltimehighvolume = AFTools.Iif(Volume > AFHL.Highest(Volume), 1, 0);//IIf( V > Ref(Highest(V),-1), V , Ref(Highest(V),-1));
+            var alltimelowvolume = AFTools.Iif(Volume < AFHL.Lowest(Volume), 1, 0);//IIf( V < Ref(Highest(V),-1), V , Ref(Highest(V),-1));
+            var Insideday = AFPattern.Inside();
+            var DojiGapUp = C3 > O3 & O2 > O3 & C2 > O2 & O1 > O2 & Open > C1 & Open == Close & High > Close & Close > Open;
+            //needs to be review
+            //DojiGapdown=C3 < O3 AND O2 < O3 AND C2  < O2 AND O1 < O2 AND O <  C1 AND O = C AND H <  C AND C < O;
+
+            /* Add AFInfo.Name in column*/
+
+
+            var doublecandle =
+
+ AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
+ AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
+ AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
+ AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
+ AFMisc.WriteIf(TweezerTop, "Tweezer Top",
+ AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
+ AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
+  AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
+ AFMisc.WriteIf(EveningStar1, "Evening Star",
+ AFMisc.WriteIf(MorningStar1, "Morning Star",
+ AFMisc.WriteIf(Abovethestomach, "Above the stomach",
+ AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
+ AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
+
+
+            var pricepattern =
+            AFMisc.WriteIf(doubletop, "Double top ",
+            AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
+
+
+            var singlecandel =
+           AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
+
+           AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+           AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
+           AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
+
+           AFMisc.WriteIf(BullishIslandReversals, "Bullish Island Reversals",
+           AFMisc.WriteIf(BearishIslandReversals, "Bearish Island Reversals",
+           AFMisc.WriteIf(OutsideDay, "Outside Day",
+
+           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+           AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
+           AFMisc.WriteIf(GapUpx, "Gap Up",
+           AFMisc.WriteIf(GapDownx, "Gap Down ",
+           AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
+           AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
+           AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
+           AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
+           AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
+
+            AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
+           AFMisc.WriteIf(PiercingLine, "Piercing Line ",
+            AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
+           AFMisc.WriteIf(Doji1, "Doji",
+           AFMisc.WriteIf(HangingMan1, "Hanging Man",
+            AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
+            AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
+           AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
+            AFMisc.WriteIf(marubozuclosingwhite, "Marubozu closing white",
+            AFMisc.WriteIf(marubozuopeningwhite, "Marubozu opening white",
+           AFMisc.WriteIf(marubozuopeningblack, "Marubozu opening black",
+                      AFMisc.WriteIf(marubozuclosingblack, "Marubozu closing black",
+                      AFMisc.WriteIf(blackmarubozu, "Black marubozu",
+                       AFMisc.WriteIf(whitemarubozu, "White marubozu",
+                       AFMisc.WriteIf(ShortWhitecandle, "Short White candle",
+                       AFMisc.WriteIf(ShortblackCandle, "Short black Candle",
+                       AFMisc.WriteIf(LongwhiteCandle, "Long white Candle",
+                       AFMisc.WriteIf(LongblackCandle, "Long Black Candle",
+                       AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
+                       AFMisc.WriteIf(hammer1, "Hammer",
+                       AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
+           AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
+
+                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern")))))))))))))))))))))))))))))))))))))));
+
+
+
+
+
+            var price_trand =
+
+
+
+            AFMisc.WriteIf(doubletop, "Double top ",
+            AFMisc.WriteIf(doubleBot, "Double bottom",
+            AFMisc.WriteIf(TweezerTop, "Upward leading to the start of the candlestick",
+            AFMisc.WriteIf(tweezerBottom, "Downward leading to the start of the candle pattern",
+            AFMisc.WriteIf(Belowthestomch, "Upward leading to the start of the candlestick.",
+            AFMisc.WriteIf(Abovethestomach, "Downward.",
+            AFMisc.WriteIf(consecutave10down, "Downward leading to the start of the candle pattern.",
+            AFMisc.WriteIf(consecutave5down, "Downward leading to the start of the candle pattern.",
+            AFMisc.WriteIf(consecutave10up, "Upward leading to the start of the candle pattern.",
+            AFMisc.WriteIf(consecutave5up, "Upward leading to the start of the candle pattern.",
+            AFMisc.WriteIf(EveningStar1, "Upward leading to the start of the candle pattern.",
+            AFMisc.WriteIf(MorningStar1, "Downward leading to the start of the candle pattern.",
+            AFMisc.WriteIf(BullishBreakaway, "Downward leading to the start of the candle pattern.",
+            AFMisc.WriteIf(BearishBreakaway, "Upward leading to the start of the candle pattern.",
+            AFMisc.WriteIf(BullishMorningDojiStar, "Downward leading to the start of the candle pattern.",
+             AFMisc.WriteIf(BearishEveningDojiStar, "Upward leading to the start of the candle pattern.",
+             AFMisc.WriteIf(BullishHarami, "Downward leading to the candle pattern.",
+            AFMisc.WriteIf(PiercingLine, "Downward leading to the start of the candle pattern. ",
+             AFMisc.WriteIf(BearishHarami, "Upward leading to the candle pattern.",
+            AFMisc.WriteIf(MATCHLOW, "Downward leading to the start of the candle pattern.",
+            AFMisc.WriteIf(GapUpx, "Gap Up",
+            AFMisc.WriteIf(GapDownx, "Gap Down ",
+            AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
+            AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
+            AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
+            AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
+            AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
+            AFMisc.WriteIf(Doji1, "Not applicable ",
+             AFMisc.WriteIf(BlackSpinningTop, "Not applicable ",
+             AFMisc.WriteIf(WhiteSpinningTop, "Not applicable ",
+            AFMisc.WriteIf(ShootingStar1, "Upward leading to the start of the candle pattern.",
+            AFMisc.WriteIf(DojiGapUp, "Upward leading to the start of the candle pattern.",
+             AFMisc.WriteIf(marubozuclosingwhite, "Not applicable ",
+             AFMisc.WriteIf(marubozuopeningwhite, "Not applicable ",
+            AFMisc.WriteIf(marubozuopeningblack, "Not applicable ",
+                       AFMisc.WriteIf(marubozuclosingblack, "Not applicable ",
+                       AFMisc.WriteIf(blackmarubozu, "Not applicable ",
+                        AFMisc.WriteIf(whitemarubozu, "Not applicable ",
+                        AFMisc.WriteIf(ShortWhitecandle, "Not applicable ",
+                        AFMisc.WriteIf(ShortblackCandle, "Not applicable ",
+                        AFMisc.WriteIf(LongwhiteCandle, "Not applicable ",
+                        AFMisc.WriteIf(LongblackCandle, "Not applicable ",
+
+                        AFMisc.WriteIf(BearishEngulfing, "Upward leading to the start of the candle pattern.",
+                        AFMisc.WriteIf(hammer1, "Downward leading to the candle pattern.",
+                        AFMisc.WriteIf(InvertedHammer1, "Downward leading to the candle pattern.",
+            
+                        AFMisc.WriteIf(BullishEngulfing, "Downward leading to the start of the candlestick pattern.", "No pattern"))))))))))))))))))))))))))))))))))))))))))))));
+
+
+
+
+
+            AFTimeFrame.TimeFrameRestore();
+
+
+            /***************************************
+            Commentary
+            ***************************************
+            Bullish Candles
+            ****************************************/
+var C_firstday =
+AFMisc.WriteIf( doubletop , "Double top ",
+AFMisc.WriteIf( doubleBot, "Double bottom",
+AFMisc.WriteIf( TweezerTop, "Two adjacent candlesticks with the same (| nearly the same) High price in an uptrend.",
+AFMisc.WriteIf( tweezerBottom, "Look for two candles sharing the same Low price.",
+AFMisc.WriteIf( Belowthestomch, "A tall white day.",
+AFMisc.WriteIf( Abovethestomach, "Black candle.",
+AFMisc.WriteIf(consecutave5down, "Low is less than previous Low ",
+AFMisc.WriteIf(consecutave10down, "Low is less than previous Low ",
+AFMisc.WriteIf(consecutave5up, "High is greater than previous High ",
+AFMisc.WriteIf(consecutave10up, "High is greater than previous High",
+AFMisc.WriteIf( MATCHLOW , "A tall-bodied black candle.",
+AFMisc.WriteIf( GapUpx , "Gap Up ",
+AFMisc.WriteIf( GapDownx , "Gap Down",
+AFMisc.WriteIf( BigGapUp , "Big Gap Up ",
+AFMisc.WriteIf( HugeGapUp , "Huge Gap Up ",
+AFMisc.WriteIf( HugeGapDown , "Huge Gap Down ",
+AFMisc.WriteIf( DoubleGapUp , "Double Gap Up ",
+AFMisc.WriteIf( DoubleGapDown , "Double Gap Down ",
+AFMisc.WriteIf( EveningStar1, "A tall white day.",
+AFMisc.WriteIf( MorningStar1 , "A tall black candle.",
+AFMisc.WriteIf( BullishMorningDojiStar , "A tall black candle.",
+ AFMisc.WriteIf( BearishEveningDojiStar , "A tall white day.",
+ AFMisc.WriteIf( BullishHarami , "A tall black candle.",
+AFMisc.WriteIf(PiercingLine , "A black candle",
+ AFMisc.WriteIf( BearishHarami , "A tall white candle. ",
+AFMisc.WriteIf( Doji1 , "Long lower shadow with a small body ",
+AFMisc.WriteIf( DojiGapUp, "Price gaps higher, including the shadows, in an uptrend & forms a doji candle. A doji is one in which the opening & closing prices are within pennies of each other",
+ AFMisc.WriteIf( BlackSpinningTop , "A small black body with shadows longer than the body.",
+ AFMisc.WriteIf( WhiteSpinningTop , "A small white body with shadows longer than the body.",
+AFMisc.WriteIf( ShootingStar1 , "Look for a tall upper shadow at least twice the body height above a small body. The body should be at / near the candle’s Low, with no lower shadow ( a very small one).",
+AFMisc.WriteIf( marubozuclosingwhite, "A tall white body with a Close at the High & a lower shadow.",
+ AFMisc.WriteIf( marubozuopeningwhite, "A tall white candle with an upper shadow but no lower one.",
+AFMisc.WriteIf( marubozuopeningblack, "A tall black candle with a lower shadow but no upper shadow.",
+           AFMisc.WriteIf( marubozuclosingblack, "A tall black candle with an upper shadow but no lower shadow.",
+           AFMisc.WriteIf( blackmarubozu, "A tall black body with no shadows.",
+            AFMisc.WriteIf( whitemarubozu, "A tall white body with no shadows.",
+            AFMisc.WriteIf( ShortWhitecandle, "A Short candlestick with each shadow shorter than the body height.",
+            AFMisc.WriteIf( ShortblackCandle, "A Short candle with upper & lower shadows each shorter than the body.",
+            AFMisc.WriteIf( LongwhiteCandle, "A tall white candle with a body three times the average of the prior week/two & with shadows shorter than the body.",
+            AFMisc.WriteIf( LongblackCandle, "The candle is black & the body height is at least three times the average body height of recent candles, with shadows shorter than the body.",
+
+            AFMisc.WriteIf( BearishEngulfing, "A white candle.",
+            AFMisc.WriteIf( hammer1, "Has a lower shadow between two & three times the height of a small body & little/no upper shadow. Body color is unimportant.",
+            AFMisc.WriteIf( InvertedHammer1, "A tall black candle with a Close near the Low of the day.",
+
+            AFMisc.WriteIf( BullishEngulfing, "A white candle.", "No pattern"))))))))))))))))))))))))))))))))))))))))))));
+
+var C_secondday =
+AFMisc.WriteIf(doubletop , "Double top ",
+AFMisc.WriteIf(doubleBot, "Double bottom",
+AFMisc.WriteIf(TweezerTop, "Two adjacent candlesticks with the same (nearly the same) High price in an uptrend.",
+AFMisc.WriteIf(tweezerBottom, "Look for two candles sharing the same Low price.",
+AFMisc.WriteIf(Belowthestomch, "The candle opens below the middle of the white candle’s body & closes at/below the middle, too.",
+AFMisc.WriteIf(Abovethestomach, "White candle opening & closing at/above the midpoint of the prior black candle’s body.",
+AFMisc.WriteIf(consecutave5down, "Low is less than previous Low ",
+AFMisc.WriteIf(consecutave10down, "Low is less than previous Low ",
+AFMisc.WriteIf(consecutave5up, "High is greater than previous High ",
+AFMisc.WriteIf(consecutave10up, "High is greater than previous High",
+AFMisc.WriteIf(MATCHLOW , "A black body with a Close that matches the prior close.",
+AFMisc.WriteIf(GapUpx , "Gap Up ",
+AFMisc.WriteIf(GapDownx , "Gap Down ",
+AFMisc.WriteIf(BigGapUp , "Big Gap Up ",
+AFMisc.WriteIf(HugeGapUp , "Huge Gap Up ",
+AFMisc.WriteIf(HugeGapDown , "Huge Gap Down ",
+AFMisc.WriteIf(DoubleGapUp , "Double Gap Up ",
+AFMisc.WriteIf(DoubleGapDown , "Double Gap Down ",
+AFMisc.WriteIf(EveningStar1, "A small-bodied candle that gaps above the bodies of the adjacent candles. It can be either black/white.",
+AFMisc.WriteIf(MorningStar1 , "A small-bodied candle that gaps lower from the prior body. The color can be either black/white.",
+AFMisc.WriteIf( HangingMan1, "Not applicable ",
+AFMisc.WriteIf(BullishMorningDojiStar , "A doji whose body gaps below the prior body.",
+ AFMisc.WriteIf(BearishEveningDojiStar , "A doji that gaps above the bodies of the two adjacent candle lines. The shadows are ! important; only the doji body need remain above the surrounding candles.",
+ AFMisc.WriteIf(BullishHarami , "A small-bodied white candle. The body must be within the prior candle’s body. The tops/bottoms of the two bodies can be the same price but ! both.",
+AFMisc.WriteIf(PiercingLine , "A white candle that opens below the prior candle’s Low & closes in the black body, between the midpoint & the open.",
+ AFMisc.WriteIf(BearishHarami , "A small black candle. The Open & Close must be within the body of the first AFDate.Day, but ignore the shadows. Either the tops/the bottoms of the bodies can be equal but ! both.",
+AFMisc.WriteIf(Doji1 , "Not applicable ",
+AFMisc.WriteIf(DojiGapUp, "Not applicable ",
+ AFMisc.WriteIf(BlackSpinningTop , "Not applicable ",
+ AFMisc.WriteIf(WhiteSpinningTop , "Not applicable ",
+AFMisc.WriteIf(ShootingStar1 , "Not applicable ",
+ AFMisc.WriteIf(marubozuclosingwhite, "Not applicable ",
+ AFMisc.WriteIf(marubozuopeningwhite, "Not applicable ",
+AFMisc.WriteIf(marubozuopeningblack, "Not applicable ",
+           AFMisc.WriteIf(marubozuclosingblack, "Not applicable ",
+           AFMisc.WriteIf(blackmarubozu, "Not applicable ",
+            AFMisc.WriteIf(whitemarubozu, "Not applicable ",
+            AFMisc.WriteIf(ShortWhitecandle, "Not applicable ",
+            AFMisc.WriteIf(ShortblackCandle, "Not applicable ",
+            AFMisc.WriteIf(LongwhiteCandle, "Not applicable ",
+            AFMisc.WriteIf(LongblackCandle, "Not applicable ",
+            AFMisc.WriteIf(BearishEngulfing, "A black candle, the body of which overlaps the white candle’s body.",
+            AFMisc.WriteIf(hammer1, "Not applicable ",
+            AFMisc.WriteIf(InvertedHammer1, "A small-bodied candle with a tall upper shadow & little/no lower shadow. Body cannot be a doji (otherwise it’s a gravestone doji). The Open must be below the prior AFDate.Day’s close. Candle color is unimportant.",
+
+            AFMisc.WriteIf(BullishEngulfing, "A black candle, the body of which overlaps the white candle’s body.", "No pattern")))))))))))))))))))))))))))))))))))))))))))));
+
+var C_thirdday =
+AFMisc.WriteIf(doubletop , "Double top ",
+AFMisc.WriteIf(doubleBot, "Double bottom",
+AFMisc.WriteIf(TweezerTop, "Not applicable ",
+AFMisc.WriteIf(tweezerBottom, "Not applicable ",
+AFMisc.WriteIf(Belowthestomch, "Not applicable ",
+AFMisc.WriteIf(Abovethestomach, "Not applicable ",
+AFMisc.WriteIf(consecutave5down, "Low is less than previous Low ",
+AFMisc.WriteIf(consecutave10down, "Low is less than previous Low ",
+AFMisc.WriteIf(consecutave5up, "High is greater than previous High ",
+AFMisc.WriteIf(consecutave10up, "High is greater than previous High",
+AFMisc.WriteIf(MATCHLOW , "Not applicable ",
+AFMisc.WriteIf(GapUpx , "Gap Up ",
+AFMisc.WriteIf(GapDownx , "Gap Down ",
+AFMisc.WriteIf(BigGapUp , "Big Gap Up ",
+AFMisc.WriteIf(HugeGapUp , "Huge Gap Up ",
+AFMisc.WriteIf(HugeGapDown , "Huge Gap Down ",
+AFMisc.WriteIf(DoubleGapUp , "Double Gap Up ",
+AFMisc.WriteIf(DoubleGapDown , "Double Gap Down ",
+AFMisc.WriteIf(EveningStar1, "A tall black candle that gaps below the prior candle & closes at least halfway down the body of the white candle.",
+AFMisc.WriteIf(MorningStar1 , "A tall white candle that gaps above the body of the Second Day & closes at least midway into the black body of the first day.",
+AFMisc.WriteIf(HangingMan1, "Not applicable ",
+AFMisc.WriteIf(BullishMorningDojiStar , "A tall white candle whose body remains above the doji’s body.",
+ AFMisc.WriteIf(BearishEveningDojiStar , "A tall black candle that closes at/below the midpoint (well into the body) of the white candle.",
+ AFMisc.WriteIf(BullishHarami , "Not applicable ",
+AFMisc.WriteIf(PiercingLine , "Not applicable ",
+ AFMisc.WriteIf(BearishHarami , "Not applicable ",
+AFMisc.WriteIf(Doji1 , "Not applicable ",
+AFMisc.WriteIf(DojiGapUp, "Not applicable ",
+ AFMisc.WriteIf(BlackSpinningTop , "Not applicable ",
+ AFMisc.WriteIf(WhiteSpinningTop , "Not applicable ",
+AFMisc.WriteIf(ShootingStar1 , "Not applicable ",
+
+ AFMisc.WriteIf(marubozuclosingwhite, "Not applicable ",
+ AFMisc.WriteIf(marubozuopeningwhite, "Not applicable ",
+AFMisc.WriteIf(marubozuopeningblack, "Not applicable ",
+           AFMisc.WriteIf(marubozuclosingblack, "Not applicable ",
+           AFMisc.WriteIf(blackmarubozu, "Not applicable ",
+            AFMisc.WriteIf(whitemarubozu, "Not applicable ",
+            AFMisc.WriteIf(ShortWhitecandle, "Not applicable ",
+            AFMisc.WriteIf(ShortblackCandle, "Not applicable ",
+            AFMisc.WriteIf(LongwhiteCandle, "Not applicable ",
+            AFMisc.WriteIf(LongblackCandle, "Not applicable ",
+
+            AFMisc.WriteIf(BearishEngulfing, "Not applicable ",
+            AFMisc.WriteIf(hammer1, "Not applicable ",
+            AFMisc.WriteIf(InvertedHammer1, "Not applicable ",
+
+            AFMisc.WriteIf(BullishEngulfing, "Not applicable", "No pattern")))))))))))))))))))))))))))))))))))))))))))));
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+AFMisc.Say(singlecandel );
+//Say(price_trand);
+////Say(C_firstday);
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("BullishMorningDojiStar ","No,Yes",0)==0)
+//{
+//BullishMorningDojiStar =BullishMorningDojiStar ;
+//}
+//else
+//{
+//BullishMorningDojiStar =0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("BearishEveningDojiStar","No,Yes",0)==0)
+//{
+//BearishEveningDojiStar=BearishEveningDojiStar;
+//}
+//else
+//{
+//BearishEveningDojiStar=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("EveningStar","No,Yes",0))
+//{
+//EveningStar1=EveningStar1;
+//}
+//else
+//{
+//EveningStar1=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("MorningStar","No,Yes",0))
+//{
+//MorningStar1=MorningStar1;
+//}
+//else
+//{
+//MorningStar1=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("Abovethestomach","No,Yes",0))
+//{
+//Abovethestomach=Abovethestomach;
+//}
+//else
+//{
+//Abovethestomach=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("consecutave5down","No,Yes",0))
+//{
+//consecutave5down=consecutave5down;
+//}
+//else
+//{
+//consecutave5down=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("consecutave10down","No,Yes",0))
+//{
+//consecutave10down=consecutave10down;
+//}
+//else
+//{
+//consecutave10down=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("consecutave5up","No,Yes",0))
+//{
+//consecutave5up=consecutave5up;
+//}
+//else
+//{
+//consecutave5up=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("consecutave10up","No,Yes",0))
+//{
+//consecutave10up=consecutave10up;
+//}
+//else
+//{
+//consecutave10up=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("TweezerTop","No,Yes",0))
+//{
+//TweezerTop=TweezerTop;
+//}
+//else
+//{
+//TweezerTop=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("tweezerBottom","No,Yes",0))
+//{
+//tweezerBottom=tweezerBottom;
+//}
+//else
+//{
+//tweezerBottom=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("var BullishBreakaway","No,Yes",0))
+//{
+//BullishBreakaway=BullishBreakaway;
+//}
+//else
+//{
+//BullishBreakaway=0;
+//}
+
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("var BearishBreakaway","No,Yes",0))
+//{
+//BearishBreakaway=BearishBreakaway;
+//}
+//else
+//{
+//BearishBreakaway=0;
+//}
+
+
+
+
+
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("var BullishHaramiCross","No,Yes",0))
+//{
+//BullishHaramiCross=BullishHaramiCross;
+//}
+//else
+//{
+//BullishHaramiCross=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("var BearishHaramiCross","No,Yes",0))
+//{
+//BearishHaramiCross=BearishHaramiCross;
+//}
+//else
+//{
+//BearishHaramiCross=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("doubletop","No,Yes",0))
+//{
+//doubletop=doubletop;
+//}
+//else
+//{
+//doubletop=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("doubleBot","No,Yes",0))
+//{
+//doubleBot=doubleBot;
+//}
+//else
+//{
+//doubleBot=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("DojiGapUp","No,Yes",0))
+//{
+//DojiGapUp=DojiGapUp;
+//}
+//else
+//{
+//DojiGapUp=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("var oneDayreversal","No,Yes",0))
+//{
+//oneDayreversal=oneDayreversal;
+//}
+//else
+//{
+//oneDayreversal=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("Belowthestomch","No,Yes",0))
+//{
+//Belowthestomch=Belowthestomch;
+//}
+//else
+//{
+//Belowthestomch=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("MATCHLOW","No,Yes",0))
+//{
+//MATCHLOW=MATCHLOW;
+//}
+//else
+//{
+//MATCHLOW=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("GapUpx","No,Yes",0))
+//{
+//GapUpx=GapUpx;
+//}
+//else
+//{
+//GapUpx=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("GapDownx","No,Yes",0))
+//{
+//GapDownx=GapDownx;
+//}
+//else
+//{
+//GapDownx=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("BigGapUp","No,Yes",0))
+//{
+//BigGapUp=BigGapUp;
+//}
+//else
+//{
+//BigGapUp=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("HugeGapUp","No,Yes",0))
+//{
+//HugeGapUp=HugeGapUp;
+//}
+//else
+//{
+//HugeGapUp=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("HugeGapDown","No,Yes",0))
+//{
+//HugeGapDown=HugeGapDown;
+//}
+//else
+//{
+//HugeGapDown=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("DoubleGapUp","No,Yes",0))
+//{
+//DoubleGapUp=DoubleGapUp;
+//}
+//else
+//{
+//DoubleGapUp=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("DoubleGapDown","No,Yes",0))
+//{
+//DoubleGapDown=DoubleGapDown;
+//}
+//else
+//{
+//DoubleGapDown=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("HangingMan1","No,Yes",0))
+//{
+//HangingMan1=HangingMan1;
+//}
+//else
+//{
+//HangingMan1=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("BullishHarami","No,Yes",0))
+//{
+//BullishHarami=BullishHarami;
+//}
+//else
+//{
+//BullishHarami=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("BearishHarami","No,Yes",0))
+//{
+//BearishHarami=BearishHarami;
+//}
+//else
+//{
+//BearishHarami=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("Doji1","No,Yes",0))
+//{
+//Doji1=Doji1;
+//}
+//else
+//{
+//Doji1=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("BlackSpinningTop","No,Yes",0))
+//{
+//BlackSpinningTop=BlackSpinningTop;
+//}
+//else
+//{
+//BlackSpinningTop=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("WhiteSpinningTop","No,Yes",0))
+//{
+//WhiteSpinningTop=WhiteSpinningTop;
+//}
+//else
+//{
+//WhiteSpinningTop=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("ShootingStar1","No,Yes",0))
+//{
+//ShootingStar1=ShootingStar1;
+//}
+//else
+//{
+//ShootingStar1=0;
+//}
+
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("marubozuclosingwhite","No,Yes",0))
+//{
+//marubozuclosingwhite=marubozuclosingwhite;
+//}
+//else
+//{
+//marubozuclosingwhite=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("marubozuopeningwhite","No,Yes",0))
+//{
+//marubozuopeningwhite=marubozuopeningwhite;
+//}
+//else
+//{
+//marubozuopeningwhite=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("marubozuopeningblack","No,Yes",0))
+//{
+//marubozuopeningblack=marubozuopeningblack;
+//}
+//else
+//{
+//marubozuopeningblack=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("marubozuclosingblack","No,Yes",0))
+//{
+//marubozuclosingblack=marubozuclosingblack;
+//}
+//else
+//{
+//marubozuclosingblack=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("blackmarubozu","No,Yes",0))
+//{
+//blackmarubozu=blackmarubozu;
+//}
+//else
+//{
+//blackmarubozu=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("whitemarubozu","No,Yes",0))
+//{
+//whitemarubozu=whitemarubozu;
+//}
+//else
+//{
+//whitemarubozu=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("ShortWhitecandle","No,Yes",0))
+//{
+//ShortWhitecandle=ShortWhitecandle;
+//}
+//else
+//{
+//ShortWhitecandle=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("ShortblackCandle","No,Yes",0))
+//{
+//ShortblackCandle=ShortblackCandle;
+//}
+//else
+//{
+//ShortblackCandle=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("LongwhiteCandle","No,Yes",0))
+//{
+//LongwhiteCandle=LongwhiteCandle;
+//}
+//else
+//{
+//LongwhiteCandle=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("LongBlackCandle","No,Yes",0))
+//{
+//    LongblackCandle = LongblackCandle;
+//}
+//else
+//{
+//    LongblackCandle = 0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("BearishEngulfing","No,Yes",0))
+//{
+//BearishEngulfing=BearishEngulfing;
+//}
+//else
+//{
+//BearishEngulfing=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("hammer","No,Yes",0))
+//{
+//hammer1=hammer1;
+//}
+//else
+//{
+//hammer1=0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("InvertedHammer","No,Yes",0))
+//{
+//InvertedHammer1=InvertedHammer1;
+//}
+//else
+//{
+//InvertedHammer1=0;
+//}
+
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("BullishEngulfing","No,Yes",0))
+//{
+//BullishEngulfing=BullishEngulfing;
+//}
+//else
+//{
+//BullishEngulfing=0;
+//}
+
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("var Insideday","No,Yes",0))
+//{
+//Insideday=Insideday;
+//}
+//else
+//{
+//Insideday=0;
+//}
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("var BearishBeltHold ","No,Yes",0))
+//{
+//BearishBeltHold =BearishBeltHold ;
+//}
+//else
+//{
+//BearishBeltHold =0;
+//}
+
+///* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+//if(AFTools.ParamToggle("var OutsideDay  ","No,Yes",0))
+//{
+//OutsideDay  =OutsideDay  ;
+//}
+//else
+//{
+//OutsideDay  =0;
+//}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//Buy = Insideday | BullishEngulfing | InvertedHammer1 | hammer1 | BearishEngulfing | LongblackCandle | LongwhiteCandle | ShortblackCandle 
+//| ShortWhitecandle | whitemarubozu | blackmarubozu | marubozuclosingblack | marubozuopeningblack | marubozuopeningwhite | marubozuclosingwhite 
+//| ShootingStar1 | WhiteSpinningTop | BlackSpinningTop | Doji1 | BearishHarami  | BullishHarami | HangingMan1 | DoubleGapDown | 
+// DoubleGapUp | HugeGapDown |  HugeGapUp |  BigGapUp | GapDownx | GapUpx | MATCHLOW | Belowthestomch | OutsideDay  | BearishBeltHold | BullishMorningDojiStar | oneDayreversal |  BearishEveningDojiStar 
+//|  EveningStar1 | MorningStar1
+// | Abovethestomach | consecutave5down | consecutave10down 
+//| consecutave5up | consecutave10up | TweezerTop | tweezerBottom | BullishBreakaway | BearishBreakaway  ;
+
+
+//AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.White , 0, Low,30);
+//PlotShapes(IIf(Sell, shapeHollowSquare  , shapeNone),colorGreen, 0, Low,30);
+
+
+
+
+
+  AFMisc.Version(5.40f); // you need to upgrade Amibroker
+            AFMisc.RequestTimedRefresh(0.1f);   // replace from (0.1) to (1) if you have Error in
+
+
+
+            // ---- GFX Tool Tip ---- big box 
+
+            // parameters
+       
+
+
+
+
+
+
+
+           // GfxSetTextColor(colorOrange );
+            AFGraph.GfxTextOut("*********** Shubhalabha pattern finder *********** ", 5 + x1Rrect, y1Rrect + FontSize);
+          //  GfxSetTextColor(colorWhite);
+
+       //     GfxTextOut("Day " + NumToStr( DateTime(), formatDateTime ), 5 + x1Rrect, 20 + y1Rrect + FontSize);
+
+ 
+
+
+AFGraph.GfxSelectFont("Arial", FontSize, 700, ATFloat.False);
+                              AFGraph.GfxTextOut("Single candle Pattern  : \n" +singlecandel , 5 + x1Rrect, 70 + y1Rrect + FontSize);
+ AFGraph.GfxTextOut("Candlestick Pattern  : \n" +doublecandle, 5 + x1Rrect, 90 + y1Rrect + FontSize);
+ AFGraph.GfxTextOut("Price Pattern  : \n" +pricepattern, 5 + x1Rrect, 110 + y1Rrect + FontSize);
+
+
+/* Hint: convert float expression to bool using ATFloat.IsTrue(<float expression>) */
+if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
+{
+ AFGraph.GfxTextOut( "Trend : "+price_trand, 5 + x1Rrect, 130 + y1Rrect + FontSize);
+ AFGraph.GfxTextOut( "First Day : "+ C_firstday, 5 + x1Rrect, 150 + y1Rrect + FontSize);
+ AFGraph.GfxTextOut("Second Day : "+ C_secondday , 5 + x1Rrect, 170 + y1Rrect + FontSize);
+ AFGraph.GfxTextOut( "Third Day : "+C_thirdday , 5 + x1Rrect, 190+ y1Rrect + FontSize);
+
 }
 
 
-        [ABMethod]
-public  float  GfxConvertValueToPixelY(float  Value ) 
-{ 
 
- var Miny = AFMisc.Status("axisminy"); 
-var  Maxy = AFMisc.Status("axismaxy"); 
 
- var pxchartbottom = AFMisc.Status("pxchartbottom"); 
- var pxchartheight = AFMisc.Status("pxchartheight"); 
+            shubhascanner();
 
- return pxchartbottom - AFMath.Floor( 0.5f + ( Value - Miny ) * pxchartheight/ ( Maxy - Miny ) ); 
-} 
-
-
-        [ABMethod]
-        public ATArray hammer(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlHammer(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-               
-
-                if(output[i].ToString()=="100")
-                {
-                    output[i] = outputEMA5[i];
-                   
-                    AFGraph.PlotText("hammer", i, Low[i], Color.Yellow);
-                   
-//AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-                
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output ;
-        }
-        [ABMethod]
-        public ATArray EveningDojiStar(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlEveningDojiStar(1, iStopIndex - 1, o, h, l, c, 5, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("EveningDojiStar", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray EveningStar(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlEveningStar(1, iStopIndex - 1, o, h, l, c, 5, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("EveningStar", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-       
-        [ABMethod]
-        public ATArray HangingMan(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlHangingMan(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("HangingMan", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Harami(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlHarami(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Harami", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray HaramiCross(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlHaramiCross(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("HaramiCross", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-        [ABMethod]
-        public ATArray ShootingStar(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlShootingStar(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("ShootingStar", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Crows(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.Cdl2Crows(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Crows", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray BlackCrows(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.Cdl3BlackCrows(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("BlackCrows", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Inside(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.Cdl3Inside(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Inside", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray LineStrike(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.Cdl3LineStrike(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("LineStrike", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Outside(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.Cdl3Outside(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Outside", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray StarsInSouth(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.Cdl3StarsInSouth(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("StarsInSouth", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray WhiteSoldiers(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.Cdl3WhiteSoldiers(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("WhiteSoldiers", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
+            return null;
         }
 
 
         [ABMethod]
-        public ATArray AdvanceBlock(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        public void report(ATArray open, ATArray high, ATArray low, ATArray close, float period)
         {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
+            
+
+            Buy = Close > 0;
             Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            
+            AFTimeFrame.TimeFrameSet(TFInterval.InHourly ); // switch now to hourly 
+            var O1 = AFTools.Ref(Open, -1); var O2 = AFTools.Ref(Open, -2); var O3 = AFTools.Ref(Open, -3); var O4 = AFTools.Ref(Open, -4); var O5 = AFTools.Ref(Open, -5); var O6 = AFTools.Ref(Open, -6); var O7 = AFTools.Ref(Open, -7); var O8 = AFTools.Ref(Open, -8); var O9 = AFTools.Ref(Open, -9);
+
+            var H1 = AFTools.Ref(High, -1); var H2 = AFTools.Ref(High, -2); var H3 = AFTools.Ref(High, -3); var H4 = AFTools.Ref(High, -4); var H5 = AFTools.Ref(High, -5); var H6 = AFTools.Ref(High, -6); H6 = AFTools.Ref(High, -6); var H7 = AFTools.Ref(High, -7); var H8 = AFTools.Ref(High, -8); var H9 = AFTools.Ref(High, -9);
+
+            var L1 = AFTools.Ref(Low, -1); var L2 = AFTools.Ref(Low, -2); var L3 = AFTools.Ref(Low, -3); var L4 = AFTools.Ref(Low, -4); var L5 = AFTools.Ref(Low, -5); var L6 = AFTools.Ref(Low, -6); var L7 = AFTools.Ref(Low, -7); var L8 = AFTools.Ref(Low, -8); var L9 = AFTools.Ref(Low, -9);
+
+
+            var C1 = AFTools.Ref(Close, -1); var C2 = AFTools.Ref(Close, -2); var C3 = AFTools.Ref(Close, -3); var C4 = AFTools.Ref(Close, -4); var C5 = AFTools.Ref(Close, -5); var C6 = AFTools.Ref(Close, -6); var C7 = AFTools.Ref(Close, -7); var C8 = AFTools.Ref(Close, -8); var C9 = AFTools.Ref(Close, -9);
+
+            /*var BODY Colors*/
+            var WhiteCandle = Close >= Open;
+            var BlackCandle = Open > Close;
+            var B1 = O1 - C1;
+            var B2 = O2 - C2;
+            var B3 = O3 - C3;
+            var Avgbody = ((B1 + B2 + B3) / 3);
+            var XBODY = Avgbody * 3;
+
+            var BODY = Open - Close;
 
 
 
 
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
 
-            }
-            Core.CdlAdvanceBlock(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("AdvanceBlock", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
+            /*Single candle Pattern */
+            var smallBodyMaximum = 0.0025f;//less than 0.25%
+            var LargeBodyMinimum = 0.01f;//greater than 1.0%
+            var smallBody = (Open >= Close * (1 - smallBodyMaximum) & WhiteCandle) | (Close >= Open * (1 - smallBodyMaximum) & BlackCandle);
+            var largeBody = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) | Close <= Open * (1 - LargeBodyMinimum) & BlackCandle;
+            var mediumBody = !largeBody & !smallBody;
+            var identicalBodies = AFMath.Abs(AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) - AFMath.Abs(Open - Close)) < AFMath.Abs(Open - Close) * smallBodyMaximum;
+            var realBodySize = AFMath.Abs(Open - Close);
 
 
-            }
-            // This prints report with Buy and Sell.
+
+            /*Shadows*/
+            var smallUpperShadow = (WhiteCandle & High <= Close * (1 + smallBodyMaximum)) | (BlackCandle & High <= Open * (1 + smallBodyMaximum));
+            var smallLowerShadow = (WhiteCandle & Low >= Open * (1 - smallBodyMaximum)) | (BlackCandle & Low >= Close * (1 - smallBodyMaximum));
+            var largeUpperShadow = (WhiteCandle & High >= Close * (1 + LargeBodyMinimum)) | (BlackCandle & High >= Open * (1 + LargeBodyMinimum));
+            var largeLowerShadow = (WhiteCandle & Low <= Open * (1 - LargeBodyMinimum)) | (BlackCandle & Low <= Close * (1 - LargeBodyMinimum));
+
+            /*Gaps*/
+            var upGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Open > AFTools.Ref(Open, -1), 1,
+            AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Close > AFTools.Ref(Open, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Open > AFTools.Ref(Close, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Close > AFTools.Ref(Close, -1), 1, 0))));
+
+            var downGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Close < AFTools.Ref(Close, -1), 1,
+            AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Open < AFTools.Ref(Close, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Close < AFTools.Ref(Open, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Open < AFTools.Ref(Open, -1), 1, 0))));
 
 
-            return output;
+
+
+            /*Maximum High Today - (var MHT)
+            Today is the maximum High in the last 5 days*/
+            var MHT = AFHL.Hhv(High, 5) == High;
+
+            /*Maximum High Yesterday - (var MHY)
+            Yesterday is the maximum High in the last 5 days*/
+            var MHY = AFHL.Hhv(High, 5) == AFTools.Ref(High, -1);
+
+            /*Minimum Low Today - (var MLT)
+            Today is the minimum Low in the last 5 days*/
+            var MLT = AFHL.Llv(Low, 5) == Low;
+
+            /*Minimum Low Yesterday - (var MLY)
+            Yesterday is the minimum Low in the last 5 days*/
+            var MLY = AFHL.Llv(Low, 5) == AFTools.Ref(Low, -1);
+
+            /*var Doji1 definitions*/
+
+            /*Doji1 Today - (DT)*/
+            //var   DT = AFMath.Abs(Close - Open) <= (Close * smallBodyMaximum) | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+
+            /* Doji1 Yesterday - (DY)*/
+            // var  DY = AFMath.Abs(AFTools.Ref(Close, -1) - AFTools.Ref(Open, -1)) <= AFTools.Ref(Close, -1) * smallBodyMaximum | AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) <= (AFTools.Ref(High, -1) - AFTools.Ref(Low, -1)) * 0.1f;
+
+
+
+            var ShortWhitecandle = ((Close > Open) & ((High - Low) > (3 * (Close - Open))));
+            var ShortblackCandle = ((Open > Close) & ((High - Low) > (3 * (Open - Close))));
+            var Close1 = (Open - Close) * (0.002f);
+            var Open1 = (Open * 0.002f);
+
+            var LongblackCandle = (Close <= Open * (1 - LargeBodyMinimum) & BlackCandle) & (Open > Close) & ((Open - Close) / (.001f + High - Low) > .6f);
+            var LongwhiteCandle = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) & ((Close > Open) & ((Close - Open) / (.001f + High - Low) > .6f));
+            var Doji1 = Open == Close | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+
+            //almost equal needs to be reviewd and implemented 
+            var whitemarubozu = ((Close > Open) & AFMisc.AlmostEqual(High, Close, 5) & AFMisc.AlmostEqual(Open, Low, 5));
+            var blackmarubozu = ((Open > Close) & (High == Open) & (Close == Low));
+
+            var marubozuclosingblack = BlackCandle & High > Open & Low == Close;
+            var marubozuopeningblack = BlackCandle & High == Open & Low < Close;
+            var marubozuclosingwhite = WhiteCandle & High == Close & Open > Low;
+            var marubozuopeningwhite = WhiteCandle & High > Close & Open == Low;
+            var BlackSpinningTop = ((Open > Close) & ((High - Low) > (3 * (Open - Close))) & (((High - Open) / (0.001f + High - Low)) < 0.4f) & (((Close - Low) / (0.001f + High - Low)) < 0.4f));
+            var WhiteSpinningTop = ((Close > Open) & ((High - Low) > (3 * (Close - Open))) & (((High - Close) / (0.001f + High - Low)) < 0.4f) & (((Open - Low) / (0.001f + High - Low)) < 0.4f));
+
+
+            var hammer1 = (((High - Low) > 3 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) > 0.6f) & ((Open - Low) / (.001f + High - Low) > 0.6f));
+            var InvertedHammer1 = (((High - Low) > 3 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) > 0.6f) & ((High - Open) / (0.001f + High - Low) > 0.6f));
+            var HangingMan1 = (((High - Low) > 4 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) >= 0.75f) & ((Open - Low) / (.001f + High - Low) >= 0.75f));
+            var ShootingStar1 = (((High - Low) > 4 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) >= 0.75f) & ((High - Open) / (0.001f + High - Low) >= 0.75f));
+            var BearishEngulfing = ((C1 > O1) & (Open > Close) & (Open >= C1) & (O1 >= Close) & ((Open - Close) > (C1 - O1)));
+            var BullishEngulfing = ((O1 > C1) & (Close > Open) & (Close >= O1) & (C1 >= Open) & ((Close - Open) > (O1 - C1)));
+            var BearishEveningDojiStar = ((C2 > O2) & ((C2 - O2) / (0.001f + H2 - L2) > 0.6f) & (C2 < O1) & (C1 > O1) & ((H1 - L1) > (3 * (C1 - O1))) & (Open > Close) & (Open < O1));
+            var BullishMorningDojiStar = ((O2 > C2) & ((O2 - C2) / (0.001f + H2 - L2) > 0.6f) & (C2 > O1) & (O1 > C1) & ((H1 - L1) > (3 * (C1 - O1))) & (Close > Open) & (Open > O1));
+            var BullishHarami = ((O1 > C1) & (Close > Open) & (Close <= O1) & (C1 <= Open) & ((Close - Open) < (O1 - C1)));
+            var BearishHarami = ((C1 > O1) & (Open > Close) & (Open <= C1) & (O1 <= Close) & ((Open - Close) < (C1 - O1)));
+
+
+
+            var DarkCloudCover1 = (C1 > O1 & ((C1 + O1) / 2) > Close & Open > Close & Open > C1 & Close > O1 & (Open - Close) / (0.001f + (High - Low) > 0.6f));
+            var BullishAbandonedBaby = ((C1 == O1) & (O2 > C2) & (Close > Open) & (L2 > H1) & (Low > H1));
+            var BearishAbandonedBaby = ((C1 = O1) & (C2 > O2) & (Open > Close) & (L1 > H2) & (L1 > High));
+            var ThreeOutsideUpPattern = ((O2 > C2) & (C1 > O1) & (C1 >= O2) & (C2 >= O1) & ((C1 - O1) > (O2 - C2)) & (Close > Open) & (Close > C1));
+            var ThreeOutsideDownPattern = ((C2 > O2) & (O1 > C1) & (O1 >= C2) & (O2 >= C1) & ((O1 - C1) > (C2 - O2)) & (Open > Close) & (Close < C1));
+            var ThreeInsideUpPattern = ((O2 > C2) & (C1 > O1) & (C1 <= O2) & (C2 <= O1) & ((C1 - O1) < (O2 - C2)) & (Close > Open) & (Close > C1) & (Open > O1));
+            var ThreeInsideDownPattern = ((C2 > O2) & (O1 > C1) & (O1 <= C2) & (O2 <= C1) & ((O1 - C1) < (C2 - O2)) & (Open > Close) & (Close < C1) & (Open < O1));
+            var ThreeWhiteSoldiers = (Close > Open * 1.01f) & (C1 > O1 * 1.01f) & (C2 > O2 * 1.01f) & (Close > C1) & (C1 > C2) & (Open < C1) & (Open > O1) & (O1 < C2) & (O1 > O2) & (((High - Close) / (High - Low)) < 0.2f) & (((H1 - C1) / (H1 - L1)) < 0.2f) & (((H2 - C2) / (H2 - L2)) < 0.2f);
+            var ThreeBlackCrows = (Open > Close * 1.01f) & (O1 > C1 * 1.01f) & (O2 > C2 * 1.01f) & (Close < C1) & (C1 < C2) & (Open > C1) & (Open < O1) & (O1 > C2) & (O1 < O2) & (((Close - Low) / (High - Low)) < 0.2f) & (((C1 - L1) / (H1 - L1)) < 0.2f) & (((C2 - L2) / (H2 - L2)) < 0.2f);
+
+
+
+            var PiercingLine = ((C1 < O1) & (((O1 + C1) / 2) < Close) & (Open < Close) & (Open < C1) & (Close < O1) & ((Close - Open) / (0.001f + (High - Low)) > 0.6f));
+
+            var EveningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(WhiteCandle, -2) & AFTools.Ref(upGap, -1) & !AFTools.Ref(largeBody, -1) & BlackCandle & !smallBody & (MHT | MHY);
+            var MorningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(BlackCandle, -2) & AFTools.Ref(downGap, -1) & WhiteCandle & largeBody & Close > AFTools.Ref(Close, -2) & MLY;
+            var MATCHLOW = AFHL.Llv(Low, 8) == AFHL.Llv(Low, 2) & AFTools.Ref(Close, -1) <= AFTools.Ref(Open, -1) * .99f & AFMath.Abs(Close - AFTools.Ref(Close, -1)) <= Close * .0025f & Open > AFTools.Ref(Close, -1) & Open <= (High - ((High - Low) * .5f));
+            var GapUpx = AFPattern.GapUp();
+            var GapDownx = AFPattern.GapDown();
+            var BigGapUp = Low > 1.01f * H1;
+            var BigGapDown = High < 0.99f * L1;
+            var HugeGapUp = Low > 1.02f * H1;
+            var HugeGapDown = High < 0.98f * L1;
+            var DoubleGapUp = AFPattern.GapUp() & AFTools.Ref(AFPattern.GapUp(), -1);
+            var DoubleGapDown = AFPattern.GapDown() & AFTools.Ref(AFPattern.GapDown(), -1);
+
+            var consecutave5up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5);
+            var consecutave10up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5) & (H5 > H6) & (H6 > H7) & (H7 > H8) & (H8 > H9);
+
+            var consecutave5down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5);
+            var consecutave10down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5) & (L5 < L6) & (L6 < L7) & (L7 < L8) & (L8 < L9);
+            var Abovethestomach = (O1 > C1) & (Close > Open) & Close >= AFStat.Median(C1, 1);
+            var Belowthestomch = LongwhiteCandle & Open < AFStat.Median(C1, 1) & Close <= AFStat.Median(C1, 1);
+            var TweezerTop = AFMath.Abs(High - AFTools.Ref(High, -1)) <= High * 0.0025f & Open > Close & (AFTools.Ref(Close, -1) > AFTools.Ref(Open, -1)) & (MHT | MHY);
+
+            /*Tweezer Bottom*/
+            var tweezerBottom = (AFMath.Abs(Low - AFTools.Ref(Low, -1)) / Low < 0.0025f | AFMath.Abs(Low - AFTools.Ref(Low, -2)) / Low < 0.0025f) & Open < Close & (AFTools.Ref(Open, -1) > AFTools.Ref(Close, -1)) & (MLT | MLY);
+
+
+
+
+            /* Detecting double tops & bottoms (come into view, by Isfandi)*/
+            var percdiff = 5; /* peak detection threshold */
+            var fwdcheck = 5; /* forward validity check */
+            var mindistance = 10;
+            var validdiff = percdiff / 400;
+
+            var PK = AFPattern.Peak(High, percdiff, 1) == High;
+            var TR = AFPattern.Trough(Low, percdiff, 1) == Low;
+
+
+            var x = AFAvg.Cum(1);
+            var XPK1 = AFTools.ValueWhen(PK, x, 1);
+            var XPK2 = AFTools.ValueWhen(PK, x, 2);
+            var xTR1 = AFTools.ValueWhen(TR, x, 1);
+            var xTr2 = AFTools.ValueWhen(TR, x, 2);
+
+            var peakdiff = AFTools.ValueWhen(PK, High, 1) / AFTools.ValueWhen(PK, High, 2);
+            var Troughdiff = AFTools.ValueWhen(TR, Low, 1) / AFTools.ValueWhen(TR, Low, 2);
+
+            var doubletop = PK & AFMath.Abs(peakdiff - 1) < validdiff & (XPK1 - XPK2) > mindistance & High > AFHL.Hhv(AFTools.Ref(High, fwdcheck), fwdcheck - 1);
+            var doubleBot = TR & AFMath.Abs(Troughdiff - 1) < validdiff & (xTR1 - xTr2) > mindistance & Low < AFHL.Llv(AFTools.Ref(Low, fwdcheck), fwdcheck - 1);
+
+
+
+            ////////////////////////////////////////////////
+            var MINO10 = AFHL.Llv(Open, 10);
+            var AVGH10 = AFAvg.Ma(High, 10);
+            var AVGL10 = AFAvg.Ma(Low, 10);
+            var MAXO10 = AFHL.Hhv(Open, 10);
+            var MINL10 = AFHL.Llv(Low, 10);
+            var MAXH10 = AFHL.Hhv(High, 10);
+            var AVGH21 = AFAvg.Ma(High, 21);
+            var AVGL21 = AFAvg.Ma(Low, 21);
+            var MINL5 = AFHL.Llv(Low, 5);
+            var BullishBeltHold = (Open = MINO10) & (Open < L1) & (Close - Open) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (Open - Low) <= .01f * (High - Low) & (Close <= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 < C2) & (C2 < C3);
+            var BearishBeltHold = (Open = MAXO10) & (Open > H1) & (Open - Close) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (High - Open) <= .01f * (High - Low) & (Close >= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 > C2) & (C2 < C3);
+            var BullishBreakaway = C4 < O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < O3 & H3 < L4 & C2 < C3 & C1 < C2 & AFMath.Abs(Close - Open) > .6f * (High - Low) & Close > Open & Close > H3;
+            var BearishBreakaway = AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C4 > O4 & C3 > O3 & L3 > H4 & C2 > C3 & C1 > C2 & Close < Open & Low < H4 & High > L3;
+
+            var DojiDragonfly = AFMath.Abs(Open - Close) <= .02f * (High - Low) & (High - Close) <= .3f * (High - Low) & (High - Low) >= (AVGH10 - AVGL10) & (High > Low) & (Low = MINL10);
+            //BullishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (L<=L1+.3*(H1-L1)) AND (H-L)>=(AVGH10-AVGL10);
+
+
+
+
+            //BearishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (H=MAXH10) AND (H-L)>=(AVGH10-AVGL10);
+            var BullishHaramiCross = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & High < O1 & Low > C1 & (Close + Open) / 2 - Low > .4f * (High - Low) & (Close + Open) / 2 - Low < .6f * (High - Low) & AFMath.Abs(Close - Open) < .2f * (High - Low);
+            var BearishHaramiCross = AFMath.Abs(C1 - O1) > .5f * (High - Low) & C1 > O1 & High < C1 & Low > O1 & AFMath.Abs(Close - Open) < .2f * (High - Low);
+            var HomingPigeon = C1 < O1 & AFMath.Abs(Close - Open) >= .6f * (H1 - L1) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & High < O1 & Low > C1 & Close < Open;
+            var BullishKicking = O3 - C3 > .6f * (H3 - L3) & O2 - C2 > .6f * (H2 - L2) & O1 - C1 > .6f * (H1 - L1) & C3 < O3 & C2 < O2 & C1 < O1 & Close > Open & O2 < C3 & O1 < C2 & Open > O1 & Close - Open > .6f * (High - Low);
+            //var BearishKicking = Close == Low & Open = High & High > Low & High < L1 & C1 = H1 & O1 = L1 & H1 > L1;
+
+
+
+
+
+            var LadderBottom = O4 > C4 & O3 < O4 & C3 < C4 & O2 < O3 & C2 < C3 & C1 < O1 & H1 > O1 & Close > Open & Open > O1;
+            var MatHold = C4 > O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < H4 & C2 < H4 & C1 < H4 & C3 > L4 & C2 > L4 & C1 > L4 & Close > C4 & Close > Open & High - Low > AVGH21 - AVGL21 & C2 < C3 & C1 < C2 & AFMath.Abs(C3 - O3) <= .75f * AFMath.Abs(C4 - O4) & AFMath.Abs(C2 - O2) <= .75f * AFMath.Abs(C4 - O4) & AFMath.Abs(C2 - O2) <= .75f * AFMath.Abs(C4 - O4);
+            var RisingThreeMethod = (C4 - O4) >= .7f * (H4 - L4) & (H4 - L4) >= (AVGH21 - AVGL21) & (H4 = MAXH10 * .4f) & (C3 < C4) & (C3 >= O4 + .5f * (H4 - L4)) & (O2 < O3) & (C2 < O3) & (O2 < C3) | (C2 < C3) & (O1 < O2) | (O1 < C2) & (C1 < O2) & (C1 < C2) & (C1 > O4) & (Open > O4) & Open <= L4 + .6f * (H4 - L4) & (Close > C4);
+            var BullishSeparatingLines = C1 < O1 & Close > Open & AFMath.Abs(Open / O1 - 1) < .01f;
+            var BearishSeparatingLines = C1 > O1 & Close < Open & Open == O1;
+            var StickSandwich = C2 < O2 & C1 > O1 & L1 > C2 & Close < Open & AFMath.Abs(Close / C2 - 1) < .02f;
+            var ThreeStarsintheSouth = C2 < O2 & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 - L2 > O2 - C2 & C1 < O1 & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 - L1 > O1 - C1 & H1 - L1 < H2 - L2 & L1 > L2 & Open == High & Close == Low & High < H1 & Low > L1;
+
+            var BullishTriStar = AFMath.Abs(Close - Open) <= .05f * (High - Low) & (Close + Open) / 2 - Low >= .4f * (High - Low) & (Close + Open) / 2 - Low <= .6f * (High - Low) & AFMath.Abs(C1 - O1) <= .05f * (H1 - L1) & (C1 + O1) / 2 - L1 >= .4f * (H1 - L1) & (C1 + O1) / 2 - L1 <= .6f * (H1 - L1) & AFMath.Abs(C2 - O2) <= .05f * (H2 - L2) & (C2 + O2) / 2 - L2 >= .4f * (H2 - L2) & (C2 + O2) / 2 - L2 <= .6f * (H2 - L2) & H1 < L3 & H1 < L1;
+            var BearishTriStar = AFMath.Abs(Close - Open) < .05f * (High - Low) & High - Low < .2f * (AVGH21 - AVGL21) & AFMath.Abs(C1 - O1) < .05f * (H1 - L1) & H1 - Low < .2f * (AVGH21 * .1f - AVGL21 * .1f) & AFMath.Abs(C2 - O2) < .05f * (H2 - L2) & H2 - L2 < .2f * (AVGH21 * .2f - AVGL21 * .2f) & L2 > H1 & L2 > High;
+
+            var UniqueThreeRiverBottom = AFMath.Abs(C2 - O2) >= .7f * (H2 - L2) & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C1 < O1 & O1 < O2 & C1 > C2 & L1 == MINL5 * .1f & Close > Open & Close < C1;
+
+            var AdvanceBlock = High - Low > AVGH21 - AVGL21 & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & Close > C1 & C1 > C2 & O1 > O2 & O1 < C2 & Open > O1 & Open < C1 & High - Low < .8f * (H1 - L1) & H1 - L1 < .8f * (H2 - L2) & High - Close > Open - Low & H1 - C1 > O1 - L1;
+            var Deliberation = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 > C2 & C2 > O2 & C1 > O1 & Open > H1 & (Close + Open) / 2 - Low > .4f * (High - Low) & (Close + Open) / 2 - Low < .6f * (High - Low) & AFMath.Abs(Close - Open) < .6f * (High - Low);
+            var InNeck = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close >= C1 & Close < 1.05f * C1;
+            var OnNeck = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close == L1;
+
+            var Thrusting = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close > C1 & Close < (C1 + O1) / 2;
+
+
+            //////////////////////////////price 
+            var MAXC20 = AFHL.Hhv(Close, 20);
+            var AVGC40 = AFAvg.Ma(Close, 40);
+            var AVGH5 = AFAvg.Ma(High, 5);
+            var AVGL5 = AFAvg.Ma(Low, 5);
+            var AVGH34 = AFAvg.Ma(High, 34);
+            var AVGL34 = AFAvg.Ma(Low, 43);
+            var MAXH5 = AFHL.Hhv(High, 5);
+            MAXH10 = AFHL.Hhv(High, 10);
+            var MAXH20 = AFHL.Hhv(High, 20);
+            var MINL20 = AFHL.Llv(Low, 20);
+            var MINL42 = AFHL.Llv(Low, 42);
+            var MAXH42 = AFHL.Hhv(High, 42);
+            var MINL21 = AFHL.Llv(Low, 21);
+
+            var Pennant = MAXC20 >= Close * 1.15f & Close >= AVGC40 & (AVGH5 - AVGL5) / 2 - (AVGH34 - AVGL34) / 2 & (MAXH5 < MAXH10) & (MAXH10 < MAXH20) & (MINL5 > MINL10) & (MINL10 > MINL20);
+            var DeadCatBounce = (Low < (L1 * 0.89f) | Low < (L2 * 0.89f) | Low < (L3 * 0.89f));
+            var BullishIslandReversals = (Open < L1) & (Open < MINL42 * .1f) & (Close >= ((High - Low) * 0.5f) + Low) & (Close >= Open);
+            var BearishIslandReversals = (Open > H1) & (Open > MAXH42 * .1f) & (Close <= ((High - Low) * 0.5f) + Low) & (Close <= Open);
+            var OutsideDay = AFPattern.Outside();
+            //needs to be check
+            //OutsideDay=O<C AND O1>C1 AND O<C1 AND C>O1 AND L2<L3 AND L3<L4;
+            var BullishTrendKnockOutLong = ((Low < L1) & (Low < L2));
+            var BearishTrendKnockOutLong = ((High < H1) & (High < H2));
+
+            ////////////////////////////////////
+            //to be reveiewd 
+            var AVGV4 = AFAvg.Ma(Volume, 4);
+            var MINL3 = AFHL.Llv(Low, 3);
+            var oneDayreversal = ((L3 <= MINL21) & (L6 > L5) & (L5 > L4) & (L4 > L3) & (L2 > L3) & (L1 > L2) & (Low > L1));
+            var SharkScanLong = (H3 > H2) & (H2 > H1) & (L3 < L2) & (L2 < L1) & (High > H3);
+            var SharkScanShort = (H3 > H2) & (H2 > H1) & (L3 < L2) & (L2 < L1) & (Low < L3);
+            //to be reveiewd 
+            var TurnAroundDay = ((C1 < C2) | (H1 < H2 & L1 > L2)) & Volume > 1.1f * AVGV4 * 1 & ((High + Low) / 2) < Close & ((High - Low) / 8 - Open) < Close;
+            //FibonacciRetracement=(MAXH10-((MAXH10-MINL35)*.382));
+            //projectedFibonacciRetracement=(MINL10+((MAXH35-MINL10)*.618));
+
+            var counterattack = C1 > O1 & Close < Open & H1 - L1 > AVGH21 - AVGL21 & Open > H1 & Close == C1;
+            var HighWave = High - Close >= 3 * AFMath.Abs(Open - Close) & High - Open >= 3 * AFMath.Abs(Open - Close) & Close - Low >= 3 * AFMath.Abs(Open - Close) & Open - Low >= 3 * AFMath.Abs(Open - Close);
+            var MeetingLinesBullish = C1 < O1 & (H1 - L1) > (AVGH21 * .1f - AVGL21 * .1f) & O1 < MINL3 * .3f & Close > Open & Close < C1 * 1.01f & Close > C1 * 0.99f;
+            var ThreeLineStrikeBullish = C2 > C3 & C1 > C2 & (H3 - L3) > (AVGH21 * .3f - AVGL21 * .3f) & (H2 - L2) > (AVGH21 * .2f - AVGL21 * .2f) & (H1 - L1) > (AVGH21 * .1f - AVGL21 * .1f) & Open > O3 & Close < O3;
+            var ThreeLineStrikeBearish = C3 < O3 & C2 < O2 & C2 < C3 & C1 < O1 & C1 < C2 & Open < C1 & Close > O3;
+            var MeetingLinesBearish = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 > O1 & (C1 + O1) / 2 > H2 & AFMath.Abs(Close - Open) > .5f * (High - Low) & Close < Open & (Close + Open) / 2 > H1 & Close == C1;
+            var DojiGravestone = AFMath.Abs(Open - Close) <= .01f * (High - Low) & (High - Close) >= .95f * (High - Low) & (High > Low) & (Low <= L1 + .3f * (H1 - L1)) & (High - Low) >= (AVGH10 - AVGL10);
+            var SidebySideWhiteLines = C2 > O2 & C1 > O1 & L1 > H2 & AFMath.Abs(Close / C1 - 1) < .1f & AFMath.Abs(AFMath.Abs(Close - Open) / AFMath.Abs(C1 - O1) - 1) < .15f;
+            var UpsideGapThreeMethods = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & L1 > H2 & Close < C2 & Open > O1;
+            var UpsideTasukiGap = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & L1 > H2 & Close < Open & Close < O1 & Close > C2;
+            var DownsideTasukiGap = C2 < O2 & C1 < O1 & H1 < L2 & Open > C1 & Open < O1 & Close > H1 & Close < L2;
+            var IdenticalThreeCrows = C2 < O2 & C1 < O1 & Close < Open & Close < L1 & C1 < L2 & Open == C1 & O1 == C2;
+            var TwoCrows = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 > O2 & L1 > H2 & C1 < O1 & Open > C1 & Open < O1 & Close < C2 & Close > O2;
+            var UpsideGapTwoCrows = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 > O2 & L1 > H2 & C1 < O1 & Open > O1 & Close < C1 & Close > H2;
+
+            ///////////////////////
+            var AVGC20 = AFAvg.Ma(Close, 20);
+            var AVGC50 = AFAvg.Ma(Close, 50);
+            var MAXH3 = AFHL.Hhv(High, 3);
+            var NarrowestRangefor7days = ((High - Low) <= (H1 - L1)) & ((High - Low) <= (H2 - L2)) & ((High - Low) <= (H3 - L3)) & ((High - Low) <= (H4 - L4)) & ((High - Low) <= (H5 - L5)) & ((High - Low) <= (H6 - L6));
+            var BullFlag = AVGC20 > AVGC50 & H1 < H4 & L1 > L4 & H2 < H4 & L2 > L4 & H3 < H4 & L3 > L4 & MINL3 > (H4 + L4) / 2 & C4 > O4 & C4 > C5;
+            var BearFlag = AVGC20 < AVGC50 & H1 < H4 & L1 > L4 & H2 < H4 & L2 > L4 & H3 < H4 & L3 > L4 & MAXH3 < (H4 + L4) / 2 & C4 < O4 & C4 < C5;
+            //in report for last 7 days 
+            var fiftytwoweekhigh = AFTools.Iif(Close > AFHL.Hhv(Close, 260), 1, 0);
+            var fiftytwoweeklow = AFTools.Iif(Close < AFHL.Llv(Close, 260), 1, 0);
+            var fiftytwoweekhighvolume = AFTools.Iif(Volume > AFHL.Hhv(Volume, 260), 1, 0);
+            var fiftytwoweeklowvolume = AFTools.Iif(Volume < AFHL.Llv(Volume, 260), 1, 0);
+
+            var alltimehigh = AFTools.Iif(Close > AFHL.Highest(Close), 1, 0);
+            var alltimelow = AFTools.Iif(Close < AFHL.Lowest(Close), 1, 0);//IIf( C < Ref(Highest(C),-1), C , Ref(Highest(C),-1));
+            var alltimehighvolume = AFTools.Iif(Volume > AFHL.Highest(Volume), 1, 0);//IIf( V > Ref(Highest(V),-1), V , Ref(Highest(V),-1));
+            var alltimelowvolume = AFTools.Iif(Volume < AFHL.Lowest(Volume), 1, 0);//IIf( V < Ref(Highest(V),-1), V , Ref(Highest(V),-1));
+            var Insideday = AFPattern.Inside();
+            var DojiGapUp = C3 > O3 & O2 > O3 & C2 > O2 & O1 > O2 & Open > C1 & Open == Close & High > Close & Close > Open;
+            //needs to be review
+            //DojiGapdown=C3 < O3 AND O2 < O3 AND C2  < O2 AND O1 < O2 AND O <  C1 AND O = C AND H <  C AND C < O;
+
+            /* Add AFInfo.Name in column*/
+
+
+            var doublecandle =
+
+ AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
+ AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
+ AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
+ AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
+ AFMisc.WriteIf(TweezerTop, "Tweezer Top",
+ AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
+ AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
+  AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
+ AFMisc.WriteIf(EveningStar1, "Evening Star",
+ AFMisc.WriteIf(MorningStar1, "Morning Star",
+ AFMisc.WriteIf(Abovethestomach, "Above the stomach",
+ AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
+ AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
+
+
+            var pricepattern =
+            AFMisc.WriteIf(doubletop, "Double top ",
+            AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
+
+
+            var singlecandel =
+           AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
+
+           AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+           AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
+           AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
+
+           AFMisc.WriteIf(BullishIslandReversals, "Bullish Island Reversals",
+           AFMisc.WriteIf(BearishIslandReversals, "Bearish Island Reversals",
+           AFMisc.WriteIf(OutsideDay, "Outside Day",
+
+           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+           AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
+           AFMisc.WriteIf(GapUpx, "Gap Up",
+           AFMisc.WriteIf(GapDownx, "Gap Down ",
+           AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
+           AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
+           AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
+           AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
+           AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
+
+            AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
+           AFMisc.WriteIf(PiercingLine, "Piercing Line ",
+            AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
+           AFMisc.WriteIf(Doji1, "Doji",
+           AFMisc.WriteIf(HangingMan1, "Hanging Man",
+            AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
+            AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
+           AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
+            AFMisc.WriteIf(marubozuclosingwhite, "Marubozu closing white",
+            AFMisc.WriteIf(marubozuopeningwhite, "Marubozu opening white",
+           AFMisc.WriteIf(marubozuopeningblack, "Marubozu opening black",
+                      AFMisc.WriteIf(marubozuclosingblack, "Marubozu closing black",
+                      AFMisc.WriteIf(blackmarubozu, "Black marubozu",
+                       AFMisc.WriteIf(whitemarubozu, "White marubozu",
+                       AFMisc.WriteIf(ShortWhitecandle, "Short White candle",
+                       AFMisc.WriteIf(ShortblackCandle, "Short black Candle",
+                       AFMisc.WriteIf(LongwhiteCandle, "Long white Candle",
+                       AFMisc.WriteIf(LongblackCandle, "Long Black Candle",
+                       AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
+                       AFMisc.WriteIf(hammer1, "Hammer",
+                       AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
+           AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
+
+                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern")))))))))))))))))))))))))))))))))))))));
+
+
+            AFMisc.AddTextColumn(singlecandel, "hourly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(doublecandle, "hourly  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(pricepattern, "hourly Price  Pattern", 5.6f, Color.Black, Color.White);
+            AFTimeFrame.TimeFrameRestore();
+
+
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            AFTimeFrame.TimeFrameSet(TFInterval.InWeekly ); // switch now to hourly 
+             O1 = AFTools.Ref(Open, -1);  O2 = AFTools.Ref(Open, -2);  O3 = AFTools.Ref(Open, -3);  O4 = AFTools.Ref(Open, -4);  O5 = AFTools.Ref(Open, -5);  O6 = AFTools.Ref(Open, -6);  O7 = AFTools.Ref(Open, -7);  O8 = AFTools.Ref(Open, -8);  O9 = AFTools.Ref(Open, -9);
+
+             H1 = AFTools.Ref(High, -1);  H2 = AFTools.Ref(High, -2);  H3 = AFTools.Ref(High, -3);  H4 = AFTools.Ref(High, -4);  H5 = AFTools.Ref(High, -5);  H6 = AFTools.Ref(High, -6); H6 = AFTools.Ref(High, -6);  H7 = AFTools.Ref(High, -7);  H8 = AFTools.Ref(High, -8);  H9 = AFTools.Ref(High, -9);
+
+             L1 = AFTools.Ref(Low, -1);  L2 = AFTools.Ref(Low, -2);  L3 = AFTools.Ref(Low, -3);  L4 = AFTools.Ref(Low, -4);  L5 = AFTools.Ref(Low, -5);  L6 = AFTools.Ref(Low, -6);  L7 = AFTools.Ref(Low, -7);  L8 = AFTools.Ref(Low, -8);  L9 = AFTools.Ref(Low, -9);
+
+
+             C1 = AFTools.Ref(Close, -1);  C2 = AFTools.Ref(Close, -2);  C3 = AFTools.Ref(Close, -3);  C4 = AFTools.Ref(Close, -4);  C5 = AFTools.Ref(Close, -5);  C6 = AFTools.Ref(Close, -6);  C7 = AFTools.Ref(Close, -7);  C8 = AFTools.Ref(Close, -8);  C9 = AFTools.Ref(Close, -9);
+
+            /* BODY Colors*/
+             WhiteCandle = Close >= Open;
+             BlackCandle = Open > Close;
+             B1 = O1 - C1;
+             B2 = O2 - C2;
+             B3 = O3 - C3;
+             Avgbody = ((B1 + B2 + B3) / 3);
+             XBODY = Avgbody * 3;
+
+             BODY = Open - Close;
+
+
+
+
+
+            /*Single candle Pattern */
+             smallBodyMaximum = 0.0025f;//less than 0.25%
+             LargeBodyMinimum = 0.01f;//greater than 1.0%
+             smallBody = (Open >= Close * (1 - smallBodyMaximum) & WhiteCandle) | (Close >= Open * (1 - smallBodyMaximum) & BlackCandle);
+             largeBody = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) | Close <= Open * (1 - LargeBodyMinimum) & BlackCandle;
+             mediumBody = !largeBody & !smallBody;
+             identicalBodies = AFMath.Abs(AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) - AFMath.Abs(Open - Close)) < AFMath.Abs(Open - Close) * smallBodyMaximum;
+             realBodySize = AFMath.Abs(Open - Close);
+
+
+
+            /*Shadows*/
+             smallUpperShadow = (WhiteCandle & High <= Close * (1 + smallBodyMaximum)) | (BlackCandle & High <= Open * (1 + smallBodyMaximum));
+             smallLowerShadow = (WhiteCandle & Low >= Open * (1 - smallBodyMaximum)) | (BlackCandle & Low >= Close * (1 - smallBodyMaximum));
+             largeUpperShadow = (WhiteCandle & High >= Close * (1 + LargeBodyMinimum)) | (BlackCandle & High >= Open * (1 + LargeBodyMinimum));
+             largeLowerShadow = (WhiteCandle & Low <= Open * (1 - LargeBodyMinimum)) | (BlackCandle & Low <= Close * (1 - LargeBodyMinimum));
+
+            /*Gaps*/
+             upGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Open > AFTools.Ref(Open, -1), 1,
+            AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Close > AFTools.Ref(Open, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Open > AFTools.Ref(Close, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Close > AFTools.Ref(Close, -1), 1, 0))));
+
+             downGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Close < AFTools.Ref(Close, -1), 1,
+            AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Open < AFTools.Ref(Close, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Close < AFTools.Ref(Open, -1), 1,
+            AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Open < AFTools.Ref(Open, -1), 1, 0))));
+
+
+
+
+            /*Maximum High Today - ( MHT)
+            Today is the maximum High in the last 5 days*/
+             MHT = AFHL.Hhv(High, 5) == High;
+
+            /*Maximum High Yesterday - ( MHY)
+            Yesterday is the maximum High in the last 5 days*/
+             MHY = AFHL.Hhv(High, 5) == AFTools.Ref(High, -1);
+
+            /*Minimum Low Today - ( MLT)
+            Today is the minimum Low in the last 5 days*/
+             MLT = AFHL.Llv(Low, 5) == Low;
+
+            /*Minimum Low Yesterday - ( MLY)
+            Yesterday is the minimum Low in the last 5 days*/
+             MLY = AFHL.Llv(Low, 5) == AFTools.Ref(Low, -1);
+
+            /* Doji1 definitions*/
+
+            /*Doji1 Today - (DT)*/
+            //   DT = AFMath.Abs(Close - Open) <= (Close * smallBodyMaximum) | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+
+            /* Doji1 Yesterday - (DY)*/
+            //   DY = AFMath.Abs(AFTools.Ref(Close, -1) - AFTools.Ref(Open, -1)) <= AFTools.Ref(Close, -1) * smallBodyMaximum | AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) <= (AFTools.Ref(High, -1) - AFTools.Ref(Low, -1)) * 0.1f;
+
+
+
+             ShortWhitecandle = ((Close > Open) & ((High - Low) > (3 * (Close - Open))));
+             ShortblackCandle = ((Open > Close) & ((High - Low) > (3 * (Open - Close))));
+             Close1 = (Open - Close) * (0.002f);
+             Open1 = (Open * 0.002f);
+
+             LongblackCandle = (Close <= Open * (1 - LargeBodyMinimum) & BlackCandle) & (Open > Close) & ((Open - Close) / (.001f + High - Low) > .6f);
+             LongwhiteCandle = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) & ((Close > Open) & ((Close - Open) / (.001f + High - Low) > .6f));
+             Doji1 = Open == Close | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+
+            //almost equal needs to be reviewd and implemented 
+             whitemarubozu = ((Close > Open) & AFMisc.AlmostEqual(High, Close, 5) & AFMisc.AlmostEqual(Open, Low, 5));
+             blackmarubozu = ((Open > Close) & (High == Open) & (Close == Low));
+
+             marubozuclosingblack = BlackCandle & High > Open & Low == Close;
+             marubozuopeningblack = BlackCandle & High == Open & Low < Close;
+             marubozuclosingwhite = WhiteCandle & High == Close & Open > Low;
+             marubozuopeningwhite = WhiteCandle & High > Close & Open == Low;
+             BlackSpinningTop = ((Open > Close) & ((High - Low) > (3 * (Open - Close))) & (((High - Open) / (0.001f + High - Low)) < 0.4f) & (((Close - Low) / (0.001f + High - Low)) < 0.4f));
+             WhiteSpinningTop = ((Close > Open) & ((High - Low) > (3 * (Close - Open))) & (((High - Close) / (0.001f + High - Low)) < 0.4f) & (((Open - Low) / (0.001f + High - Low)) < 0.4f));
+
+
+             hammer1 = (((High - Low) > 3 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) > 0.6f) & ((Open - Low) / (.001f + High - Low) > 0.6f));
+             InvertedHammer1 = (((High - Low) > 3 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) > 0.6f) & ((High - Open) / (0.001f + High - Low) > 0.6f));
+             HangingMan1 = (((High - Low) > 4 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) >= 0.75f) & ((Open - Low) / (.001f + High - Low) >= 0.75f));
+             ShootingStar1 = (((High - Low) > 4 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) >= 0.75f) & ((High - Open) / (0.001f + High - Low) >= 0.75f));
+             BearishEngulfing = ((C1 > O1) & (Open > Close) & (Open >= C1) & (O1 >= Close) & ((Open - Close) > (C1 - O1)));
+             BullishEngulfing = ((O1 > C1) & (Close > Open) & (Close >= O1) & (C1 >= Open) & ((Close - Open) > (O1 - C1)));
+             BearishEveningDojiStar = ((C2 > O2) & ((C2 - O2) / (0.001f + H2 - L2) > 0.6f) & (C2 < O1) & (C1 > O1) & ((H1 - L1) > (3 * (C1 - O1))) & (Open > Close) & (Open < O1));
+             BullishMorningDojiStar = ((O2 > C2) & ((O2 - C2) / (0.001f + H2 - L2) > 0.6f) & (C2 > O1) & (O1 > C1) & ((H1 - L1) > (3 * (C1 - O1))) & (Close > Open) & (Open > O1));
+             BullishHarami = ((O1 > C1) & (Close > Open) & (Close <= O1) & (C1 <= Open) & ((Close - Open) < (O1 - C1)));
+             BearishHarami = ((C1 > O1) & (Open > Close) & (Open <= C1) & (O1 <= Close) & ((Open - Close) < (C1 - O1)));
+
+
+
+             DarkCloudCover1 = (C1 > O1 & ((C1 + O1) / 2) > Close & Open > Close & Open > C1 & Close > O1 & (Open - Close) / (0.001f + (High - Low) > 0.6f));
+             BullishAbandonedBaby = ((C1 == O1) & (O2 > C2) & (Close > Open) & (L2 > H1) & (Low > H1));
+             BearishAbandonedBaby = ((C1 = O1) & (C2 > O2) & (Open > Close) & (L1 > H2) & (L1 > High));
+             ThreeOutsideUpPattern = ((O2 > C2) & (C1 > O1) & (C1 >= O2) & (C2 >= O1) & ((C1 - O1) > (O2 - C2)) & (Close > Open) & (Close > C1));
+             ThreeOutsideDownPattern = ((C2 > O2) & (O1 > C1) & (O1 >= C2) & (O2 >= C1) & ((O1 - C1) > (C2 - O2)) & (Open > Close) & (Close < C1));
+             ThreeInsideUpPattern = ((O2 > C2) & (C1 > O1) & (C1 <= O2) & (C2 <= O1) & ((C1 - O1) < (O2 - C2)) & (Close > Open) & (Close > C1) & (Open > O1));
+             ThreeInsideDownPattern = ((C2 > O2) & (O1 > C1) & (O1 <= C2) & (O2 <= C1) & ((O1 - C1) < (C2 - O2)) & (Open > Close) & (Close < C1) & (Open < O1));
+             ThreeWhiteSoldiers = (Close > Open * 1.01f) & (C1 > O1 * 1.01f) & (C2 > O2 * 1.01f) & (Close > C1) & (C1 > C2) & (Open < C1) & (Open > O1) & (O1 < C2) & (O1 > O2) & (((High - Close) / (High - Low)) < 0.2f) & (((H1 - C1) / (H1 - L1)) < 0.2f) & (((H2 - C2) / (H2 - L2)) < 0.2f);
+             ThreeBlackCrows = (Open > Close * 1.01f) & (O1 > C1 * 1.01f) & (O2 > C2 * 1.01f) & (Close < C1) & (C1 < C2) & (Open > C1) & (Open < O1) & (O1 > C2) & (O1 < O2) & (((Close - Low) / (High - Low)) < 0.2f) & (((C1 - L1) / (H1 - L1)) < 0.2f) & (((C2 - L2) / (H2 - L2)) < 0.2f);
+
+
+
+             PiercingLine = ((C1 < O1) & (((O1 + C1) / 2) < Close) & (Open < Close) & (Open < C1) & (Close < O1) & ((Close - Open) / (0.001f + (High - Low)) > 0.6f));
+
+             EveningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(WhiteCandle, -2) & AFTools.Ref(upGap, -1) & !AFTools.Ref(largeBody, -1) & BlackCandle & !smallBody & (MHT | MHY);
+             MorningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(BlackCandle, -2) & AFTools.Ref(downGap, -1) & WhiteCandle & largeBody & Close > AFTools.Ref(Close, -2) & MLY;
+             MATCHLOW = AFHL.Llv(Low, 8) == AFHL.Llv(Low, 2) & AFTools.Ref(Close, -1) <= AFTools.Ref(Open, -1) * .99f & AFMath.Abs(Close - AFTools.Ref(Close, -1)) <= Close * .0025f & Open > AFTools.Ref(Close, -1) & Open <= (High - ((High - Low) * .5f));
+             GapUpx = AFPattern.GapUp();
+             GapDownx = AFPattern.GapDown();
+             BigGapUp = Low > 1.01f * H1;
+             BigGapDown = High < 0.99f * L1;
+             HugeGapUp = Low > 1.02f * H1;
+             HugeGapDown = High < 0.98f * L1;
+             DoubleGapUp = AFPattern.GapUp() & AFTools.Ref(AFPattern.GapUp(), -1);
+             DoubleGapDown = AFPattern.GapDown() & AFTools.Ref(AFPattern.GapDown(), -1);
+
+             consecutave5up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5);
+             consecutave10up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5) & (H5 > H6) & (H6 > H7) & (H7 > H8) & (H8 > H9);
+
+             consecutave5down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5);
+             consecutave10down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5) & (L5 < L6) & (L6 < L7) & (L7 < L8) & (L8 < L9);
+             Abovethestomach = (O1 > C1) & (Close > Open) & Close >= AFStat.Median(C1, 1);
+             Belowthestomch = LongwhiteCandle & Open < AFStat.Median(C1, 1) & Close <= AFStat.Median(C1, 1);
+             TweezerTop = AFMath.Abs(High - AFTools.Ref(High, -1)) <= High * 0.0025f & Open > Close & (AFTools.Ref(Close, -1) > AFTools.Ref(Open, -1)) & (MHT | MHY);
+
+            /*Tweezer Bottom*/
+             tweezerBottom = (AFMath.Abs(Low - AFTools.Ref(Low, -1)) / Low < 0.0025f | AFMath.Abs(Low - AFTools.Ref(Low, -2)) / Low < 0.0025f) & Open < Close & (AFTools.Ref(Open, -1) > AFTools.Ref(Close, -1)) & (MLT | MLY);
+
+
+
+
+            /* Detecting double tops & bottoms (come into view, by Isfandi)*/
+             percdiff = 5; /* peak detection threshold */
+             fwdcheck = 5; /* forward validity check */
+             mindistance = 10;
+             validdiff = percdiff / 400;
+
+             PK = AFPattern.Peak(High, percdiff, 1) == High;
+             TR = AFPattern.Trough(Low, percdiff, 1) == Low;
+
+
+             x = AFAvg.Cum(1);
+             XPK1 = AFTools.ValueWhen(PK, x, 1);
+             XPK2 = AFTools.ValueWhen(PK, x, 2);
+             xTR1 = AFTools.ValueWhen(TR, x, 1);
+             xTr2 = AFTools.ValueWhen(TR, x, 2);
+
+             peakdiff = AFTools.ValueWhen(PK, High, 1) / AFTools.ValueWhen(PK, High, 2);
+             Troughdiff = AFTools.ValueWhen(TR, Low, 1) / AFTools.ValueWhen(TR, Low, 2);
+
+             doubletop = PK & AFMath.Abs(peakdiff - 1) < validdiff & (XPK1 - XPK2) > mindistance & High > AFHL.Hhv(AFTools.Ref(High, fwdcheck), fwdcheck - 1);
+             doubleBot = TR & AFMath.Abs(Troughdiff - 1) < validdiff & (xTR1 - xTr2) > mindistance & Low < AFHL.Llv(AFTools.Ref(Low, fwdcheck), fwdcheck - 1);
+
+
+
+            ////////////////////////////////////////////////
+             MINO10 = AFHL.Llv(Open, 10);
+             AVGH10 = AFAvg.Ma(High, 10);
+             AVGL10 = AFAvg.Ma(Low, 10);
+             MAXO10 = AFHL.Hhv(Open, 10);
+             MINL10 = AFHL.Llv(Low, 10);
+             MAXH10 = AFHL.Hhv(High, 10);
+             AVGH21 = AFAvg.Ma(High, 21);
+             AVGL21 = AFAvg.Ma(Low, 21);
+             MINL5 = AFHL.Llv(Low, 5);
+             BullishBeltHold = (Open = MINO10) & (Open < L1) & (Close - Open) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (Open - Low) <= .01f * (High - Low) & (Close <= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 < C2) & (C2 < C3);
+             BearishBeltHold = (Open = MAXO10) & (Open > H1) & (Open - Close) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (High - Open) <= .01f * (High - Low) & (Close >= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 > C2) & (C2 < C3);
+             BullishBreakaway = C4 < O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < O3 & H3 < L4 & C2 < C3 & C1 < C2 & AFMath.Abs(Close - Open) > .6f * (High - Low) & Close > Open & Close > H3;
+             BearishBreakaway = AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C4 > O4 & C3 > O3 & L3 > H4 & C2 > C3 & C1 > C2 & Close < Open & Low < H4 & High > L3;
+
+             DojiDragonfly = AFMath.Abs(Open - Close) <= .02f * (High - Low) & (High - Close) <= .3f * (High - Low) & (High - Low) >= (AVGH10 - AVGL10) & (High > Low) & (Low = MINL10);
+            //BullishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (L<=L1+.3*(H1-L1)) AND (H-L)>=(AVGH10-AVGL10);
+
+
+
+
+            //BearishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (H=MAXH10) AND (H-L)>=(AVGH10-AVGL10);
+             BullishHaramiCross = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & High < O1 & Low > C1 & (Close + Open) / 2 - Low > .4f * (High - Low) & (Close + Open) / 2 - Low < .6f * (High - Low) & AFMath.Abs(Close - Open) < .2f * (High - Low);
+             BearishHaramiCross = AFMath.Abs(C1 - O1) > .5f * (High - Low) & C1 > O1 & High < C1 & Low > O1 & AFMath.Abs(Close - Open) < .2f * (High - Low);
+             HomingPigeon = C1 < O1 & AFMath.Abs(Close - Open) >= .6f * (H1 - L1) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & High < O1 & Low > C1 & Close < Open;
+             BullishKicking = O3 - C3 > .6f * (H3 - L3) & O2 - C2 > .6f * (H2 - L2) & O1 - C1 > .6f * (H1 - L1) & C3 < O3 & C2 < O2 & C1 < O1 & Close > Open & O2 < C3 & O1 < C2 & Open > O1 & Close - Open > .6f * (High - Low);
+            // BearishKicking = Close == Low & Open = High & High > Low & High < L1 & C1 = H1 & O1 = L1 & H1 > L1;
+
+
+
+
+
+             LadderBottom = O4 > C4 & O3 < O4 & C3 < C4 & O2 < O3 & C2 < C3 & C1 < O1 & H1 > O1 & Close > Open & Open > O1;
+             MatHold = C4 > O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < H4 & C2 < H4 & C1 < H4 & C3 > L4 & C2 > L4 & C1 > L4 & Close > C4 & Close > Open & High - Low > AVGH21 - AVGL21 & C2 < C3 & C1 < C2 & AFMath.Abs(C3 - O3) <= .75f * AFMath.Abs(C4 - O4) & AFMath.Abs(C2 - O2) <= .75f * AFMath.Abs(C4 - O4) & AFMath.Abs(C2 - O2) <= .75f * AFMath.Abs(C4 - O4);
+             RisingThreeMethod = (C4 - O4) >= .7f * (H4 - L4) & (H4 - L4) >= (AVGH21 - AVGL21) & (H4 = MAXH10 * .4f) & (C3 < C4) & (C3 >= O4 + .5f * (H4 - L4)) & (O2 < O3) & (C2 < O3) & (O2 < C3) | (C2 < C3) & (O1 < O2) | (O1 < C2) & (C1 < O2) & (C1 < C2) & (C1 > O4) & (Open > O4) & Open <= L4 + .6f * (H4 - L4) & (Close > C4);
+             BullishSeparatingLines = C1 < O1 & Close > Open & AFMath.Abs(Open / O1 - 1) < .01f;
+             BearishSeparatingLines = C1 > O1 & Close < Open & Open == O1;
+             StickSandwich = C2 < O2 & C1 > O1 & L1 > C2 & Close < Open & AFMath.Abs(Close / C2 - 1) < .02f;
+             ThreeStarsintheSouth = C2 < O2 & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 - L2 > O2 - C2 & C1 < O1 & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 - L1 > O1 - C1 & H1 - L1 < H2 - L2 & L1 > L2 & Open == High & Close == Low & High < H1 & Low > L1;
+
+             BullishTriStar = AFMath.Abs(Close - Open) <= .05f * (High - Low) & (Close + Open) / 2 - Low >= .4f * (High - Low) & (Close + Open) / 2 - Low <= .6f * (High - Low) & AFMath.Abs(C1 - O1) <= .05f * (H1 - L1) & (C1 + O1) / 2 - L1 >= .4f * (H1 - L1) & (C1 + O1) / 2 - L1 <= .6f * (H1 - L1) & AFMath.Abs(C2 - O2) <= .05f * (H2 - L2) & (C2 + O2) / 2 - L2 >= .4f * (H2 - L2) & (C2 + O2) / 2 - L2 <= .6f * (H2 - L2) & H1 < L3 & H1 < L1;
+             BearishTriStar = AFMath.Abs(Close - Open) < .05f * (High - Low) & High - Low < .2f * (AVGH21 - AVGL21) & AFMath.Abs(C1 - O1) < .05f * (H1 - L1) & H1 - Low < .2f * (AVGH21 * .1f - AVGL21 * .1f) & AFMath.Abs(C2 - O2) < .05f * (H2 - L2) & H2 - L2 < .2f * (AVGH21 * .2f - AVGL21 * .2f) & L2 > H1 & L2 > High;
+
+             UniqueThreeRiverBottom = AFMath.Abs(C2 - O2) >= .7f * (H2 - L2) & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C1 < O1 & O1 < O2 & C1 > C2 & L1 == MINL5 * .1f & Close > Open & Close < C1;
+
+             AdvanceBlock = High - Low > AVGH21 - AVGL21 & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & Close > C1 & C1 > C2 & O1 > O2 & O1 < C2 & Open > O1 & Open < C1 & High - Low < .8f * (H1 - L1) & H1 - L1 < .8f * (H2 - L2) & High - Close > Open - Low & H1 - C1 > O1 - L1;
+             Deliberation = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 > C2 & C2 > O2 & C1 > O1 & Open > H1 & (Close + Open) / 2 - Low > .4f * (High - Low) & (Close + Open) / 2 - Low < .6f * (High - Low) & AFMath.Abs(Close - Open) < .6f * (High - Low);
+             InNeck = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close >= C1 & Close < 1.05f * C1;
+             OnNeck = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close == L1;
+
+             Thrusting = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close > C1 & Close < (C1 + O1) / 2;
+
+
+            //////////////////////////////price 
+             MAXC20 = AFHL.Hhv(Close, 20);
+             AVGC40 = AFAvg.Ma(Close, 40);
+             AVGH5 = AFAvg.Ma(High, 5);
+             AVGL5 = AFAvg.Ma(Low, 5);
+             AVGH34 = AFAvg.Ma(High, 34);
+             AVGL34 = AFAvg.Ma(Low, 43);
+             MAXH5 = AFHL.Hhv(High, 5);
+            MAXH10 = AFHL.Hhv(High, 10);
+             MAXH20 = AFHL.Hhv(High, 20);
+             MINL20 = AFHL.Llv(Low, 20);
+             MINL42 = AFHL.Llv(Low, 42);
+             MAXH42 = AFHL.Hhv(High, 42);
+             MINL21 = AFHL.Llv(Low, 21);
+
+             Pennant = MAXC20 >= Close * 1.15f & Close >= AVGC40 & (AVGH5 - AVGL5) / 2 - (AVGH34 - AVGL34) / 2 & (MAXH5 < MAXH10) & (MAXH10 < MAXH20) & (MINL5 > MINL10) & (MINL10 > MINL20);
+             DeadCatBounce = (Low < (L1 * 0.89f) | Low < (L2 * 0.89f) | Low < (L3 * 0.89f));
+             BullishIslandReversals = (Open < L1) & (Open < MINL42 * .1f) & (Close >= ((High - Low) * 0.5f) + Low) & (Close >= Open);
+             BearishIslandReversals = (Open > H1) & (Open > MAXH42 * .1f) & (Close <= ((High - Low) * 0.5f) + Low) & (Close <= Open);
+             OutsideDay = AFPattern.Outside();
+            //needs to be check
+            //OutsideDay=O<C AND O1>C1 AND O<C1 AND C>O1 AND L2<L3 AND L3<L4;
+             BullishTrendKnockOutLong = ((Low < L1) & (Low < L2));
+             BearishTrendKnockOutLong = ((High < H1) & (High < H2));
+
+            ////////////////////////////////////
+            //to be reveiewd 
+             AVGV4 = AFAvg.Ma(Volume, 4);
+             MINL3 = AFHL.Llv(Low, 3);
+             oneDayreversal = ((L3 <= MINL21) & (L6 > L5) & (L5 > L4) & (L4 > L3) & (L2 > L3) & (L1 > L2) & (Low > L1));
+             SharkScanLong = (H3 > H2) & (H2 > H1) & (L3 < L2) & (L2 < L1) & (High > H3);
+             SharkScanShort = (H3 > H2) & (H2 > H1) & (L3 < L2) & (L2 < L1) & (Low < L3);
+            //to be reveiewd 
+             TurnAroundDay = ((C1 < C2) | (H1 < H2 & L1 > L2)) & Volume > 1.1f * AVGV4 * 1 & ((High + Low) / 2) < Close & ((High - Low) / 8 - Open) < Close;
+            //FibonacciRetracement=(MAXH10-((MAXH10-MINL35)*.382));
+            //projectedFibonacciRetracement=(MINL10+((MAXH35-MINL10)*.618));
+
+             counterattack = C1 > O1 & Close < Open & H1 - L1 > AVGH21 - AVGL21 & Open > H1 & Close == C1;
+             HighWave = High - Close >= 3 * AFMath.Abs(Open - Close) & High - Open >= 3 * AFMath.Abs(Open - Close) & Close - Low >= 3 * AFMath.Abs(Open - Close) & Open - Low >= 3 * AFMath.Abs(Open - Close);
+             MeetingLinesBullish = C1 < O1 & (H1 - L1) > (AVGH21 * .1f - AVGL21 * .1f) & O1 < MINL3 * .3f & Close > Open & Close < C1 * 1.01f & Close > C1 * 0.99f;
+             ThreeLineStrikeBullish = C2 > C3 & C1 > C2 & (H3 - L3) > (AVGH21 * .3f - AVGL21 * .3f) & (H2 - L2) > (AVGH21 * .2f - AVGL21 * .2f) & (H1 - L1) > (AVGH21 * .1f - AVGL21 * .1f) & Open > O3 & Close < O3;
+             ThreeLineStrikeBearish = C3 < O3 & C2 < O2 & C2 < C3 & C1 < O1 & C1 < C2 & Open < C1 & Close > O3;
+             MeetingLinesBearish = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 > O1 & (C1 + O1) / 2 > H2 & AFMath.Abs(Close - Open) > .5f * (High - Low) & Close < Open & (Close + Open) / 2 > H1 & Close == C1;
+             DojiGravestone = AFMath.Abs(Open - Close) <= .01f * (High - Low) & (High - Close) >= .95f * (High - Low) & (High > Low) & (Low <= L1 + .3f * (H1 - L1)) & (High - Low) >= (AVGH10 - AVGL10);
+             SidebySideWhiteLines = C2 > O2 & C1 > O1 & L1 > H2 & AFMath.Abs(Close / C1 - 1) < .1f & AFMath.Abs(AFMath.Abs(Close - Open) / AFMath.Abs(C1 - O1) - 1) < .15f;
+             UpsideGapThreeMethods = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & L1 > H2 & Close < C2 & Open > O1;
+             UpsideTasukiGap = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & L1 > H2 & Close < Open & Close < O1 & Close > C2;
+             DownsideTasukiGap = C2 < O2 & C1 < O1 & H1 < L2 & Open > C1 & Open < O1 & Close > H1 & Close < L2;
+             IdenticalThreeCrows = C2 < O2 & C1 < O1 & Close < Open & Close < L1 & C1 < L2 & Open == C1 & O1 == C2;
+             TwoCrows = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 > O2 & L1 > H2 & C1 < O1 & Open > C1 & Open < O1 & Close < C2 & Close > O2;
+             UpsideGapTwoCrows = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 > O2 & L1 > H2 & C1 < O1 & Open > O1 & Close < C1 & Close > H2;
+
+            ///////////////////////
+             AVGC20 = AFAvg.Ma(Close, 20);
+             AVGC50 = AFAvg.Ma(Close, 50);
+             MAXH3 = AFHL.Hhv(High, 3);
+             NarrowestRangefor7days = ((High - Low) <= (H1 - L1)) & ((High - Low) <= (H2 - L2)) & ((High - Low) <= (H3 - L3)) & ((High - Low) <= (H4 - L4)) & ((High - Low) <= (H5 - L5)) & ((High - Low) <= (H6 - L6));
+             BullFlag = AVGC20 > AVGC50 & H1 < H4 & L1 > L4 & H2 < H4 & L2 > L4 & H3 < H4 & L3 > L4 & MINL3 > (H4 + L4) / 2 & C4 > O4 & C4 > C5;
+             BearFlag = AVGC20 < AVGC50 & H1 < H4 & L1 > L4 & H2 < H4 & L2 > L4 & H3 < H4 & L3 > L4 & MAXH3 < (H4 + L4) / 2 & C4 < O4 & C4 < C5;
+            //in report for last 7 days 
+             fiftytwoweekhigh = AFTools.Iif(Close > AFHL.Hhv(Close, 260), 1, 0);
+             fiftytwoweeklow = AFTools.Iif(Close < AFHL.Llv(Close, 260), 1, 0);
+             fiftytwoweekhighvolume = AFTools.Iif(Volume > AFHL.Hhv(Volume, 260), 1, 0);
+             fiftytwoweeklowvolume = AFTools.Iif(Volume < AFHL.Llv(Volume, 260), 1, 0);
+
+             alltimehigh = AFTools.Iif(Close > AFHL.Highest(Close), 1, 0);
+             alltimelow = AFTools.Iif(Close < AFHL.Lowest(Close), 1, 0);//IIf( C < Ref(Highest(C),-1), C , Ref(Highest(C),-1));
+             alltimehighvolume = AFTools.Iif(Volume > AFHL.Highest(Volume), 1, 0);//IIf( V > Ref(Highest(V),-1), V , Ref(Highest(V),-1));
+             alltimelowvolume = AFTools.Iif(Volume < AFHL.Lowest(Volume), 1, 0);//IIf( V < Ref(Highest(V),-1), V , Ref(Highest(V),-1));
+             Insideday = AFPattern.Inside();
+             DojiGapUp = C3 > O3 & O2 > O3 & C2 > O2 & O1 > O2 & Open > C1 & Open == Close & High > Close & Close > Open;
+            //needs to be review
+            //DojiGapdown=C3 < O3 AND O2 < O3 AND C2  < O2 AND O1 < O2 AND O <  C1 AND O = C AND H <  C AND C < O;
+
+            /* Add AFInfo.Name in column*/
+
+
+            doublecandle =
+
+ AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
+ AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
+ AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
+ AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
+ AFMisc.WriteIf(TweezerTop, "Tweezer Top",
+ AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
+ AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
+  AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
+ AFMisc.WriteIf(EveningStar1, "Evening Star",
+ AFMisc.WriteIf(MorningStar1, "Morning Star",
+ AFMisc.WriteIf(Abovethestomach, "Above the stomach",
+ AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
+ AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
+
+
+             pricepattern =
+            AFMisc.WriteIf(doubletop, "Double top ",
+            AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
+
+
+            singlecandel =
+           AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
+
+           AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+           AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
+           AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
+
+           AFMisc.WriteIf(BullishIslandReversals, "Bullish Island Reversals",
+           AFMisc.WriteIf(BearishIslandReversals, "Bearish Island Reversals",
+           AFMisc.WriteIf(OutsideDay, "Outside Day",
+
+           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+           AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
+           AFMisc.WriteIf(GapUpx, "Gap Up",
+           AFMisc.WriteIf(GapDownx, "Gap Down ",
+           AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
+           AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
+           AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
+           AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
+           AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
+
+            AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
+           AFMisc.WriteIf(PiercingLine, "Piercing Line ",
+            AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
+           AFMisc.WriteIf(Doji1, "Doji",
+           AFMisc.WriteIf(HangingMan1, "Hanging Man",
+            AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
+            AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
+           AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
+            AFMisc.WriteIf(marubozuclosingwhite, "Marubozu closing white",
+            AFMisc.WriteIf(marubozuopeningwhite, "Marubozu opening white",
+           AFMisc.WriteIf(marubozuopeningblack, "Marubozu opening black",
+                      AFMisc.WriteIf(marubozuclosingblack, "Marubozu closing black",
+                      AFMisc.WriteIf(blackmarubozu, "Black marubozu",
+                       AFMisc.WriteIf(whitemarubozu, "White marubozu",
+                       AFMisc.WriteIf(ShortWhitecandle, "Short White candle",
+                       AFMisc.WriteIf(ShortblackCandle, "Short black Candle",
+                       AFMisc.WriteIf(LongwhiteCandle, "Long white Candle",
+                       AFMisc.WriteIf(LongblackCandle, "Long Black Candle",
+                       AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
+                       AFMisc.WriteIf(hammer1, "Hammer",
+                       AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
+           AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
+
+                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern")))))))))))))))))))))))))))))))))))))));
+
+
+            AFMisc.AddTextColumn(singlecandel, "Weekly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(doublecandle, "Weekly  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(pricepattern, "Weekly Price  Pattern", 5.6f, Color.Black, Color.White);
+            AFTimeFrame.TimeFrameRestore();
+
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            AFTimeFrame.TimeFrameSet(TFInterval.InMonthly ); // switch now to hourly 
+            O1 = AFTools.Ref(Open, -1); O2 = AFTools.Ref(Open, -2); O3 = AFTools.Ref(Open, -3); O4 = AFTools.Ref(Open, -4); O5 = AFTools.Ref(Open, -5); O6 = AFTools.Ref(Open, -6); O7 = AFTools.Ref(Open, -7); O8 = AFTools.Ref(Open, -8); O9 = AFTools.Ref(Open, -9);
+
+            H1 = AFTools.Ref(High, -1); H2 = AFTools.Ref(High, -2); H3 = AFTools.Ref(High, -3); H4 = AFTools.Ref(High, -4); H5 = AFTools.Ref(High, -5); H6 = AFTools.Ref(High, -6); H6 = AFTools.Ref(High, -6); H7 = AFTools.Ref(High, -7); H8 = AFTools.Ref(High, -8); H9 = AFTools.Ref(High, -9);
+
+            L1 = AFTools.Ref(Low, -1); L2 = AFTools.Ref(Low, -2); L3 = AFTools.Ref(Low, -3); L4 = AFTools.Ref(Low, -4); L5 = AFTools.Ref(Low, -5); L6 = AFTools.Ref(Low, -6); L7 = AFTools.Ref(Low, -7); L8 = AFTools.Ref(Low, -8); L9 = AFTools.Ref(Low, -9);
+
+
+            C1 = AFTools.Ref(Close, -1); C2 = AFTools.Ref(Close, -2); C3 = AFTools.Ref(Close, -3); C4 = AFTools.Ref(Close, -4); C5 = AFTools.Ref(Close, -5); C6 = AFTools.Ref(Close, -6); C7 = AFTools.Ref(Close, -7); C8 = AFTools.Ref(Close, -8); C9 = AFTools.Ref(Close, -9);
+
+            /* BODY Colors*/
+            WhiteCandle = Close >= Open;
+            BlackCandle = Open > Close;
+            B1 = O1 - C1;
+            B2 = O2 - C2;
+            B3 = O3 - C3;
+            Avgbody = ((B1 + B2 + B3) / 3);
+            XBODY = Avgbody * 3;
+
+            BODY = Open - Close;
+
+
+
+
+
+            /*Single candle Pattern */
+            smallBodyMaximum = 0.0025f;//less than 0.25%
+            LargeBodyMinimum = 0.01f;//greater than 1.0%
+            smallBody = (Open >= Close * (1 - smallBodyMaximum) & WhiteCandle) | (Close >= Open * (1 - smallBodyMaximum) & BlackCandle);
+            largeBody = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) | Close <= Open * (1 - LargeBodyMinimum) & BlackCandle;
+            mediumBody = !largeBody & !smallBody;
+            identicalBodies = AFMath.Abs(AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) - AFMath.Abs(Open - Close)) < AFMath.Abs(Open - Close) * smallBodyMaximum;
+            realBodySize = AFMath.Abs(Open - Close);
+
+
+
+            /*Shadows*/
+            smallUpperShadow = (WhiteCandle & High <= Close * (1 + smallBodyMaximum)) | (BlackCandle & High <= Open * (1 + smallBodyMaximum));
+            smallLowerShadow = (WhiteCandle & Low >= Open * (1 - smallBodyMaximum)) | (BlackCandle & Low >= Close * (1 - smallBodyMaximum));
+            largeUpperShadow = (WhiteCandle & High >= Close * (1 + LargeBodyMinimum)) | (BlackCandle & High >= Open * (1 + LargeBodyMinimum));
+            largeLowerShadow = (WhiteCandle & Low <= Open * (1 - LargeBodyMinimum)) | (BlackCandle & Low <= Close * (1 - LargeBodyMinimum));
+
+            /*Gaps*/
+            upGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Open > AFTools.Ref(Open, -1), 1,
+           AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Close > AFTools.Ref(Open, -1), 1,
+           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Open > AFTools.Ref(Close, -1), 1,
+           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Close > AFTools.Ref(Close, -1), 1, 0))));
+
+            downGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Close < AFTools.Ref(Close, -1), 1,
+           AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Open < AFTools.Ref(Close, -1), 1,
+           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Close < AFTools.Ref(Open, -1), 1,
+           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Open < AFTools.Ref(Open, -1), 1, 0))));
+
+
+
+
+            /*Maximum High Today - ( MHT)
+            Today is the maximum High in the last 5 days*/
+            MHT = AFHL.Hhv(High, 5) == High;
+
+            /*Maximum High Yesterday - ( MHY)
+            Yesterday is the maximum High in the last 5 days*/
+            MHY = AFHL.Hhv(High, 5) == AFTools.Ref(High, -1);
+
+            /*Minimum Low Today - ( MLT)
+            Today is the minimum Low in the last 5 days*/
+            MLT = AFHL.Llv(Low, 5) == Low;
+
+            /*Minimum Low Yesterday - ( MLY)
+            Yesterday is the minimum Low in the last 5 days*/
+            MLY = AFHL.Llv(Low, 5) == AFTools.Ref(Low, -1);
+
+            /* Doji1 definitions*/
+
+            /*Doji1 Today - (DT)*/
+            //   DT = AFMath.Abs(Close - Open) <= (Close * smallBodyMaximum) | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+
+            /* Doji1 Yesterday - (DY)*/
+            //   DY = AFMath.Abs(AFTools.Ref(Close, -1) - AFTools.Ref(Open, -1)) <= AFTools.Ref(Close, -1) * smallBodyMaximum | AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) <= (AFTools.Ref(High, -1) - AFTools.Ref(Low, -1)) * 0.1f;
+
+
+
+            ShortWhitecandle = ((Close > Open) & ((High - Low) > (3 * (Close - Open))));
+            ShortblackCandle = ((Open > Close) & ((High - Low) > (3 * (Open - Close))));
+            Close1 = (Open - Close) * (0.002f);
+            Open1 = (Open * 0.002f);
+
+            LongblackCandle = (Close <= Open * (1 - LargeBodyMinimum) & BlackCandle) & (Open > Close) & ((Open - Close) / (.001f + High - Low) > .6f);
+            LongwhiteCandle = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) & ((Close > Open) & ((Close - Open) / (.001f + High - Low) > .6f));
+            Doji1 = Open == Close | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+
+            //almost equal needs to be reviewd and implemented 
+            whitemarubozu = ((Close > Open) & AFMisc.AlmostEqual(High, Close, 5) & AFMisc.AlmostEqual(Open, Low, 5));
+            blackmarubozu = ((Open > Close) & (High == Open) & (Close == Low));
+
+            marubozuclosingblack = BlackCandle & High > Open & Low == Close;
+            marubozuopeningblack = BlackCandle & High == Open & Low < Close;
+            marubozuclosingwhite = WhiteCandle & High == Close & Open > Low;
+            marubozuopeningwhite = WhiteCandle & High > Close & Open == Low;
+            BlackSpinningTop = ((Open > Close) & ((High - Low) > (3 * (Open - Close))) & (((High - Open) / (0.001f + High - Low)) < 0.4f) & (((Close - Low) / (0.001f + High - Low)) < 0.4f));
+            WhiteSpinningTop = ((Close > Open) & ((High - Low) > (3 * (Close - Open))) & (((High - Close) / (0.001f + High - Low)) < 0.4f) & (((Open - Low) / (0.001f + High - Low)) < 0.4f));
+
+
+            hammer1 = (((High - Low) > 3 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) > 0.6f) & ((Open - Low) / (.001f + High - Low) > 0.6f));
+            InvertedHammer1 = (((High - Low) > 3 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) > 0.6f) & ((High - Open) / (0.001f + High - Low) > 0.6f));
+            HangingMan1 = (((High - Low) > 4 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) >= 0.75f) & ((Open - Low) / (.001f + High - Low) >= 0.75f));
+            ShootingStar1 = (((High - Low) > 4 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) >= 0.75f) & ((High - Open) / (0.001f + High - Low) >= 0.75f));
+            BearishEngulfing = ((C1 > O1) & (Open > Close) & (Open >= C1) & (O1 >= Close) & ((Open - Close) > (C1 - O1)));
+            BullishEngulfing = ((O1 > C1) & (Close > Open) & (Close >= O1) & (C1 >= Open) & ((Close - Open) > (O1 - C1)));
+            BearishEveningDojiStar = ((C2 > O2) & ((C2 - O2) / (0.001f + H2 - L2) > 0.6f) & (C2 < O1) & (C1 > O1) & ((H1 - L1) > (3 * (C1 - O1))) & (Open > Close) & (Open < O1));
+            BullishMorningDojiStar = ((O2 > C2) & ((O2 - C2) / (0.001f + H2 - L2) > 0.6f) & (C2 > O1) & (O1 > C1) & ((H1 - L1) > (3 * (C1 - O1))) & (Close > Open) & (Open > O1));
+            BullishHarami = ((O1 > C1) & (Close > Open) & (Close <= O1) & (C1 <= Open) & ((Close - Open) < (O1 - C1)));
+            BearishHarami = ((C1 > O1) & (Open > Close) & (Open <= C1) & (O1 <= Close) & ((Open - Close) < (C1 - O1)));
+
+
+
+            DarkCloudCover1 = (C1 > O1 & ((C1 + O1) / 2) > Close & Open > Close & Open > C1 & Close > O1 & (Open - Close) / (0.001f + (High - Low) > 0.6f));
+            BullishAbandonedBaby = ((C1 == O1) & (O2 > C2) & (Close > Open) & (L2 > H1) & (Low > H1));
+            BearishAbandonedBaby = ((C1 = O1) & (C2 > O2) & (Open > Close) & (L1 > H2) & (L1 > High));
+            ThreeOutsideUpPattern = ((O2 > C2) & (C1 > O1) & (C1 >= O2) & (C2 >= O1) & ((C1 - O1) > (O2 - C2)) & (Close > Open) & (Close > C1));
+            ThreeOutsideDownPattern = ((C2 > O2) & (O1 > C1) & (O1 >= C2) & (O2 >= C1) & ((O1 - C1) > (C2 - O2)) & (Open > Close) & (Close < C1));
+            ThreeInsideUpPattern = ((O2 > C2) & (C1 > O1) & (C1 <= O2) & (C2 <= O1) & ((C1 - O1) < (O2 - C2)) & (Close > Open) & (Close > C1) & (Open > O1));
+            ThreeInsideDownPattern = ((C2 > O2) & (O1 > C1) & (O1 <= C2) & (O2 <= C1) & ((O1 - C1) < (C2 - O2)) & (Open > Close) & (Close < C1) & (Open < O1));
+            ThreeWhiteSoldiers = (Close > Open * 1.01f) & (C1 > O1 * 1.01f) & (C2 > O2 * 1.01f) & (Close > C1) & (C1 > C2) & (Open < C1) & (Open > O1) & (O1 < C2) & (O1 > O2) & (((High - Close) / (High - Low)) < 0.2f) & (((H1 - C1) / (H1 - L1)) < 0.2f) & (((H2 - C2) / (H2 - L2)) < 0.2f);
+            ThreeBlackCrows = (Open > Close * 1.01f) & (O1 > C1 * 1.01f) & (O2 > C2 * 1.01f) & (Close < C1) & (C1 < C2) & (Open > C1) & (Open < O1) & (O1 > C2) & (O1 < O2) & (((Close - Low) / (High - Low)) < 0.2f) & (((C1 - L1) / (H1 - L1)) < 0.2f) & (((C2 - L2) / (H2 - L2)) < 0.2f);
+
+
+
+            PiercingLine = ((C1 < O1) & (((O1 + C1) / 2) < Close) & (Open < Close) & (Open < C1) & (Close < O1) & ((Close - Open) / (0.001f + (High - Low)) > 0.6f));
+
+            EveningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(WhiteCandle, -2) & AFTools.Ref(upGap, -1) & !AFTools.Ref(largeBody, -1) & BlackCandle & !smallBody & (MHT | MHY);
+            MorningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(BlackCandle, -2) & AFTools.Ref(downGap, -1) & WhiteCandle & largeBody & Close > AFTools.Ref(Close, -2) & MLY;
+            MATCHLOW = AFHL.Llv(Low, 8) == AFHL.Llv(Low, 2) & AFTools.Ref(Close, -1) <= AFTools.Ref(Open, -1) * .99f & AFMath.Abs(Close - AFTools.Ref(Close, -1)) <= Close * .0025f & Open > AFTools.Ref(Close, -1) & Open <= (High - ((High - Low) * .5f));
+            GapUpx = AFPattern.GapUp();
+            GapDownx = AFPattern.GapDown();
+            BigGapUp = Low > 1.01f * H1;
+            BigGapDown = High < 0.99f * L1;
+            HugeGapUp = Low > 1.02f * H1;
+            HugeGapDown = High < 0.98f * L1;
+            DoubleGapUp = AFPattern.GapUp() & AFTools.Ref(AFPattern.GapUp(), -1);
+            DoubleGapDown = AFPattern.GapDown() & AFTools.Ref(AFPattern.GapDown(), -1);
+
+            consecutave5up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5);
+            consecutave10up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5) & (H5 > H6) & (H6 > H7) & (H7 > H8) & (H8 > H9);
+
+            consecutave5down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5);
+            consecutave10down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5) & (L5 < L6) & (L6 < L7) & (L7 < L8) & (L8 < L9);
+            Abovethestomach = (O1 > C1) & (Close > Open) & Close >= AFStat.Median(C1, 1);
+            Belowthestomch = LongwhiteCandle & Open < AFStat.Median(C1, 1) & Close <= AFStat.Median(C1, 1);
+            TweezerTop = AFMath.Abs(High - AFTools.Ref(High, -1)) <= High * 0.0025f & Open > Close & (AFTools.Ref(Close, -1) > AFTools.Ref(Open, -1)) & (MHT | MHY);
+
+            /*Tweezer Bottom*/
+            tweezerBottom = (AFMath.Abs(Low - AFTools.Ref(Low, -1)) / Low < 0.0025f | AFMath.Abs(Low - AFTools.Ref(Low, -2)) / Low < 0.0025f) & Open < Close & (AFTools.Ref(Open, -1) > AFTools.Ref(Close, -1)) & (MLT | MLY);
+
+
+
+
+            /* Detecting double tops & bottoms (come into view, by Isfandi)*/
+            percdiff = 5; /* peak detection threshold */
+            fwdcheck = 5; /* forward validity check */
+            mindistance = 10;
+            validdiff = percdiff / 400;
+
+            PK = AFPattern.Peak(High, percdiff, 1) == High;
+            TR = AFPattern.Trough(Low, percdiff, 1) == Low;
+
+
+            x = AFAvg.Cum(1);
+            XPK1 = AFTools.ValueWhen(PK, x, 1);
+            XPK2 = AFTools.ValueWhen(PK, x, 2);
+            xTR1 = AFTools.ValueWhen(TR, x, 1);
+            xTr2 = AFTools.ValueWhen(TR, x, 2);
+
+            peakdiff = AFTools.ValueWhen(PK, High, 1) / AFTools.ValueWhen(PK, High, 2);
+            Troughdiff = AFTools.ValueWhen(TR, Low, 1) / AFTools.ValueWhen(TR, Low, 2);
+
+            doubletop = PK & AFMath.Abs(peakdiff - 1) < validdiff & (XPK1 - XPK2) > mindistance & High > AFHL.Hhv(AFTools.Ref(High, fwdcheck), fwdcheck - 1);
+            doubleBot = TR & AFMath.Abs(Troughdiff - 1) < validdiff & (xTR1 - xTr2) > mindistance & Low < AFHL.Llv(AFTools.Ref(Low, fwdcheck), fwdcheck - 1);
+
+
+
+            ////////////////////////////////////////////////
+            MINO10 = AFHL.Llv(Open, 10);
+            AVGH10 = AFAvg.Ma(High, 10);
+            AVGL10 = AFAvg.Ma(Low, 10);
+            MAXO10 = AFHL.Hhv(Open, 10);
+            MINL10 = AFHL.Llv(Low, 10);
+            MAXH10 = AFHL.Hhv(High, 10);
+            AVGH21 = AFAvg.Ma(High, 21);
+            AVGL21 = AFAvg.Ma(Low, 21);
+            MINL5 = AFHL.Llv(Low, 5);
+            BullishBeltHold = (Open = MINO10) & (Open < L1) & (Close - Open) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (Open - Low) <= .01f * (High - Low) & (Close <= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 < C2) & (C2 < C3);
+            BearishBeltHold = (Open = MAXO10) & (Open > H1) & (Open - Close) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (High - Open) <= .01f * (High - Low) & (Close >= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 > C2) & (C2 < C3);
+            BullishBreakaway = C4 < O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < O3 & H3 < L4 & C2 < C3 & C1 < C2 & AFMath.Abs(Close - Open) > .6f * (High - Low) & Close > Open & Close > H3;
+            BearishBreakaway = AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C4 > O4 & C3 > O3 & L3 > H4 & C2 > C3 & C1 > C2 & Close < Open & Low < H4 & High > L3;
+
+            DojiDragonfly = AFMath.Abs(Open - Close) <= .02f * (High - Low) & (High - Close) <= .3f * (High - Low) & (High - Low) >= (AVGH10 - AVGL10) & (High > Low) & (Low = MINL10);
+            //BullishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (L<=L1+.3*(H1-L1)) AND (H-L)>=(AVGH10-AVGL10);
+
+
+
+
+            //BearishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (H=MAXH10) AND (H-L)>=(AVGH10-AVGL10);
+            BullishHaramiCross = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & High < O1 & Low > C1 & (Close + Open) / 2 - Low > .4f * (High - Low) & (Close + Open) / 2 - Low < .6f * (High - Low) & AFMath.Abs(Close - Open) < .2f * (High - Low);
+            BearishHaramiCross = AFMath.Abs(C1 - O1) > .5f * (High - Low) & C1 > O1 & High < C1 & Low > O1 & AFMath.Abs(Close - Open) < .2f * (High - Low);
+            HomingPigeon = C1 < O1 & AFMath.Abs(Close - Open) >= .6f * (H1 - L1) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & High < O1 & Low > C1 & Close < Open;
+            BullishKicking = O3 - C3 > .6f * (H3 - L3) & O2 - C2 > .6f * (H2 - L2) & O1 - C1 > .6f * (H1 - L1) & C3 < O3 & C2 < O2 & C1 < O1 & Close > Open & O2 < C3 & O1 < C2 & Open > O1 & Close - Open > .6f * (High - Low);
+            // BearishKicking = Close == Low & Open = High & High > Low & High < L1 & C1 = H1 & O1 = L1 & H1 > L1;
+
+
+
+
+
+            LadderBottom = O4 > C4 & O3 < O4 & C3 < C4 & O2 < O3 & C2 < C3 & C1 < O1 & H1 > O1 & Close > Open & Open > O1;
+            MatHold = C4 > O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < H4 & C2 < H4 & C1 < H4 & C3 > L4 & C2 > L4 & C1 > L4 & Close > C4 & Close > Open & High - Low > AVGH21 - AVGL21 & C2 < C3 & C1 < C2 & AFMath.Abs(C3 - O3) <= .75f * AFMath.Abs(C4 - O4) & AFMath.Abs(C2 - O2) <= .75f * AFMath.Abs(C4 - O4) & AFMath.Abs(C2 - O2) <= .75f * AFMath.Abs(C4 - O4);
+            RisingThreeMethod = (C4 - O4) >= .7f * (H4 - L4) & (H4 - L4) >= (AVGH21 - AVGL21) & (H4 = MAXH10 * .4f) & (C3 < C4) & (C3 >= O4 + .5f * (H4 - L4)) & (O2 < O3) & (C2 < O3) & (O2 < C3) | (C2 < C3) & (O1 < O2) | (O1 < C2) & (C1 < O2) & (C1 < C2) & (C1 > O4) & (Open > O4) & Open <= L4 + .6f * (H4 - L4) & (Close > C4);
+            BullishSeparatingLines = C1 < O1 & Close > Open & AFMath.Abs(Open / O1 - 1) < .01f;
+            BearishSeparatingLines = C1 > O1 & Close < Open & Open == O1;
+            StickSandwich = C2 < O2 & C1 > O1 & L1 > C2 & Close < Open & AFMath.Abs(Close / C2 - 1) < .02f;
+            ThreeStarsintheSouth = C2 < O2 & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 - L2 > O2 - C2 & C1 < O1 & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 - L1 > O1 - C1 & H1 - L1 < H2 - L2 & L1 > L2 & Open == High & Close == Low & High < H1 & Low > L1;
+
+            BullishTriStar = AFMath.Abs(Close - Open) <= .05f * (High - Low) & (Close + Open) / 2 - Low >= .4f * (High - Low) & (Close + Open) / 2 - Low <= .6f * (High - Low) & AFMath.Abs(C1 - O1) <= .05f * (H1 - L1) & (C1 + O1) / 2 - L1 >= .4f * (H1 - L1) & (C1 + O1) / 2 - L1 <= .6f * (H1 - L1) & AFMath.Abs(C2 - O2) <= .05f * (H2 - L2) & (C2 + O2) / 2 - L2 >= .4f * (H2 - L2) & (C2 + O2) / 2 - L2 <= .6f * (H2 - L2) & H1 < L3 & H1 < L1;
+            BearishTriStar = AFMath.Abs(Close - Open) < .05f * (High - Low) & High - Low < .2f * (AVGH21 - AVGL21) & AFMath.Abs(C1 - O1) < .05f * (H1 - L1) & H1 - Low < .2f * (AVGH21 * .1f - AVGL21 * .1f) & AFMath.Abs(C2 - O2) < .05f * (H2 - L2) & H2 - L2 < .2f * (AVGH21 * .2f - AVGL21 * .2f) & L2 > H1 & L2 > High;
+
+            UniqueThreeRiverBottom = AFMath.Abs(C2 - O2) >= .7f * (H2 - L2) & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C1 < O1 & O1 < O2 & C1 > C2 & L1 == MINL5 * .1f & Close > Open & Close < C1;
+
+            AdvanceBlock = High - Low > AVGH21 - AVGL21 & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & Close > C1 & C1 > C2 & O1 > O2 & O1 < C2 & Open > O1 & Open < C1 & High - Low < .8f * (H1 - L1) & H1 - L1 < .8f * (H2 - L2) & High - Close > Open - Low & H1 - C1 > O1 - L1;
+            Deliberation = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 > C2 & C2 > O2 & C1 > O1 & Open > H1 & (Close + Open) / 2 - Low > .4f * (High - Low) & (Close + Open) / 2 - Low < .6f * (High - Low) & AFMath.Abs(Close - Open) < .6f * (High - Low);
+            InNeck = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close >= C1 & Close < 1.05f * C1;
+            OnNeck = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close == L1;
+
+            Thrusting = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 < O1 & Open < L1 & Close > C1 & Close < (C1 + O1) / 2;
+
+
+            //////////////////////////////price 
+            MAXC20 = AFHL.Hhv(Close, 20);
+            AVGC40 = AFAvg.Ma(Close, 40);
+            AVGH5 = AFAvg.Ma(High, 5);
+            AVGL5 = AFAvg.Ma(Low, 5);
+            AVGH34 = AFAvg.Ma(High, 34);
+            AVGL34 = AFAvg.Ma(Low, 43);
+            MAXH5 = AFHL.Hhv(High, 5);
+            MAXH10 = AFHL.Hhv(High, 10);
+            MAXH20 = AFHL.Hhv(High, 20);
+            MINL20 = AFHL.Llv(Low, 20);
+            MINL42 = AFHL.Llv(Low, 42);
+            MAXH42 = AFHL.Hhv(High, 42);
+            MINL21 = AFHL.Llv(Low, 21);
+
+            Pennant = MAXC20 >= Close * 1.15f & Close >= AVGC40 & (AVGH5 - AVGL5) / 2 - (AVGH34 - AVGL34) / 2 & (MAXH5 < MAXH10) & (MAXH10 < MAXH20) & (MINL5 > MINL10) & (MINL10 > MINL20);
+            DeadCatBounce = (Low < (L1 * 0.89f) | Low < (L2 * 0.89f) | Low < (L3 * 0.89f));
+            BullishIslandReversals = (Open < L1) & (Open < MINL42 * .1f) & (Close >= ((High - Low) * 0.5f) + Low) & (Close >= Open);
+            BearishIslandReversals = (Open > H1) & (Open > MAXH42 * .1f) & (Close <= ((High - Low) * 0.5f) + Low) & (Close <= Open);
+            OutsideDay = AFPattern.Outside();
+            //needs to be check
+            //OutsideDay=O<C AND O1>C1 AND O<C1 AND C>O1 AND L2<L3 AND L3<L4;
+            BullishTrendKnockOutLong = ((Low < L1) & (Low < L2));
+            BearishTrendKnockOutLong = ((High < H1) & (High < H2));
+
+            ////////////////////////////////////
+            //to be reveiewd 
+            AVGV4 = AFAvg.Ma(Volume, 4);
+            MINL3 = AFHL.Llv(Low, 3);
+            oneDayreversal = ((L3 <= MINL21) & (L6 > L5) & (L5 > L4) & (L4 > L3) & (L2 > L3) & (L1 > L2) & (Low > L1));
+            SharkScanLong = (H3 > H2) & (H2 > H1) & (L3 < L2) & (L2 < L1) & (High > H3);
+            SharkScanShort = (H3 > H2) & (H2 > H1) & (L3 < L2) & (L2 < L1) & (Low < L3);
+            //to be reveiewd 
+            TurnAroundDay = ((C1 < C2) | (H1 < H2 & L1 > L2)) & Volume > 1.1f * AVGV4 * 1 & ((High + Low) / 2) < Close & ((High - Low) / 8 - Open) < Close;
+            //FibonacciRetracement=(MAXH10-((MAXH10-MINL35)*.382));
+            //projectedFibonacciRetracement=(MINL10+((MAXH35-MINL10)*.618));
+
+            counterattack = C1 > O1 & Close < Open & H1 - L1 > AVGH21 - AVGL21 & Open > H1 & Close == C1;
+            HighWave = High - Close >= 3 * AFMath.Abs(Open - Close) & High - Open >= 3 * AFMath.Abs(Open - Close) & Close - Low >= 3 * AFMath.Abs(Open - Close) & Open - Low >= 3 * AFMath.Abs(Open - Close);
+            MeetingLinesBullish = C1 < O1 & (H1 - L1) > (AVGH21 * .1f - AVGL21 * .1f) & O1 < MINL3 * .3f & Close > Open & Close < C1 * 1.01f & Close > C1 * 0.99f;
+            ThreeLineStrikeBullish = C2 > C3 & C1 > C2 & (H3 - L3) > (AVGH21 * .3f - AVGL21 * .3f) & (H2 - L2) > (AVGH21 * .2f - AVGL21 * .2f) & (H1 - L1) > (AVGH21 * .1f - AVGL21 * .1f) & Open > O3 & Close < O3;
+            ThreeLineStrikeBearish = C3 < O3 & C2 < O2 & C2 < C3 & C1 < O1 & C1 < C2 & Open < C1 & Close > O3;
+            MeetingLinesBearish = AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & C1 > O1 & (C1 + O1) / 2 > H2 & AFMath.Abs(Close - Open) > .5f * (High - Low) & Close < Open & (Close + Open) / 2 > H1 & Close == C1;
+            DojiGravestone = AFMath.Abs(Open - Close) <= .01f * (High - Low) & (High - Close) >= .95f * (High - Low) & (High > Low) & (Low <= L1 + .3f * (H1 - L1)) & (High - Low) >= (AVGH10 - AVGL10);
+            SidebySideWhiteLines = C2 > O2 & C1 > O1 & L1 > H2 & AFMath.Abs(Close / C1 - 1) < .1f & AFMath.Abs(AFMath.Abs(Close - Open) / AFMath.Abs(C1 - O1) - 1) < .15f;
+            UpsideGapThreeMethods = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & L1 > H2 & Close < C2 & Open > O1;
+            UpsideTasukiGap = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & AFMath.Abs(C1 - O1) > .5f * (H1 - L1) & L1 > H2 & Close < Open & Close < O1 & Close > C2;
+            DownsideTasukiGap = C2 < O2 & C1 < O1 & H1 < L2 & Open > C1 & Open < O1 & Close > H1 & Close < L2;
+            IdenticalThreeCrows = C2 < O2 & C1 < O1 & Close < Open & Close < L1 & C1 < L2 & Open == C1 & O1 == C2;
+            TwoCrows = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 > O2 & L1 > H2 & C1 < O1 & Open > C1 & Open < O1 & Close < C2 & Close > O2;
+            UpsideGapTwoCrows = AFMath.Abs(C2 - O2) > .5f * (H2 - L2) & C2 > O2 & L1 > H2 & C1 < O1 & Open > O1 & Close < C1 & Close > H2;
+
+            ///////////////////////
+            AVGC20 = AFAvg.Ma(Close, 20);
+            AVGC50 = AFAvg.Ma(Close, 50);
+            MAXH3 = AFHL.Hhv(High, 3);
+            NarrowestRangefor7days = ((High - Low) <= (H1 - L1)) & ((High - Low) <= (H2 - L2)) & ((High - Low) <= (H3 - L3)) & ((High - Low) <= (H4 - L4)) & ((High - Low) <= (H5 - L5)) & ((High - Low) <= (H6 - L6));
+            BullFlag = AVGC20 > AVGC50 & H1 < H4 & L1 > L4 & H2 < H4 & L2 > L4 & H3 < H4 & L3 > L4 & MINL3 > (H4 + L4) / 2 & C4 > O4 & C4 > C5;
+            BearFlag = AVGC20 < AVGC50 & H1 < H4 & L1 > L4 & H2 < H4 & L2 > L4 & H3 < H4 & L3 > L4 & MAXH3 < (H4 + L4) / 2 & C4 < O4 & C4 < C5;
+            //in report for last 7 days 
+            fiftytwoweekhigh = AFTools.Iif(Close > AFHL.Hhv(Close, 260), 1, 0);
+            fiftytwoweeklow = AFTools.Iif(Close < AFHL.Llv(Close, 260), 1, 0);
+            fiftytwoweekhighvolume = AFTools.Iif(Volume > AFHL.Hhv(Volume, 260), 1, 0);
+            fiftytwoweeklowvolume = AFTools.Iif(Volume < AFHL.Llv(Volume, 260), 1, 0);
+
+            alltimehigh = AFTools.Iif(Close > AFHL.Highest(Close), 1, 0);
+            alltimelow = AFTools.Iif(Close < AFHL.Lowest(Close), 1, 0);//IIf( C < Ref(Highest(C),-1), C , Ref(Highest(C),-1));
+            alltimehighvolume = AFTools.Iif(Volume > AFHL.Highest(Volume), 1, 0);//IIf( V > Ref(Highest(V),-1), V , Ref(Highest(V),-1));
+            alltimelowvolume = AFTools.Iif(Volume < AFHL.Lowest(Volume), 1, 0);//IIf( V < Ref(Highest(V),-1), V , Ref(Highest(V),-1));
+            Insideday = AFPattern.Inside();
+            DojiGapUp = C3 > O3 & O2 > O3 & C2 > O2 & O1 > O2 & Open > C1 & Open == Close & High > Close & Close > Open;
+            //needs to be review
+            //DojiGapdown=C3 < O3 AND O2 < O3 AND C2  < O2 AND O1 < O2 AND O <  C1 AND O = C AND H <  C AND C < O;
+
+            /* Add AFInfo.Name in column*/
+
+
+            doublecandle =
+
+ AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
+ AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
+ AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
+ AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
+ AFMisc.WriteIf(TweezerTop, "Tweezer Top",
+ AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
+ AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
+  AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
+ AFMisc.WriteIf(EveningStar1, "Evening Star",
+ AFMisc.WriteIf(MorningStar1, "Morning Star",
+ AFMisc.WriteIf(Abovethestomach, "Above the stomach",
+ AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
+ AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
+
+
+            pricepattern =
+           AFMisc.WriteIf(doubletop, "Double top ",
+           AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
+
+
+            singlecandel =
+           AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
+
+           AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+           AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
+           AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
+
+           AFMisc.WriteIf(BullishIslandReversals, "Bullish Island Reversals",
+           AFMisc.WriteIf(BearishIslandReversals, "Bearish Island Reversals",
+           AFMisc.WriteIf(OutsideDay, "Outside Day",
+
+           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+           AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
+           AFMisc.WriteIf(GapUpx, "Gap Up",
+           AFMisc.WriteIf(GapDownx, "Gap Down ",
+           AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
+           AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
+           AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
+           AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
+           AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
+
+            AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
+           AFMisc.WriteIf(PiercingLine, "Piercing Line ",
+            AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
+           AFMisc.WriteIf(Doji1, "Doji",
+           AFMisc.WriteIf(HangingMan1, "Hanging Man",
+            AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
+            AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
+           AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
+            AFMisc.WriteIf(marubozuclosingwhite, "Marubozu closing white",
+            AFMisc.WriteIf(marubozuopeningwhite, "Marubozu opening white",
+           AFMisc.WriteIf(marubozuopeningblack, "Marubozu opening black",
+                      AFMisc.WriteIf(marubozuclosingblack, "Marubozu closing black",
+                      AFMisc.WriteIf(blackmarubozu, "Black marubozu",
+                       AFMisc.WriteIf(whitemarubozu, "White marubozu",
+                       AFMisc.WriteIf(ShortWhitecandle, "Short White candle",
+                       AFMisc.WriteIf(ShortblackCandle, "Short black Candle",
+                       AFMisc.WriteIf(LongwhiteCandle, "Long white Candle",
+                       AFMisc.WriteIf(LongblackCandle, "Long Black Candle",
+                       AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
+                       AFMisc.WriteIf(hammer1, "Hammer",
+                       AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
+           AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
+
+                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern")))))))))))))))))))))))))))))))))))))));
+
+
+            AFMisc.AddTextColumn(singlecandel, "Monthly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(doublecandle, "Monthly  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(pricepattern, "Monthly Price  Pattern", 5.6f, Color.Black, Color.White);
+            AFTimeFrame.TimeFrameRestore();
+            shubhascanner();
+
         }
-
-        [ABMethod]
-        public ATArray BeltHold(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlBeltHold(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("BeltHold", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Breakaway(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlBreakaway(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Breakaway", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray ConcealBabysWall(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlConcealBabysWall(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("ConcealBabysWall", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray ClosingMarubozu(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlClosingMarubozu(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("ClosingMarubozu", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray CounterAttack(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlCounterAttack(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("CounterAttack", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-
-
-        [ABMethod]
-        public ATArray InvertedHammer(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlInvertedHammer(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("InvertedHammer", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray ShortLine(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlShortLine(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("ShortLine", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray MorningDojiStar(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlMorningDojiStar(1, iStopIndex - 1, o, h, l, c, 5, out outBegIdx, out outNbElement, outputEMA5);
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("MorningDojiStar", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray MorningStar(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlMorningStar(1, iStopIndex - 1, o, h, l, c, 5, out outBegIdx, out outNbElement, outputEMA5);
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("MorningStar", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray Piercing(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlPiercing(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Piercing", i, Low[i], Color.Yellow);
-
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray DarkCloudCover(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlDarkCloudCover(1, iStopIndex - 1, o, h, l, c, 5, out outBegIdx, out outNbElement, outputEMA5);
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("DarkCloudCover", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray DragonflyDoji(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlDragonflyDoji(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("DragonflyDoji", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-
-
-        [ABMethod]
-        public ATArray Doji(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlDoji(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Doji", i, Low[i], Color.Gold );
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-               
-
-            }
-            // This prints report with Buy and Sell.
-
-          //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-        [ABMethod]
-        public ATArray DojiStar(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlDojiStar(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("DojiStar", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-          //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-
-
-        [ABMethod]
-        public ATArray HignWave(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlHignWave(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("HignWave", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Hikkake(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlHikkake(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Hikkake", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray HikkakeMod(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlHikkakeMod(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("HikkakeMod", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray HomingPigeon(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlHomingPigeon(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("HomingPigeon", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray Identical3Crows(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlIdentical3Crows(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Identical3Crows", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray InNeck(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlInNeck(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-
-                    AFGraph.PlotText("InNeck", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray Kicking(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlKicking(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Kicking", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-
-        [ABMethod]
-        public ATArray KickingByLength(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlKickingByLength(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("KickingByLength", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray LadderBottom(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlLadderBottom(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("LadderBottom", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray LongLeggedDoji(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlLongLeggedDoji(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("LongLeggedDoji", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray LongLine(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlLongLine(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("LongLine", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Marubozu(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlMarubozu(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Marubozu", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray MatchingLow(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlMatchingLow(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("MatchingLow", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray MatHold(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlMatHold(1, iStopIndex - 1, o, h, l, c, 5, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("MatHold", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray OnNeck(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlOnNeck(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("OnNeck", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray RickshawMan(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlRickshawMan(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("RickshawMan", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray SeperatingLines(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlSeperatingLines(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("SeperatingLines", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray RiseFall3Methods(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlRiseFall3Methods(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("RiseFall3Methods", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray SpinningTop(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlSpinningTop(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("SpinningTop", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-        [ABMethod]
-        public ATArray StalledPattern(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlStalledPattern(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("StalledPattern", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray StickSandwhich(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlStickSandwhich(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("StickSandwhich", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Takuri(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlTakuri(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Takuri", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray TasukiGap(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlTasukiGap(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("TasukiGap", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray Thrusting(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlThrusting(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Thrusting", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Tristar(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlTristar(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Tristar", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Unique3River(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlUnique3River(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("Unique3River", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-
-        [ABMethod]
-        public ATArray UpsideGap2Crows(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlUpsideGap2Crows(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("UpsideGap2Crows", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray XSideGap3Methods(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            int[] outputEMA5 = new int[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-            Core.CdlXSideGap3Methods(1, iStopIndex - 1, o, h, l, c, out outBegIdx, out outNbElement, outputEMA5);
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-                    output[i] = outputEMA5[i];
-
-                    AFGraph.PlotText("XSideGap3Methods", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Ceil(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            double[] outputEMA5 = new double[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-
-            Core.Ceil(1, iStopIndex - 1, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                output[i] =Convert.ToInt32( outputEMA5[i]);
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-
-                    AFGraph.PlotText("Ceil", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Cmo(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            double[] outputEMA5 = new double[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-
-            Core.Cmo(1, iStopIndex - 1, c, 1, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                output[i] = Convert.ToInt32(outputEMA5[i]);
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-
-                    AFGraph.PlotText("Cmo", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Correl(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            double[] outputEMA5 = new double[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-
-            Core.Correl(1, iStopIndex - 1, o, c, 1, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                output[i] = Convert.ToInt32(outputEMA5[i]);
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-
-                    AFGraph.PlotText("Correl", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
-
-        [ABMethod]
-        public ATArray Cos(ATArray open, ATArray high, ATArray low, ATArray close, float period)
-        {
-            ATArray result = AFAvg.Ma(close, period);
-            iStopIndex = close.Length;
-            // return iStopIndex;
-            double[] outputEMA5 = new double[iStopIndex];
-            Buy = (Close > 1);
-            Filter = Buy;
-            int outBegIdx;
-            int outNbElement;
-            double[] c = new double[iStopIndex];
-            double[] o = new double[iStopIndex];
-            double[] h = new double[iStopIndex];
-            double[] l = new double[iStopIndex];
-            ATArray output = new ATArray();
-
-
-
-
-
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                o[i] = Convert.ToDouble(open[i]);
-                h[i] = Convert.ToDouble(high[i]);
-                l[i] = Convert.ToDouble(low[i]);
-                c[i] = Convert.ToDouble(close[i]);
-
-            }
-
-            Core.Cos(1, iStopIndex - 1, c, out outBegIdx, out outNbElement, outputEMA5);
-            for (int i = 0; i <= iStopIndex - 1; i++)
-            {
-                output[i] = Convert.ToInt32(outputEMA5[i]);
-
-                if (outputEMA5[i].ToString() == "100")
-                {
-
-                    AFGraph.PlotText("Cos", i, Low[i], Color.Gold);
-                    //AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Circle , Shape.None),Color.Green, 0, Low,30);
-                }
-
-
-            }
-            // This prints report with Buy and Sell.
-
-            //  AFMisc.AddColumn(output, "signal", 77, Color.Green);
-
-            return output;
-        }
+      
         
     }
 }

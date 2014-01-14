@@ -42,30 +42,37 @@ namespace Shubhascanner
             regKey.SetValue("applicationpath", pathtostartprocess);
             var Amiexepath = regKey.GetValue("Amiexepath");
 
-            string processtostart = path.Substring(0, path.Length - 17) + "shubhascanner.afl";
-
-
-            File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\shubhascanner.afl", true);
-            processtostart = path.Substring(0, path.Length - 17) + "shubhascannerwithoutfilter.afl";
-
-
-             File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\shubhascannerwithoutfilter.afl", true);
-
             if (!Directory.Exists(Amiexepath + "\\Formulas\\shubhalabha"))
             {
                 Directory.CreateDirectory(Amiexepath + "\\Formulas\\shubhalabha");
             }
 
 
+            string processtostart = path.Substring(0, path.Length - 17) + "shubhascanner.afl";
+
+
+            File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\shubhascanner.afl", true);
+            File.Copy(processtostart, Amiexepath + "\\Formulas\\shubhalabha\\shubhascanner.afl", true);
+
+
+           
+             processtostart = path.Substring(0, path.Length - 17) + "setup_dotnetforab_x86_5.60.5.exe";
+
+
+             File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\setup_dotnetforab_x86_5.60.5.exe", true);
+
+
+
 
             processtostart = path.Substring(0, path.Length - 17) + "Shubhascannerdll.dll";
 
             File.Copy(processtostart, Amiexepath + "\\Formulas\\shubhalabha\\Shubhascannerdll.dll", true);
+            try
+            {
             File.Copy(processtostart, Amiexepath + "\\.NET for AmiBroker\\Assemblies\\Shubhascannerdll.dll", true);
 
 
-            try
-            {
+          
                 processtostart = path.Substring(0, path.Length - 17) + "TA-Lib-Core.dll";
 
                 File.Copy(processtostart, Amiexepath + "\\.NET for AmiBroker\\Assemblies\\TA-Lib-Core.dll", true);
@@ -73,7 +80,8 @@ namespace Shubhascanner
             }
             catch
             {
-                MessageBox.Show(".NET for AmiBroker is not install ");
+                MessageBox.Show(".NET for AmiBroker is not install Please install it and try again\nYou can find setup file in C:\\myshubhalabha\\Scanner\\Donotdelete folder  ");
+                Environment.Exit(0);
             }
 
             var loginvalid = regKey.GetValue("valid");
@@ -332,6 +340,11 @@ namespace Shubhascanner
             e.Handled = !regex.IsMatch((sender as TextBox).Text.Insert((sender as TextBox).SelectionStart, e.Text));
 
           
+        }
+
+        private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
 
        

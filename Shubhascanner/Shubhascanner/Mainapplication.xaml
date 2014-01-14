@@ -5,7 +5,7 @@
     <Grid>
             <Label Content="Your Registration ID:" Height="28" HorizontalAlignment="Left" Margin="513,12,0,0" Name="regid" VerticalAlignment="Top" FontFamily="Times New Roman" />
         
-        <TabControl Height="427" HorizontalAlignment="Left" Margin="13,13,0,0" Name="tabControl1" VerticalAlignment="Top" Width="675" Background="#FFB3B8F2">
+        <TabControl Height="427" HorizontalAlignment="Left" Margin="13,13,0,0" Name="tabControl1" VerticalAlignment="Top" Width="675" Background="#FFB3B8F2" SelectionChanged="tabControl1_SelectionChanged">
 
             <TabItem Header="Home" Name="tabItem1" FontFamily="Times New Roman" FontSize="14" BorderThickness="2">
                 <Grid>
