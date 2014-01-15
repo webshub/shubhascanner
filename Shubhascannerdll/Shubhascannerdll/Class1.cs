@@ -44,7 +44,7 @@ namespace Shubhascannerdll
             }
 
 
-           
+
             var validornot = regKey.GetValue("valid");
             string valid = "";
             if (validornot != null)
@@ -525,13 +525,13 @@ AFMisc.SectionEnd();
 
 
             var doublecandle =
-
+                 AFMisc.WriteIf(TweezerTop, "Tweezer Top",
+ AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
  AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
  AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
  AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
  AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
- AFMisc.WriteIf(TweezerTop, "Tweezer Top",
- AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
+
  AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
   AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
  AFMisc.WriteIf(EveningStar1, "Evening Star",
@@ -547,17 +547,7 @@ AFMisc.SectionEnd();
 
 
             var singlecandel =
-           AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
-
-           AFMisc.WriteIf(oneDayreversal, "One Day reversal",
-           AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
-           AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
-
-           AFMisc.WriteIf(BullishIslandReversals, "Bullish Island Reversals",
-           AFMisc.WriteIf(BearishIslandReversals, "Bearish Island Reversals",
-           AFMisc.WriteIf(OutsideDay, "Outside Day",
-
-           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+          
            AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
            AFMisc.WriteIf(GapUpx, "Gap Up",
            AFMisc.WriteIf(GapDownx, "Gap Down ",
@@ -567,11 +557,17 @@ AFMisc.SectionEnd();
            AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
            AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
 
-            AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
+           
+            AFMisc.WriteIf(HangingMan1, "Hanging Man",
+
+             AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
            AFMisc.WriteIf(PiercingLine, "Piercing Line ",
             AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
            AFMisc.WriteIf(Doji1, "Doji",
-           AFMisc.WriteIf(HangingMan1, "Hanging Man",
+            AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
+                  
+
+         
             AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
             AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
            AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
@@ -588,9 +584,17 @@ AFMisc.SectionEnd();
                        AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
                        AFMisc.WriteIf(hammer1, "Hammer",
                        AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
-           AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
 
-                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern")))))))))))))))))))))))))))))))))))))));
+           AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
+            AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+           AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
+           AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
+
+     
+
+           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+
+                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern"))))))))))))))))))))))))))))))))))));
 
 
 
@@ -604,34 +608,44 @@ AFMisc.SectionEnd();
             AFMisc.WriteIf(doubleBot, "Double bottom",
             AFMisc.WriteIf(TweezerTop, "Upward leading to the start of the candlestick",
             AFMisc.WriteIf(tweezerBottom, "Downward leading to the start of the candle pattern",
-            AFMisc.WriteIf(Belowthestomch, "Upward leading to the start of the candlestick.",
-            AFMisc.WriteIf(Abovethestomach, "Downward.",
+           
             AFMisc.WriteIf(consecutave10down, "Downward leading to the start of the candle pattern.",
             AFMisc.WriteIf(consecutave5down, "Downward leading to the start of the candle pattern.",
             AFMisc.WriteIf(consecutave10up, "Upward leading to the start of the candle pattern.",
             AFMisc.WriteIf(consecutave5up, "Upward leading to the start of the candle pattern.",
+             AFMisc.WriteIf(BullishMorningDojiStar, "Downward leading to the start of the candle pattern.",
+             AFMisc.WriteIf(BearishEveningDojiStar, "Upward leading to the start of the candle pattern.",
             AFMisc.WriteIf(EveningStar1, "Upward leading to the start of the candle pattern.",
             AFMisc.WriteIf(MorningStar1, "Downward leading to the start of the candle pattern.",
+             AFMisc.WriteIf(Belowthestomch, "Upward leading to the start of the candlestick.",
+            AFMisc.WriteIf(Abovethestomach, "Downward.",
             AFMisc.WriteIf(BullishBreakaway, "Downward leading to the start of the candle pattern.",
             AFMisc.WriteIf(BearishBreakaway, "Upward leading to the start of the candle pattern.",
-            AFMisc.WriteIf(BullishMorningDojiStar, "Downward leading to the start of the candle pattern.",
-             AFMisc.WriteIf(BearishEveningDojiStar, "Upward leading to the start of the candle pattern.",
-             AFMisc.WriteIf(BullishHarami, "Downward leading to the candle pattern.",
+
+
+           
+           
+            AFMisc.WriteIf(MATCHLOW, "Downward leading to the start of the candle pattern.",
+            AFMisc.WriteIf(GapUpx, "Not applicable",
+            AFMisc.WriteIf(GapDownx, "Not applicable ",
+            AFMisc.WriteIf(BigGapUp, "Not applicable ",
+            AFMisc.WriteIf(HugeGapUp, "Not applicable ",
+            AFMisc.WriteIf(HugeGapDown, "Not applicable",
+            AFMisc.WriteIf(DoubleGapUp, "Not applicable  ",
+            AFMisc.WriteIf(DoubleGapDown, "Not applicable ",
+             AFMisc.WriteIf(HangingMan1, "Not applicable",
+
+              AFMisc.WriteIf(BullishHarami, "Downward leading to the candle pattern.",
             AFMisc.WriteIf(PiercingLine, "Downward leading to the start of the candle pattern. ",
              AFMisc.WriteIf(BearishHarami, "Upward leading to the candle pattern.",
-            AFMisc.WriteIf(MATCHLOW, "Downward leading to the start of the candle pattern.",
-            AFMisc.WriteIf(GapUpx, "Gap Up",
-            AFMisc.WriteIf(GapDownx, "Gap Down ",
-            AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
-            AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
-            AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
-            AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
-            AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
+
+
             AFMisc.WriteIf(Doji1, "Not applicable ",
+            AFMisc.WriteIf(DojiGapUp, "Upward leading to the start of the candle pattern.",
              AFMisc.WriteIf(BlackSpinningTop, "Not applicable ",
              AFMisc.WriteIf(WhiteSpinningTop, "Not applicable ",
             AFMisc.WriteIf(ShootingStar1, "Upward leading to the start of the candle pattern.",
-            AFMisc.WriteIf(DojiGapUp, "Upward leading to the start of the candle pattern.",
+            
              AFMisc.WriteIf(marubozuclosingwhite, "Not applicable ",
              AFMisc.WriteIf(marubozuopeningwhite, "Not applicable ",
             AFMisc.WriteIf(marubozuopeningblack, "Not applicable ",
@@ -647,7 +661,16 @@ AFMisc.SectionEnd();
                         AFMisc.WriteIf(hammer1, "Downward leading to the candle pattern.",
                         AFMisc.WriteIf(InvertedHammer1, "Downward leading to the candle pattern.",
             
-                        AFMisc.WriteIf(BullishEngulfing, "Downward leading to the start of the candlestick pattern.", "No pattern"))))))))))))))))))))))))))))))))))))))))))))));
+                        AFMisc.WriteIf(BullishEngulfing, "Downward leading to the start of the candlestick pattern.",
+                         AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+           AFMisc.WriteIf(BullishBeltHold, "Downward leading to the start of the candlestick pattern.",
+           AFMisc.WriteIf(BearishBeltHold, "Upward leading to the start of the candle pattern.",
+
+     
+
+           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+
+                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern"))))))))))))))))))))))))))))))))))))))))))))))))))));
 
 
 
@@ -666,27 +689,32 @@ AFMisc.WriteIf( doubletop , "Double top ",
 AFMisc.WriteIf( doubleBot, "Double bottom",
 AFMisc.WriteIf( TweezerTop, "Two adjacent candlesticks with the same (| nearly the same) High price in an uptrend.",
 AFMisc.WriteIf( tweezerBottom, "Look for two candles sharing the same Low price.",
-AFMisc.WriteIf( Belowthestomch, "A tall white day.",
-AFMisc.WriteIf( Abovethestomach, "Black candle.",
+
 AFMisc.WriteIf(consecutave5down, "Low is less than previous Low ",
 AFMisc.WriteIf(consecutave10down, "Low is less than previous Low ",
 AFMisc.WriteIf(consecutave5up, "High is greater than previous High ",
 AFMisc.WriteIf(consecutave10up, "High is greater than previous High",
+AFMisc.WriteIf(BullishMorningDojiStar, "A tall black candle.",
+ AFMisc.WriteIf(BearishEveningDojiStar, "A tall white day.",
+ AFMisc.WriteIf(EveningStar1, "A tall white day.",
+AFMisc.WriteIf(MorningStar1, "A tall black candle.",
+AFMisc.WriteIf(Belowthestomch, "A tall white day.",
+AFMisc.WriteIf(Abovethestomach, "Black candle.",
+ AFMisc.WriteIf(BullishBreakaway, "The first candle is tall and black.",
+            AFMisc.WriteIf(BearishBreakaway, "first candle being a tall white one.",
 AFMisc.WriteIf( MATCHLOW , "A tall-bodied black candle.",
-AFMisc.WriteIf( GapUpx , "Gap Up ",
-AFMisc.WriteIf( GapDownx , "Gap Down",
-AFMisc.WriteIf( BigGapUp , "Big Gap Up ",
-AFMisc.WriteIf( HugeGapUp , "Huge Gap Up ",
-AFMisc.WriteIf( HugeGapDown , "Huge Gap Down ",
-AFMisc.WriteIf( DoubleGapUp , "Double Gap Up ",
-AFMisc.WriteIf( DoubleGapDown , "Double Gap Down ",
-AFMisc.WriteIf( EveningStar1, "A tall white day.",
-AFMisc.WriteIf( MorningStar1 , "A tall black candle.",
-AFMisc.WriteIf( BullishMorningDojiStar , "A tall black candle.",
- AFMisc.WriteIf( BearishEveningDojiStar , "A tall white day.",
+AFMisc.WriteIf(GapUpx, "Not applicable ",
+AFMisc.WriteIf(GapDownx, "Not applicable",
+AFMisc.WriteIf(BigGapUp, "Not applicable ",
+AFMisc.WriteIf(HugeGapUp, "Not applicable ",
+AFMisc.WriteIf(HugeGapDown, "Not applicable ",
+AFMisc.WriteIf(DoubleGapUp, "Not applicable ",
+AFMisc.WriteIf(DoubleGapDown, "Not applicable ",
+AFMisc.WriteIf(HangingMan1, "Look for a small bodied candle atop a long lower shadow in an uptrend.",
+
  AFMisc.WriteIf( BullishHarami , "A tall black candle.",
 AFMisc.WriteIf(PiercingLine , "A black candle",
- AFMisc.WriteIf( BearishHarami , "A tall white candle. ",
+ AFMisc.WriteIf( BearishHarami , "A tall white candle ",
 AFMisc.WriteIf( Doji1 , "Long lower shadow with a small body ",
 AFMisc.WriteIf( DojiGapUp, "Price gaps higher, including the shadows, in an uptrend & forms a doji candle. A doji is one in which the opening & closing prices are within pennies of each other",
  AFMisc.WriteIf( BlackSpinningTop , "A small black body with shadows longer than the body.",
@@ -707,35 +735,49 @@ AFMisc.WriteIf( marubozuopeningblack, "A tall black candle with a lower shadow b
             AFMisc.WriteIf( hammer1, "Has a lower shadow between two & three times the height of a small body & little/no upper shadow. Body color is unimportant.",
             AFMisc.WriteIf( InvertedHammer1, "A tall black candle with a Close near the Low of the day.",
 
-            AFMisc.WriteIf( BullishEngulfing, "A white candle.", "No pattern"))))))))))))))))))))))))))))))))))))))))))));
+            AFMisc.WriteIf( BullishEngulfing, "A white candle.",
+                             AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+           AFMisc.WriteIf(BullishBeltHold, "Look for a white candle with no lower shadow, but closing near the high.",
+           AFMisc.WriteIf(BearishBeltHold, "Price opens at the high for the day and closes near the low, forming a tall black candle, often with a small lower shadow.",
+
+
+
+           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+
+                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern"))))))))))))))))))))))))))))))))))))))))))))))))))));
 
 var C_secondday =
 AFMisc.WriteIf(doubletop , "Double top ",
 AFMisc.WriteIf(doubleBot, "Double bottom",
 AFMisc.WriteIf(TweezerTop, "Two adjacent candlesticks with the same (nearly the same) High price in an uptrend.",
 AFMisc.WriteIf(tweezerBottom, "Look for two candles sharing the same Low price.",
-AFMisc.WriteIf(Belowthestomch, "The candle opens below the middle of the white candle’s body & closes at/below the middle, too.",
-AFMisc.WriteIf(Abovethestomach, "White candle opening & closing at/above the midpoint of the prior black candle’s body.",
 AFMisc.WriteIf(consecutave5down, "Low is less than previous Low ",
 AFMisc.WriteIf(consecutave10down, "Low is less than previous Low ",
 AFMisc.WriteIf(consecutave5up, "High is greater than previous High ",
 AFMisc.WriteIf(consecutave10up, "High is greater than previous High",
-AFMisc.WriteIf(MATCHLOW , "A black body with a Close that matches the prior close.",
-AFMisc.WriteIf(GapUpx , "Gap Up ",
-AFMisc.WriteIf(GapDownx , "Gap Down ",
-AFMisc.WriteIf(BigGapUp , "Big Gap Up ",
-AFMisc.WriteIf(HugeGapUp , "Huge Gap Up ",
-AFMisc.WriteIf(HugeGapDown , "Huge Gap Down ",
-AFMisc.WriteIf(DoubleGapUp , "Double Gap Up ",
-AFMisc.WriteIf(DoubleGapDown , "Double Gap Down ",
-AFMisc.WriteIf(EveningStar1, "A small-bodied candle that gaps above the bodies of the adjacent candles. It can be either black/white.",
-AFMisc.WriteIf(MorningStar1 , "A small-bodied candle that gaps lower from the prior body. The color can be either black/white.",
-AFMisc.WriteIf( HangingMan1, "Not applicable ",
 AFMisc.WriteIf(BullishMorningDojiStar , "A doji whose body gaps below the prior body.",
  AFMisc.WriteIf(BearishEveningDojiStar , "A doji that gaps above the bodies of the two adjacent candle lines. The shadows are ! important; only the doji body need remain above the surrounding candles.",
+ AFMisc.WriteIf(EveningStar1, "A small-bodied candle that gaps above the bodies of the adjacent candles. It can be either black/white.",
+AFMisc.WriteIf(MorningStar1, "A small-bodied candle that gaps lower from the prior body. The color can be either black/white.",
+
+ AFMisc.WriteIf(Belowthestomch, "The candle opens below the middle of the white candle’s body & closes at/below the middle, too.",
+AFMisc.WriteIf(Abovethestomach, "White candle opening & closing at/above the midpoint of the prior black candle’s body.",
+ AFMisc.WriteIf(BullishBreakaway, "Black one that opens lower, leaving a gap between the two bodies (but shadows can overlap).",
+            AFMisc.WriteIf(BearishBreakaway, " White candle with a gap between the two bodies, but the shadows can overlap.",
+AFMisc.WriteIf(MATCHLOW , "A black body with a Close that matches the prior close.",
+AFMisc.WriteIf(GapUpx, "Not applicable ",
+AFMisc.WriteIf(GapDownx, "Not applicable ",
+AFMisc.WriteIf(BigGapUp, "Not applicable ",
+AFMisc.WriteIf(HugeGapUp, "Not applicable ",
+AFMisc.WriteIf(HugeGapDown, "Not applicable ",
+AFMisc.WriteIf(DoubleGapUp, "Not applicable ",
+AFMisc.WriteIf(DoubleGapDown, "Not applicable",
+
+AFMisc.WriteIf( HangingMan1, "Not applicable ",
+
  AFMisc.WriteIf(BullishHarami , "A small-bodied white candle. The body must be within the prior candle’s body. The tops/bottoms of the two bodies can be the same price but ! both.",
 AFMisc.WriteIf(PiercingLine , "A white candle that opens below the prior candle’s Low & closes in the black body, between the midpoint & the open.",
- AFMisc.WriteIf(BearishHarami , "A small black candle. The Open & Close must be within the body of the first AFDate.Day, but ignore the shadows. Either the tops/the bottoms of the bodies can be equal but ! both.",
+ AFMisc.WriteIf(BearishHarami , "A small black candle. The Open & Close must be within the body of the first Day, but ignore the shadows. Either the tops/the bottoms of the bodies can be equal but ! both.",
 AFMisc.WriteIf(Doji1 , "Not applicable ",
 AFMisc.WriteIf(DojiGapUp, "Not applicable ",
  AFMisc.WriteIf(BlackSpinningTop , "Not applicable ",
@@ -755,32 +797,47 @@ AFMisc.WriteIf(marubozuopeningblack, "Not applicable ",
             AFMisc.WriteIf(hammer1, "Not applicable ",
             AFMisc.WriteIf(InvertedHammer1, "A small-bodied candle with a tall upper shadow & little/no lower shadow. Body cannot be a doji (otherwise it’s a gravestone doji). The Open must be below the prior AFDate.Day’s close. Candle color is unimportant.",
 
-            AFMisc.WriteIf(BullishEngulfing, "A black candle, the body of which overlaps the white candle’s body.", "No pattern")))))))))))))))))))))))))))))))))))))))))))));
+            AFMisc.WriteIf(BullishEngulfing, "A black candle, the body of which overlaps the white candle’s body.",
+              AFMisc.WriteIf(oneDayreversal, "Not applicable",
+           AFMisc.WriteIf(BullishBeltHold, "Not applicable",
+           AFMisc.WriteIf(BearishBeltHold, "Not applicable",
+
+
+
+           AFMisc.WriteIf(Belowthestomch, "Not applicable",
+
+                       AFMisc.WriteIf(Insideday, "Inside Day", "Not applicable"))))))))))))))))))))))))))))))))))))))))))))))))))));
 
 var C_thirdday =
 AFMisc.WriteIf(doubletop , "Double top ",
 AFMisc.WriteIf(doubleBot, "Double bottom",
 AFMisc.WriteIf(TweezerTop, "Not applicable ",
 AFMisc.WriteIf(tweezerBottom, "Not applicable ",
-AFMisc.WriteIf(Belowthestomch, "Not applicable ",
-AFMisc.WriteIf(Abovethestomach, "Not applicable ",
+
 AFMisc.WriteIf(consecutave5down, "Low is less than previous Low ",
 AFMisc.WriteIf(consecutave10down, "Low is less than previous Low ",
 AFMisc.WriteIf(consecutave5up, "High is greater than previous High ",
 AFMisc.WriteIf(consecutave10up, "High is greater than previous High",
+AFMisc.WriteIf(BullishMorningDojiStar, "A tall white candle whose body remains above the doji’s body.",
+ AFMisc.WriteIf(BearishEveningDojiStar, "A tall black candle that closes at/below the midpoint (well into the body) of the white candle.",
+ AFMisc.WriteIf(EveningStar1, "A tall black candle that gaps below the prior candle & closes at least halfway down the body of the white candle.",
+AFMisc.WriteIf(MorningStar1, "A tall white candle that gaps above the body of the Second Day & closes at least midway into the black body of the first day.",
+
+AFMisc.WriteIf(Belowthestomch, "Not applicable ",
+AFMisc.WriteIf(Abovethestomach, "Not applicable ",
+AFMisc.WriteIf(BullishBreakaway, "candle of any color but it should have a lower close",
+            AFMisc.WriteIf(BearishBreakaway, "Should have a higher close and the candle can be any color",
+
 AFMisc.WriteIf(MATCHLOW , "Not applicable ",
-AFMisc.WriteIf(GapUpx , "Gap Up ",
-AFMisc.WriteIf(GapDownx , "Gap Down ",
-AFMisc.WriteIf(BigGapUp , "Big Gap Up ",
-AFMisc.WriteIf(HugeGapUp , "Huge Gap Up ",
-AFMisc.WriteIf(HugeGapDown , "Huge Gap Down ",
-AFMisc.WriteIf(DoubleGapUp , "Double Gap Up ",
-AFMisc.WriteIf(DoubleGapDown , "Double Gap Down ",
-AFMisc.WriteIf(EveningStar1, "A tall black candle that gaps below the prior candle & closes at least halfway down the body of the white candle.",
-AFMisc.WriteIf(MorningStar1 , "A tall white candle that gaps above the body of the Second Day & closes at least midway into the black body of the first day.",
+AFMisc.WriteIf(GapUpx, "Not applicable ",
+AFMisc.WriteIf(GapDownx, "Not applicable ",
+AFMisc.WriteIf(BigGapUp, "Not applicable ",
+AFMisc.WriteIf(HugeGapUp, "Not applicable ",
+AFMisc.WriteIf(HugeGapDown, "Not applicable ",
+AFMisc.WriteIf(DoubleGapUp, "Not applicable ",
+AFMisc.WriteIf(DoubleGapDown, "Not applicable ",
 AFMisc.WriteIf(HangingMan1, "Not applicable ",
-AFMisc.WriteIf(BullishMorningDojiStar , "A tall white candle whose body remains above the doji’s body.",
- AFMisc.WriteIf(BearishEveningDojiStar , "A tall black candle that closes at/below the midpoint (well into the body) of the white candle.",
+
  AFMisc.WriteIf(BullishHarami , "Not applicable ",
 AFMisc.WriteIf(PiercingLine , "Not applicable ",
  AFMisc.WriteIf(BearishHarami , "Not applicable ",
@@ -805,7 +862,16 @@ AFMisc.WriteIf(marubozuopeningblack, "Not applicable ",
             AFMisc.WriteIf(hammer1, "Not applicable ",
             AFMisc.WriteIf(InvertedHammer1, "Not applicable ",
 
-            AFMisc.WriteIf(BullishEngulfing, "Not applicable", "No pattern")))))))))))))))))))))))))))))))))))))))))))));
+            AFMisc.WriteIf(BullishEngulfing, "Not applicable",
+               AFMisc.WriteIf(oneDayreversal, "Not applicable",
+           AFMisc.WriteIf(BullishBeltHold, "Not applicable",
+           AFMisc.WriteIf(BearishBeltHold, "Not applicable",
+
+
+
+           AFMisc.WriteIf(Belowthestomch, "Not applicable",
+
+                       AFMisc.WriteIf(Insideday, "Inside Day", "Not applicable"))))))))))))))))))))))))))))))))))))))))))))))))))));
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1363,7 +1429,8 @@ AFMisc.Say(singlecandel );
 
        //     GfxTextOut("Day " + NumToStr( DateTime(), formatDateTime ), 5 + x1Rrect, 20 + y1Rrect + FontSize);
 
- 
+
+        //    AFMisc.AddTextColumn(singlecandel, " Pattern", 5.6f, Color.Black, Color.White);
 
 
 AFGraph.GfxSelectFont("Arial", FontSize, 700, ATFloat.False);
@@ -1713,20 +1780,20 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
 
 
             var doublecandle =
+                        AFMisc.WriteIf(TweezerTop, "Tweezer Top",
+        AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
+        AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
+        AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
+        AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
+        AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
 
- AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
- AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
- AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
- AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
- AFMisc.WriteIf(TweezerTop, "Tweezer Top",
- AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
- AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
-  AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
- AFMisc.WriteIf(EveningStar1, "Evening Star",
- AFMisc.WriteIf(MorningStar1, "Morning Star",
- AFMisc.WriteIf(Abovethestomach, "Above the stomach",
- AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
- AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
+        AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
+         AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
+        AFMisc.WriteIf(EveningStar1, "Evening Star",
+        AFMisc.WriteIf(MorningStar1, "Morning Star",
+        AFMisc.WriteIf(Abovethestomach, "Above the stomach",
+        AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
+        AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
 
 
             var pricepattern =
@@ -1735,17 +1802,7 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
 
 
             var singlecandel =
-           AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
 
-           AFMisc.WriteIf(oneDayreversal, "One Day reversal",
-           AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
-           AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
-
-           AFMisc.WriteIf(BullishIslandReversals, "Bullish Island Reversals",
-           AFMisc.WriteIf(BearishIslandReversals, "Bearish Island Reversals",
-           AFMisc.WriteIf(OutsideDay, "Outside Day",
-
-           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
            AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
            AFMisc.WriteIf(GapUpx, "Gap Up",
            AFMisc.WriteIf(GapDownx, "Gap Down ",
@@ -1755,11 +1812,17 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
            AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
            AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
 
-            AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
+
+            AFMisc.WriteIf(HangingMan1, "Hanging Man",
+
+             AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
            AFMisc.WriteIf(PiercingLine, "Piercing Line ",
             AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
            AFMisc.WriteIf(Doji1, "Doji",
-           AFMisc.WriteIf(HangingMan1, "Hanging Man",
+            AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
+
+
+
             AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
             AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
            AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
@@ -1776,9 +1839,20 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
                        AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
                        AFMisc.WriteIf(hammer1, "Hammer",
                        AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
-           AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
 
-                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern")))))))))))))))))))))))))))))))))))))));
+           AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
+            AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+           AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
+           AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
+
+
+
+           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+
+                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern"))))))))))))))))))))))))))))))))))));
+
+
+
 
 
             AFMisc.AddTextColumn(singlecandel, "hourly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
@@ -2101,78 +2175,86 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
             /* Add AFInfo.Name in column*/
 
 
-            doublecandle =
+            var doublecandle1 =
+                  AFMisc.WriteIf(TweezerTop, "Tweezer Top",
+  AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
+  AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
+  AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
+  AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
+  AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
 
- AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
- AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
- AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
- AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
- AFMisc.WriteIf(TweezerTop, "Tweezer Top",
- AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
- AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
-  AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
- AFMisc.WriteIf(EveningStar1, "Evening Star",
- AFMisc.WriteIf(MorningStar1, "Morning Star",
- AFMisc.WriteIf(Abovethestomach, "Above the stomach",
- AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
- AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
-
-
-             pricepattern =
-            AFMisc.WriteIf(doubletop, "Double top ",
-            AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
+  AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
+   AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
+  AFMisc.WriteIf(EveningStar1, "Evening Star",
+  AFMisc.WriteIf(MorningStar1, "Morning Star",
+  AFMisc.WriteIf(Abovethestomach, "Above the stomach",
+  AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
+  AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
 
 
-            singlecandel =
-           AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
-
-           AFMisc.WriteIf(oneDayreversal, "One Day reversal",
-           AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
-           AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
-
-           AFMisc.WriteIf(BullishIslandReversals, "Bullish Island Reversals",
-           AFMisc.WriteIf(BearishIslandReversals, "Bearish Island Reversals",
-           AFMisc.WriteIf(OutsideDay, "Outside Day",
-
-           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
-           AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
-           AFMisc.WriteIf(GapUpx, "Gap Up",
-           AFMisc.WriteIf(GapDownx, "Gap Down ",
-           AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
-           AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
-           AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
-           AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
-           AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
-
-            AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
-           AFMisc.WriteIf(PiercingLine, "Piercing Line ",
-            AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
-           AFMisc.WriteIf(Doji1, "Doji",
-           AFMisc.WriteIf(HangingMan1, "Hanging Man",
-            AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
-            AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
-           AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
-            AFMisc.WriteIf(marubozuclosingwhite, "Marubozu closing white",
-            AFMisc.WriteIf(marubozuopeningwhite, "Marubozu opening white",
-           AFMisc.WriteIf(marubozuopeningblack, "Marubozu opening black",
-                      AFMisc.WriteIf(marubozuclosingblack, "Marubozu closing black",
-                      AFMisc.WriteIf(blackmarubozu, "Black marubozu",
-                       AFMisc.WriteIf(whitemarubozu, "White marubozu",
-                       AFMisc.WriteIf(ShortWhitecandle, "Short White candle",
-                       AFMisc.WriteIf(ShortblackCandle, "Short black Candle",
-                       AFMisc.WriteIf(LongwhiteCandle, "Long white Candle",
-                       AFMisc.WriteIf(LongblackCandle, "Long Black Candle",
-                       AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
-                       AFMisc.WriteIf(hammer1, "Hammer",
-                       AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
-           AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
-
-                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern")))))))))))))))))))))))))))))))))))))));
+             var pricepattern1 =
+             AFMisc.WriteIf(doubletop, "Double top ",
+             AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
 
 
-            AFMisc.AddTextColumn(singlecandel, "Weekly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(doublecandle, "Weekly  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(pricepattern, "Weekly Price  Pattern", 5.6f, Color.Black, Color.White);
+            var   singlecandel1 =
+
+            AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
+            AFMisc.WriteIf(GapUpx, "Gap Up",
+            AFMisc.WriteIf(GapDownx, "Gap Down ",
+            AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
+            AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
+            AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
+            AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
+            AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
+
+
+             AFMisc.WriteIf(HangingMan1, "Hanging Man",
+
+              AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
+            AFMisc.WriteIf(PiercingLine, "Piercing Line ",
+             AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
+            AFMisc.WriteIf(Doji1, "Doji",
+             AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
+
+
+
+             AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
+             AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
+            AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
+             AFMisc.WriteIf(marubozuclosingwhite, "Marubozu closing white",
+             AFMisc.WriteIf(marubozuopeningwhite, "Marubozu opening white",
+            AFMisc.WriteIf(marubozuopeningblack, "Marubozu opening black",
+                       AFMisc.WriteIf(marubozuclosingblack, "Marubozu closing black",
+                       AFMisc.WriteIf(blackmarubozu, "Black marubozu",
+                        AFMisc.WriteIf(whitemarubozu, "White marubozu",
+                        AFMisc.WriteIf(ShortWhitecandle, "Short White candle",
+                        AFMisc.WriteIf(ShortblackCandle, "Short black Candle",
+                        AFMisc.WriteIf(LongwhiteCandle, "Long white Candle",
+                        AFMisc.WriteIf(LongblackCandle, "Long Black Candle",
+                        AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
+                        AFMisc.WriteIf(hammer1, "Hammer",
+                        AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
+
+            AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
+             AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+            AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
+            AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
+
+
+
+            AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+
+                        AFMisc.WriteIf(Insideday, "Inside Day", "No pattern"))))))))))))))))))))))))))))))))))));
+
+
+
+
+
+
+            AFMisc.AddTextColumn(singlecandel1, "Weekly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(doublecandle1, "Weekly  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(pricepattern1, "Weekly Price  Pattern", 5.6f, Color.Black, Color.White);
             AFTimeFrame.TimeFrameRestore();
 
 
@@ -2489,40 +2571,30 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
             /* Add AFInfo.Name in column*/
 
 
-            doublecandle =
+          var   doublecandle2 =
+                AFMisc.WriteIf(TweezerTop, "Tweezer Top",
+AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
+AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
+AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
+AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
+AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
 
- AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
- AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
- AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
- AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
- AFMisc.WriteIf(TweezerTop, "Tweezer Top",
- AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
- AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
-  AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
- AFMisc.WriteIf(EveningStar1, "Evening Star",
- AFMisc.WriteIf(MorningStar1, "Morning Star",
- AFMisc.WriteIf(Abovethestomach, "Above the stomach",
- AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
- AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
-
-
-            pricepattern =
-           AFMisc.WriteIf(doubletop, "Double top ",
-           AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
+AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
+ AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
+AFMisc.WriteIf(EveningStar1, "Evening Star",
+AFMisc.WriteIf(MorningStar1, "Morning Star",
+AFMisc.WriteIf(Abovethestomach, "Above the stomach",
+AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
+AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
 
 
-            singlecandel =
-           AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
+           var  pricepattern2 =
+            AFMisc.WriteIf(doubletop, "Double top ",
+            AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
 
-           AFMisc.WriteIf(oneDayreversal, "One Day reversal",
-           AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
-           AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
 
-           AFMisc.WriteIf(BullishIslandReversals, "Bullish Island Reversals",
-           AFMisc.WriteIf(BearishIslandReversals, "Bearish Island Reversals",
-           AFMisc.WriteIf(OutsideDay, "Outside Day",
+            var singlecandel2 =
 
-           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
            AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
            AFMisc.WriteIf(GapUpx, "Gap Up",
            AFMisc.WriteIf(GapDownx, "Gap Down ",
@@ -2532,11 +2604,17 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
            AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
            AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
 
-            AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
+
+            AFMisc.WriteIf(HangingMan1, "Hanging Man",
+
+             AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
            AFMisc.WriteIf(PiercingLine, "Piercing Line ",
             AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
            AFMisc.WriteIf(Doji1, "Doji",
-           AFMisc.WriteIf(HangingMan1, "Hanging Man",
+            AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
+
+
+
             AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
             AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
            AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
@@ -2553,16 +2631,28 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
                        AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
                        AFMisc.WriteIf(hammer1, "Hammer",
                        AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
+
            AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
+            AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+           AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
+           AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
 
-                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern")))))))))))))))))))))))))))))))))))))));
 
 
-            AFMisc.AddTextColumn(singlecandel, "Monthly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(doublecandle, "Monthly  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(pricepattern, "Monthly Price  Pattern", 5.6f, Color.Black, Color.White);
+           AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+
+                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern"))))))))))))))))))))))))))))))))))));
+
+
+
+
+
+
+            AFMisc.AddTextColumn(singlecandel2, "Monthly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(doublecandle2, "Monthly  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(pricepattern2, "Monthly Price  Pattern", 5.6f, Color.Black, Color.White);
             AFTimeFrame.TimeFrameRestore();
-            shubhascanner();
+           // shubhascanner();
 
         }
       

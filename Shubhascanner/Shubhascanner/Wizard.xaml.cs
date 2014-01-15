@@ -62,7 +62,7 @@ namespace Shubhascanner
                 if (agree.IsChecked == false)
                 {
                     Rsult_lbl.Foreground = Brushes.Red;
-                    Rsult_lbl.Content = "Please accept license agreement else Click  Cancel to exit. ";
+                    Rsult_lbl.Content = "Please accept license agreement else Click Cancel to exit. ";
 
                     return;
 
