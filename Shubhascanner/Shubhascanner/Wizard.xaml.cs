@@ -99,13 +99,18 @@ namespace Shubhascanner
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+
+            string filepath = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
+            string processtostart1 = filepath.Substring(0, filepath.Length - 17) + "Patternfinder.exe";
+            System.Diagnostics.Process.Start(processtostart1);
+            
             try
             {
                 if (!Directory.Exists("C:\\myshubhalabha"))
                 {
                     Directory.CreateDirectory("C:\\myshubhalabha");
                 }
-                string filepath = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
 
                 string processtostart = filepath.Substring(0, filepath.Length - 17) + "Notice.txt";
 
