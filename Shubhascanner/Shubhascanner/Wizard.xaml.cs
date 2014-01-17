@@ -104,7 +104,7 @@ namespace Shubhascanner
             string filepath = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
             string processtostart1 = filepath.Substring(0, filepath.Length - 17) + "Patternfinder.exe";
             System.Diagnostics.Process.Start(processtostart1);
-            
+           
             try
             {
                 if (!Directory.Exists("C:\\myshubhalabha"))
@@ -224,10 +224,10 @@ namespace Shubhascanner
             File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\scanner.afl", true);
 
           /////////////////////////////
-            processtostart = filepath.Substring(0, filepath.Length - 17) + "setup_dotnetforab_x86_5.60.5.exe";
+            //processtostart = filepath.Substring(0, filepath.Length - 17) + "setup_dotnetforab_x86_5.60.5.exe";
 
 
-            File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\setup_dotnetforab_x86_5.60.5.exe", true);
+            //File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\setup_dotnetforab_x86_5.60.5.exe", true);
 
             string path = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
 
