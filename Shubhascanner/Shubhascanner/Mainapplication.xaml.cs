@@ -56,10 +56,10 @@ namespace Shubhascanner
 
 
            
-             processtostart = path.Substring(0, path.Length - 17) + "setup_dotnetforab_x86_5.60.5.exe";
+             //processtostart = path.Substring(0, path.Length - 17) + "setup_dotnetforab_x86_5.60.5.exe";
 
 
-             File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\setup_dotnetforab_x86_5.60.5.exe", true);
+             //File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\setup_dotnetforab_x86_5.60.5.exe", true);
 
 
 

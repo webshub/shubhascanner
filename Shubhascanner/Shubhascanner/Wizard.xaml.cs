@@ -191,74 +191,95 @@ namespace Shubhascanner
 
         private void finish_Click(object sender, RoutedEventArgs e)
         {
-            RegistryKey regKey = Registry.CurrentUser;
-            regKey = regKey.CreateSubKey(@"amis\");
-
-            var amiexepath = regKey.GetValue("Amiexepath");
-            string filepath = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
-            string processtostart = "";
-
-            bool a = File.Exists(amiexepath + "\\Broker.exe");
-
-            if(a==false )
-            {
-                Rsult_lbl.Foreground = Brushes.Red;
-                Rsult_lbl.Content = "Amibroker exe path is wrong please select correct path ";
-                return;
-            }
-
-
-            if (!Directory.Exists("C:\\myshubhalabha\\Scanner\\Donotdelete"))
-            {
-                Directory.CreateDirectory("C:\\myshubhalabha\\Scanner\\Donotdelete");
-            }
-
-            if (!Directory.Exists("C:\\myshubhalabha\\Scanner\\Report"))
-            {
-                Directory.CreateDirectory("C:\\myshubhalabha\\Scanner\\Report");
-            }
-
-            processtostart = filepath.Substring(0, filepath.Length - 17) + "afltodll.afl";
-
-
-            File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\scanner.afl", true);
-
-          /////////////////////////////
-            //processtostart = filepath.Substring(0, filepath.Length - 17) + "setup_dotnetforab_x86_5.60.5.exe";
-
-
-            //File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\setup_dotnetforab_x86_5.60.5.exe", true);
-
-            string path = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
-
-            string pathtostartprocess = path.Substring(0, path.Length - 17);
-            regKey.SetValue("applicationpath", pathtostartprocess);
-            var Amiexepath = regKey.GetValue("Amiexepath");
-            File.Copy(processtostart, Amiexepath + "\\Formulas\\shubhalabha\\Shubhascannerdll.dll", true);
             try
             {
-                File.Copy(processtostart, Amiexepath + "\\.NET for AmiBroker\\Assemblies\\Shubhascannerdll.dll", true);
+
+                RegistryKey regKey = Registry.CurrentUser;
+                regKey = regKey.CreateSubKey(@"amis\");
+
+                var amiexepath = regKey.GetValue("Amiexepath");
+                string filepath = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
+                string processtostart = "";
+
+                bool a = File.Exists(amiexepath + "\\Broker.exe");
+
+                if (a == false)
+                {
+                    Rsult_lbl.Foreground = Brushes.Red;
+                    Rsult_lbl.Content = "Amibroker exe path is wrong please select correct path ";
+                    return;
+                }
+
+
+                if (!Directory.Exists("C:\\myshubhalabha\\Scanner\\Donotdelete"))
+                {
+                    Directory.CreateDirectory("C:\\myshubhalabha\\Scanner\\Donotdelete");
+                }
+
+                if (!Directory.Exists("C:\\myshubhalabha\\Scanner\\Report"))
+                {
+                    Directory.CreateDirectory("C:\\myshubhalabha\\Scanner\\Report");
+                }
+
+                processtostart = filepath.Substring(0, filepath.Length - 17) + "shubhascanner.afl";
+
+
+                File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\shubhascanner.afl", true);
+
+                /////////////////////////////
+                //processtostart = filepath.Substring(0, filepath.Length - 17) + "setup_dotnetforab_x86_5.60.5.exe";
+
+
+                //File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\setup_dotnetforab_x86_5.60.5.exe", true);
+
+                string path = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
+
+                string pathtostartprocess = path.Substring(0, path.Length - 17);
+                regKey.SetValue("applicationpath", pathtostartprocess);
+                var Amiexepath = regKey.GetValue("Amiexepath");
+
+
+                try
+                {
+                    if (!Directory.Exists(Amiexepath + "\\Formulas\\shubhalabha"))
+                    {
+                        Directory.CreateDirectory(Amiexepath + "\\Formulas\\shubhalabha");
+                    }
+                    
+                    
+                    processtostart = filepath.Substring(0, filepath.Length - 17) + "Shubhascannerdll.dll";
+                    File.Copy(processtostart, Amiexepath + "\\Formulas\\shubhalabha\\Shubhascannerdll.dll", true);
+
+
+                    File.Copy(processtostart, Amiexepath + "\\.NET for AmiBroker\\Assemblies\\Shubhascannerdll.dll", true);
 
 
 
-                processtostart = path.Substring(0, path.Length - 17) + "TA-Lib-Core.dll";
+                    processtostart = path.Substring(0, path.Length - 17) + "TA-Lib-Core.dll";
 
-                File.Copy(processtostart, Amiexepath + "\\.NET for AmiBroker\\Assemblies\\TA-Lib-Core.dll", true);
+                    File.Copy(processtostart, Amiexepath + "\\.NET for AmiBroker\\Assemblies\\TA-Lib-Core.dll", true);
+
+                }
+                catch(Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(".NET for AmiBroker is not install Please install \nYou can find setup file in C:\\myshubhalabha\\Scanner\\Donotdelete folder  ");
+
+                }
+
+                ///////////////////////////
+                regKey.SetValue("Wizart", "done");
+                this.Hide();
+                Shubhascanner.Registartion r = new Registartion();
+                r.ShowDialog();
 
             }
-            catch
+            catch(Exception ex)
             {
-                MessageBox.Show(".NET for AmiBroker is not install Please install \nYou can find setup file in C:\\myshubhalabha\\Scanner\\Donotdelete folder  ");
-                
+                MessageBox.Show(ex.Message );
+
             }
-           
-            ///////////////////////////
-            regKey.SetValue("Wizart", "done");
-            this.Hide();
-            Shubhascanner.Registartion r = new Registartion();
-            r.ShowDialog();
-
-
 
 
 
