@@ -40,13 +40,15 @@
     <ApplicationIcon>shubhalabha.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AmiBroker.PlugInHost, Version=5.70.0.0, Culture=neutral, PublicKeyToken=c0d4fd12d3adc8e5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\AmiBroker\.NET for AmiBroker\Assemblies\AmiBroker.PlugInHost.dll</HintPath>
+    </Reference>
+    <Reference Include="AmiBroker.Utils, Version=1.1.0.0, Culture=neutral, PublicKeyToken=c0d4fd12d3adc8e5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\AmiBroker\.NET for AmiBroker\Assemblies\AmiBroker.Utils.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="AmiBroker.PlugInHost">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="AmiBroker.Utils">
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Data.Linq" />
     <Reference Include="TA-Lib-Core">
       <HintPath>..\..\..\..\shantesh\newafltodll\newafltodll\bin\Debug\TA-Lib-Core.dll</HintPath>

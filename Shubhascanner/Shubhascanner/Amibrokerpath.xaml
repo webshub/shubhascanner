@@ -15,7 +15,7 @@
         <Label Content="Amibroker exe path" FontFamily="Times New Roman" FontSize="13" Height="28" HorizontalAlignment="Left" Margin="29,97,0,0" Name="label1" VerticalAlignment="Top" />
         <Label Content="Select Amibroker Exe path " FontFamily="Times New Roman" FontSize="14" Height="28" HorizontalAlignment="Left" Margin="29,60,0,0" Name="label2" VerticalAlignment="Top" />
         <Label Content="Note : We can design scanners for you as per your customized  requirements for that " FontFamily="Times New Roman" FontSize="13" Height="28" HorizontalAlignment="Left" Margin="16,183,0,0" Name="label3" VerticalAlignment="Top" />
-        <Label Content="you can mail with your rules or conditions to suppoert@shubhalabha.in" FontFamily="Times New Roman" FontSize="13" Height="28" HorizontalAlignment="Left" Margin="51,205,0,0" Name="label4" VerticalAlignment="Top" Grid.RowSpan="2" />
+        <Label Content="you can mail with your rules or conditions to support@shubhalabha.in" FontFamily="Times New Roman" FontSize="13" Height="28" HorizontalAlignment="Left" Margin="51,205,0,0" Name="label4" VerticalAlignment="Top" Grid.RowSpan="2" />
         <Border BorderBrush="Silver" BorderThickness="1" Height="100" HorizontalAlignment="Left" Margin="12,47,0,0" Name="border1" VerticalAlignment="Top" Width="451" />
     </Grid>
 </UserControl>

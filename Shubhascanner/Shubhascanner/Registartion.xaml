@@ -1,8 +1,8 @@
 ﻿<Window x:Class="Shubhascanner.Registartion"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Registartion" Height="299" Width="702" Loaded="Window_Loaded">
-    <Grid Height="264" Width="689">
-        <WebBrowser HorizontalAlignment="Center"  Navigated="lead_Navigated" LoadCompleted="wb_LoadCompleted" IsHitTestVisible="False" Margin="1,3,3,-4" Name="lead" ScrollViewer.IsDeferredScrollingEnabled="False" ScrollViewer.VerticalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" Width="685" />
+        Title="Registartion" Height="372" Width="706" Loaded="Window_Loaded">
+    <Grid Height="322" Width="689">
+        <WebBrowser HorizontalAlignment="Center"  Navigated="lead_Navigated" LoadCompleted="wb_LoadCompleted" IsHitTestVisible="False" Margin="1,0,-1,3" Name="lead" ScrollViewer.IsDeferredScrollingEnabled="False" ScrollViewer.VerticalScrollBarVisibility="Hidden" VerticalAlignment="Stretch" Width="689" />
     </Grid>
 </Window>

@@ -69,7 +69,7 @@ namespace scannerliccheck
                 if (reg < DateTime.Today.Date)
                 {
                     // Uri a = new System.Uri("http://besttester.com/lic/lic.txt");
-                    Uri a = new System.Uri("http://shubhalabha.in/lic.txt");
+                    Uri a = new System.Uri("http://shubhalabha.in/scannerlic.txt");
 
 
                     // webBrowser1.Source = a;

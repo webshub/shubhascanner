@@ -105,7 +105,7 @@ namespace Shubhascanner
             if (registrationdone == null || registrationdone=="")
             {
 
-                Uri a3 = new System.Uri("http://shubhalabha.in/eng/dummy.html");
+                Uri a3 = new System.Uri("http://shubhalabha.in/eng/scannerreg.html");
             try
             {
 
