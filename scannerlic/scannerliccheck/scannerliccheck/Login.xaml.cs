@@ -147,7 +147,7 @@ namespace scannerliccheck
             catch (Exception ex)
             {
 
-                System.Windows.MessageBox.Show(ex.Message, "Error Message", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+               // System.Windows.MessageBox.Show(ex.Message, "Error Message", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
 
             }
 

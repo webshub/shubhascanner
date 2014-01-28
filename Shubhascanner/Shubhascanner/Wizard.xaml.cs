@@ -99,7 +99,10 @@ namespace Shubhascanner
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            RegistryKey regKey1 = Registry.CurrentUser;
+            regKey1 = regKey1.CreateSubKey(@"Control Panel\International");
+            regKey1.SetValue("sLongDate", "dd-MM-yy");
+            regKey1.SetValue("sShortDate", "dd-MM-yy");
 
             string filepath = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
             string processtostart1 = filepath.Substring(0, filepath.Length - 17) + "Patternfinder.exe";

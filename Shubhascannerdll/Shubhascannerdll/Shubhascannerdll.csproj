@@ -44,16 +44,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\AmiBroker\.NET for AmiBroker\Assemblies\AmiBroker.PlugInHost.dll</HintPath>
     </Reference>
-    <Reference Include="AmiBroker.Utils, Version=1.1.0.0, Culture=neutral, PublicKeyToken=c0d4fd12d3adc8e5, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\AmiBroker\.NET for AmiBroker\Assemblies\AmiBroker.Utils.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data.Linq" />
-    <Reference Include="TA-Lib-Core">
-      <HintPath>..\..\..\..\shantesh\newafltodll\newafltodll\bin\Debug\TA-Lib-Core.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
@@ -68,8 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="build.cmd" />
-    <None Include="DNfABFree.iss" />
-    <None Include="PluginInstallation.iss" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
