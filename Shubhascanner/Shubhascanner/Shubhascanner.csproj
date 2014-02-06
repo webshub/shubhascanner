@@ -17,7 +17,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>ftp://www.shubhalabha.in/eng/devscan/</PublishUrl>
+    <PublishUrl>ftp://www.shubhalabha.in/scanner/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -27,14 +27,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.shubhalabha.in/eng/devscan/</InstallUrl>
-    <UpdateUrl>http://shubhalabha.in/eng/devscan/</UpdateUrl>
+    <InstallUrl>http://www.shubhalabha.in/scanner/</InstallUrl>
+    <UpdateUrl>http://www.shubhalabha.in/scanner/</UpdateUrl>
     <SupportUrl>http://shubhalabha.in/</SupportUrl>
     <ProductName>shubha scanner</ProductName>
     <PublisherName>shubhalabha.in</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
-    <ApplicationRevision>44</ApplicationRevision>
+    <ApplicationRevision>6</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -210,6 +210,12 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="EOD.afl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Intraday.afl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

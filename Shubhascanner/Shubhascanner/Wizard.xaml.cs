@@ -228,6 +228,14 @@ namespace Shubhascanner
 
 
                 File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\shubhascanner.afl", true);
+                processtostart = filepath.Substring(0, filepath.Length - 17) + "EOD.afl";
+
+
+                File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\EOD.afl", true);
+                processtostart = filepath.Substring(0, filepath.Length - 17) + "Intraday.afl";
+
+
+                File.Copy(processtostart, "C:\\myshubhalabha\\Scanner\\Donotdelete\\Intraday.afl", true);
 
                 /////////////////////////////
                 //processtostart = filepath.Substring(0, filepath.Length - 17) + "setup_dotnetforab_x86_5.60.5.exe";

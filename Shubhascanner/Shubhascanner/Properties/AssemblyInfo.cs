@@ -8,9 +8,9 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Shubhascanner")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Find Single candle Pattern,Candlestick Pattern ,Price Pattern")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Shubhalabha")]
 [assembly: AssemblyProduct("Shubhascanner")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]

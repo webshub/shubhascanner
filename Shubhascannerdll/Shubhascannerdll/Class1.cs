@@ -119,9 +119,7 @@ var LongSMA = AFTools.Param("Select no. of days to calculate Long SMA ",200,1,40
 //Buy = (Close > EMA (Close,LongEMA))AND ((EMA (Close,LeadEMA) > EMA (Close,LAGEMA)));
 
 Buy = (AFTools.Cross(AFAvg.Ema(Close, 5), AFAvg.Ema(Close, 13)) & AFTools.Cross(AFAvg.Ema(Close, 5), AFAvg.Ema(Close, 26)) & Close > Minprice & Close < Maxprice & Volume > Minvolume & Volume < Maxvolume & avgvol < AFInd.Roc(Volume, Daysavgvol) & AFInd.Roc(Close, pricechangedays) < Close);
-          AFMisc.  AddColumn(AFInd.Roc(Close, pricechangedays), "close % change");
-          AFMisc.AddColumn(AFInd.Roc(Volume , Daysavgvol ), "volume % change");
-
+         
 
 
 // Buy Sell condition backup to try anything.
@@ -797,7 +795,7 @@ AFMisc.WriteIf(marubozuopeningblack, "Not applicable ",
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-AFMisc.Say(singlecandel );
+//AFMisc.Say(singlecandel );
 //Say(price_trand);
 ////Say(C_firstday);
 
@@ -1381,7 +1379,7 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
 
 
         [ABMethod]
-        public void report(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        public void Intraday(ATArray open, ATArray high, ATArray low, ATArray close, float period)
         {
             ////////////////////////////////////////
 
@@ -1403,21 +1401,21 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
 
 
 
-            var LeadEMA = AFTools.Param("Select no. of days to calculate lead AFAvg.Ema ", 5, 1, 400);
-            var MediumEMA = AFTools.Param("Select no. of days to calculate Mediaum AFAvg.Ema ", 13, 1, 400);
-            var LagEMA = AFTools.Param("Select no. of days to calculate Lag AFAvg.Ema ", 26, 1, 400);
-            var LongEMA = AFTools.Param("Select no. of days to calculate Long AFAvg.Ema ", 200, 1, 400);
-            var LeadSMA = AFTools.Param("Select no. of days to calculate lead SMA ", 10, 1, 400);
-            var MediumSMA = AFTools.Param("Select no. of days to calculate Medium SMA ", 50, 1, 400);
-            var LagSMA = AFTools.Param("Select no. of days to calculate Lag SMA ", 100, 1, 400);
-            var LongSMA = AFTools.Param("Select no. of days to calculate Long SMA ", 200, 1, 400);
+            //var LeadEMA = AFTools.Param("Select no. of days to calculate lead AFAvg.Ema ", 5, 1, 400);
+            //var MediumEMA = AFTools.Param("Select no. of days to calculate Mediaum AFAvg.Ema ", 13, 1, 400);
+            //var LagEMA = AFTools.Param("Select no. of days to calculate Lag AFAvg.Ema ", 26, 1, 400);
+            //var LongEMA = AFTools.Param("Select no. of days to calculate Long AFAvg.Ema ", 200, 1, 400);
+            //var LeadSMA = AFTools.Param("Select no. of days to calculate lead SMA ", 10, 1, 400);
+            //var MediumSMA = AFTools.Param("Select no. of days to calculate Medium SMA ", 50, 1, 400);
+            //var LagSMA = AFTools.Param("Select no. of days to calculate Lag SMA ", 100, 1, 400);
+            //var LongSMA = AFTools.Param("Select no. of days to calculate Long SMA ", 200, 1, 400);
             // Buy Sell condition
 
 
 
             //Buy = (Close > EMA (Close,LongEMA))AND ((EMA (Close,LeadEMA) > EMA (Close,LAGEMA)));
 
-            Buy = (AFTools.Cross(AFAvg.Ema(Close, 5), AFAvg.Ema(Close, 13)) & AFTools.Cross(AFAvg.Ema(Close, 5), AFAvg.Ema(Close, 26)) & Close > Minprice & Close < Maxprice & Volume > Minvolume & Volume < Maxvolume & avgvol < AFInd.Roc(Volume, Daysavgvol) & AFInd.Roc(Close, pricechangedays) < Close);
+            Buy = ( Close > Minprice & Close < Maxprice & Volume > Minvolume & Volume < Maxvolume & avgvol <= AFInd.Roc(Volume, Daysavgvol) & AFInd.Roc(Close, pricechangedays) >= pricechangepercent);
             AFMisc.AddColumn(AFInd.Roc(Close, pricechangedays), "close % change");
             AFMisc.AddColumn(AFInd.Roc(Volume, Daysavgvol), "volume % change");
 
@@ -2091,679 +2089,150 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
             AFTimeFrame.TimeFrameRestore();
 
 
+           
+            AFMisc.SectionEnd();
+        }
+
+        [ABMethod]
+        public void EOD(ATArray open, ATArray high, ATArray low, ATArray close, float period)
+        {
+            ////////////////////////////////////////
+
+            AFMisc.AddColumn(Close, "Close", 1.2f, Color.Green);
+            AFMisc.AddColumn(Volume, "Volume", 1.2f, Color.Green);
+
+
+            AFMisc.SectionBegin("Shubhalabha");
+
+            //Taking user input 
+            var Minprice = AFTools.Param("Select Minimum price ", 100, 1, 20000);
+            var Maxprice = AFTools.Param("Select Maximum price ", 1000, 1, 20000);
+            var Minvolume = AFTools.Param("Select Minimum Volume ", 10000, 100, 50000000);
+            var Maxvolume = AFTools.Param("Select Maximum Volume ", 500000, 100, 50000000);
+            var Daysavgvol = AFTools.Param("Select no. of days to calculate Avg Volume ", 10, 1, 400);
+            var avgvol = AFTools.Param("Avg Volume ", 10000, 100, 50000000);
+            var pricechangedays = AFTools.Param("Select no. of days to calculate % price change ", 10, 1, 400);
+            var pricechangepercent = AFTools.Param("Select Price change % ", 2, 1, 100);
+
+
+
+            //var LeadEMA = AFTools.Param("Select no. of days to calculate lead AFAvg.Ema ", 5, 1, 400);
+            //var MediumEMA = AFTools.Param("Select no. of days to calculate Mediaum AFAvg.Ema ", 13, 1, 400);
+            //var LagEMA = AFTools.Param("Select no. of days to calculate Lag AFAvg.Ema ", 26, 1, 400);
+            //var LongEMA = AFTools.Param("Select no. of days to calculate Long AFAvg.Ema ", 200, 1, 400);
+            //var LeadSMA = AFTools.Param("Select no. of days to calculate lead SMA ", 10, 1, 400);
+            //var MediumSMA = AFTools.Param("Select no. of days to calculate Medium SMA ", 50, 1, 400);
+            //var LagSMA = AFTools.Param("Select no. of days to calculate Lag SMA ", 100, 1, 400);
+            //var LongSMA = AFTools.Param("Select no. of days to calculate Long SMA ", 200, 1, 400);
+            // Buy Sell condition
+
+
+
+            //Buy = (Close > EMA (Close,LongEMA))AND ((EMA (Close,LeadEMA) > EMA (Close,LAGEMA)));
+
+            Buy = (Close > Minprice & Close < Maxprice & Volume > Minvolume & Volume < Maxvolume & avgvol <= AFInd.Roc(Volume, Daysavgvol) & AFInd.Roc(Close, pricechangedays) >= pricechangepercent);
+            AFMisc.AddColumn(AFInd.Roc(Close, pricechangedays), "close % change");
+            AFMisc.AddColumn(AFInd.Roc(Volume, Daysavgvol), "volume % change");
+
+
+
+            // Buy Sell condition backup to try anything.
+            //Buy =( Close >  Lastcloseuserinput AND   DROC > shortchangeuserinput AND WROC > longchangeuserinput AND  Volume >Voluserinput AND ATR(ATRbaruserinput)>ATRuserinput AND BBandTop( Close, BBrangeuserinput, BBwidthuserinput ) > Close );
+            //Sell = ( Close >  Lastcloseuserinput AND DROC < shortchangeuserinput AND WROC < longchangeuserinput AND  Volume >Voluserinput AND ATR(ATRbaruserinput)>ATRuserinput AND BBandBot( Close, BBrangeuserinput, BBwidthuserinput ) < Close );
+
+            // Comment following two lines if you want to get signals without swing signals.
+
+            //Buy=ExRem(Buy,Sell);
+            //Sell=ExRem(Sell,Buy);
+
+            // Enable following to get all data without buy sell.
+            //Filter = 1;
+
+            Filter = Buy;
+            //Adding column to report
+
+            //AFMisc.AddTextColumn( AFInfo.FullName(), "Company AFInfo.Name", 77 ,Color.Green);
+            //AFMisc.AddColumn(Volume,"Last Volume ",1.2f,Color.Green);
+            //AFMisc.AddColumn(Close,"Last Close  ",1.2f,Color.Green);
+            //AddColumn(WROC,"Long term % change",1.2,colorGreen);
+            //AddColumn(ATR(ATRbaruserinput) ,"Last ATR",1.2,colorGreen);
+            //AddColumn(EMA(Close, EMA1shorttermuserinput),"EMA1 Short term",1.2, colorGreen);
+            //AddColumn(EMA(Close, EMA2longtermuserinput),"EMA2 Long term",1.2, colorGreen);
+            //AddColumn(BBandTop(Close, BBrangeuserinput, BBwidthuserinput ),"Bollinger band upper  ",1.2,colorGreen );
+            //AddColumn(bbdiff,"Diff BBup & close   ",1.2,colorGreen );
+            //AddColumn(BBandBot(Close, BBrangeuserinput, BBwidthuserinput ),"Bollinger band lower  ",1.2,colorGreen );
+            //ddColumn(bbdiffb,"Diff BBbot & close   ",1.2,colorGreen );
+
+
+
+            // This prints report with Buy and Sell.
+
+            //AFMisc.AddColumn( Buy, "Buy", 1.2f,Color.Green  );
+            //AFMisc.AddColumn(Sell, "Sell", 1.2f,Color.Green );
+
+            // This marks buy and sell on charts.
+
+            AFGraph.PlotShapes(AFTools.Iif(Buy, Shape.Square, Shape.None), Color.Green, 0, Low, 30);
+            AFGraph.PlotShapes(AFTools.Iif(Sell, Shape.Square, Shape.None), Color.Red, 0, High, 30);
+
+            AFMisc.SectionEnd();
+            //////////////////////////////////////////
+
+            // Buy = Close > 0;
+            //Filter = Buy;
+            AFMisc.AddTextColumn(AFInfo.FullName(), "Company name ");
+
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            AFTimeFrame.TimeFrameSet(TFInterval.InDaily);
+            var O1 = AFTools.Ref(Open, -1); var O2 = AFTools.Ref(Open, -2); var O3 = AFTools.Ref(Open, -3); var O4 = AFTools.Ref(Open, -4); var O5 = AFTools.Ref(Open, -5); var O6 = AFTools.Ref(Open, -6); var O7 = AFTools.Ref(Open, -7); var O8 = AFTools.Ref(Open, -8); var O9 = AFTools.Ref(Open, -9);
 
-            AFTimeFrame.TimeFrameSet(TFInterval.InHourly ); // switch now to hourly 
-            O1 = AFTools.Ref(Open, -1); O2 = AFTools.Ref(Open, -2); O3 = AFTools.Ref(Open, -3); O4 = AFTools.Ref(Open, -4); O5 = AFTools.Ref(Open, -5); O6 = AFTools.Ref(Open, -6); O7 = AFTools.Ref(Open, -7); O8 = AFTools.Ref(Open, -8); O9 = AFTools.Ref(Open, -9);
+            var H1 = AFTools.Ref(High, -1); var H2 = AFTools.Ref(High, -2); var H3 = AFTools.Ref(High, -3); var H4 = AFTools.Ref(High, -4); var H5 = AFTools.Ref(High, -5); var H6 = AFTools.Ref(High, -6); H6 = AFTools.Ref(High, -6); var H7 = AFTools.Ref(High, -7); var H8 = AFTools.Ref(High, -8); var H9 = AFTools.Ref(High, -9);
 
-            H1 = AFTools.Ref(High, -1); H2 = AFTools.Ref(High, -2); H3 = AFTools.Ref(High, -3); H4 = AFTools.Ref(High, -4); H5 = AFTools.Ref(High, -5); H6 = AFTools.Ref(High, -6); H6 = AFTools.Ref(High, -6); H7 = AFTools.Ref(High, -7); H8 = AFTools.Ref(High, -8); H9 = AFTools.Ref(High, -9);
-
-            L1 = AFTools.Ref(Low, -1); L2 = AFTools.Ref(Low, -2); L3 = AFTools.Ref(Low, -3); L4 = AFTools.Ref(Low, -4); L5 = AFTools.Ref(Low, -5); L6 = AFTools.Ref(Low, -6); L7 = AFTools.Ref(Low, -7); L8 = AFTools.Ref(Low, -8); L9 = AFTools.Ref(Low, -9);
+            var L1 = AFTools.Ref(Low, -1); var L2 = AFTools.Ref(Low, -2); var L3 = AFTools.Ref(Low, -3); var L4 = AFTools.Ref(Low, -4); var L5 = AFTools.Ref(Low, -5); var L6 = AFTools.Ref(Low, -6); var L7 = AFTools.Ref(Low, -7); var L8 = AFTools.Ref(Low, -8); var L9 = AFTools.Ref(Low, -9);
 
 
-            C1 = AFTools.Ref(Close, -1); C2 = AFTools.Ref(Close, -2); C3 = AFTools.Ref(Close, -3); C4 = AFTools.Ref(Close, -4); C5 = AFTools.Ref(Close, -5); C6 = AFTools.Ref(Close, -6); C7 = AFTools.Ref(Close, -7); C8 = AFTools.Ref(Close, -8); C9 = AFTools.Ref(Close, -9);
+            var C1 = AFTools.Ref(Close, -1); var C2 = AFTools.Ref(Close, -2); var C3 = AFTools.Ref(Close, -3); var C4 = AFTools.Ref(Close, -4); var C5 = AFTools.Ref(Close, -5); var C6 = AFTools.Ref(Close, -6); var C7 = AFTools.Ref(Close, -7); var C8 = AFTools.Ref(Close, -8); var C9 = AFTools.Ref(Close, -9);
 
-            /* BODY Colors*/
-            WhiteCandle = Close >= Open;
-            BlackCandle = Open > Close;
-            B1 = O1 - C1;
-            B2 = O2 - C2;
-            B3 = O3 - C3;
-            Avgbody = ((B1 + B2 + B3) / 3);
-            XBODY = Avgbody * 3;
+            /*var BODY Colors*/
+            var WhiteCandle = Close >= Open;
+            var BlackCandle = Open > Close;
+            var B1 = O1 - C1;
+            var B2 = O2 - C2;
+            var B3 = O3 - C3;
+            var Avgbody = ((B1 + B2 + B3) / 3);
+            var XBODY = Avgbody * 3;
 
-            BODY = Open - Close;
+            var BODY = Open - Close;
 
 
 
 
 
             /*Single candle Pattern */
-            smallBodyMaximum = 0.0025f;//less than 0.25%
-            LargeBodyMinimum = 0.01f;//greater than 1.0%
-            smallBody = (Open >= Close * (1 - smallBodyMaximum) & WhiteCandle) | (Close >= Open * (1 - smallBodyMaximum) & BlackCandle);
-            largeBody = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) | Close <= Open * (1 - LargeBodyMinimum) & BlackCandle;
-            mediumBody = !largeBody & !smallBody;
-            identicalBodies = AFMath.Abs(AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) - AFMath.Abs(Open - Close)) < AFMath.Abs(Open - Close) * smallBodyMaximum;
-            realBodySize = AFMath.Abs(Open - Close);
+            var smallBodyMaximum = 0.0025f;//less than 0.25%
+            var LargeBodyMinimum = 0.01f;//greater than 1.0%
+            var smallBody = (Open >= Close * (1 - smallBodyMaximum) & WhiteCandle) | (Close >= Open * (1 - smallBodyMaximum) & BlackCandle);
+            var largeBody = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) | Close <= Open * (1 - LargeBodyMinimum) & BlackCandle;
+            var mediumBody = !largeBody & !smallBody;
+            var identicalBodies = AFMath.Abs(AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) - AFMath.Abs(Open - Close)) < AFMath.Abs(Open - Close) * smallBodyMaximum;
+            var realBodySize = AFMath.Abs(Open - Close);
 
 
 
             /*Shadows*/
-            smallUpperShadow = (WhiteCandle & High <= Close * (1 + smallBodyMaximum)) | (BlackCandle & High <= Open * (1 + smallBodyMaximum));
-            smallLowerShadow = (WhiteCandle & Low >= Open * (1 - smallBodyMaximum)) | (BlackCandle & Low >= Close * (1 - smallBodyMaximum));
-            largeUpperShadow = (WhiteCandle & High >= Close * (1 + LargeBodyMinimum)) | (BlackCandle & High >= Open * (1 + LargeBodyMinimum));
-            largeLowerShadow = (WhiteCandle & Low <= Open * (1 - LargeBodyMinimum)) | (BlackCandle & Low <= Close * (1 - LargeBodyMinimum));
+            var smallUpperShadow = (WhiteCandle & High <= Close * (1 + smallBodyMaximum)) | (BlackCandle & High <= Open * (1 + smallBodyMaximum));
+            var smallLowerShadow = (WhiteCandle & Low >= Open * (1 - smallBodyMaximum)) | (BlackCandle & Low >= Close * (1 - smallBodyMaximum));
+            var largeUpperShadow = (WhiteCandle & High >= Close * (1 + LargeBodyMinimum)) | (BlackCandle & High >= Open * (1 + LargeBodyMinimum));
+            var largeLowerShadow = (WhiteCandle & Low <= Open * (1 - LargeBodyMinimum)) | (BlackCandle & Low <= Close * (1 - LargeBodyMinimum));
 
             /*Gaps*/
-            upGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Open > AFTools.Ref(Open, -1), 1,
-           AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Close > AFTools.Ref(Open, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Open > AFTools.Ref(Close, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Close > AFTools.Ref(Close, -1), 1, 0))));
-
-            downGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Close < AFTools.Ref(Close, -1), 1,
-           AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Open < AFTools.Ref(Close, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Close < AFTools.Ref(Open, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Open < AFTools.Ref(Open, -1), 1, 0))));
-
-
-
-
-            /*Maximum High Today - ( MHT)
-            Today is the maximum High in the last 5 days*/
-            MHT = AFHL.Hhv(High, 5) == High;
-
-            /*Maximum High Yesterday - ( MHY)
-            Yesterday is the maximum High in the last 5 days*/
-            MHY = AFHL.Hhv(High, 5) == AFTools.Ref(High, -1);
-
-            /*Minimum Low Today - ( MLT)
-            Today is the minimum Low in the last 5 days*/
-            MLT = AFHL.Llv(Low, 5) == Low;
-
-            /*Minimum Low Yesterday - ( MLY)
-            Yesterday is the minimum Low in the last 5 days*/
-            MLY = AFHL.Llv(Low, 5) == AFTools.Ref(Low, -1);
-
-            /* Doji1 definitions*/
-
-            /*Doji1 Today - (DT)*/
-            //   DT = AFMath.Abs(Close - Open) <= (Close * smallBodyMaximum) | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
-
-            /* Doji1 Yesterday - (DY)*/
-            //   DY = AFMath.Abs(AFTools.Ref(Close, -1) - AFTools.Ref(Open, -1)) <= AFTools.Ref(Close, -1) * smallBodyMaximum | AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) <= (AFTools.Ref(High, -1) - AFTools.Ref(Low, -1)) * 0.1f;
-
-
-
-            ShortWhitecandle = ((Close > Open) & ((High - Low) > (3 * (Close - Open))));
-            ShortblackCandle = ((Open > Close) & ((High - Low) > (3 * (Open - Close))));
-            Close1 = (Open - Close) * (0.002f);
-            Open1 = (Open * 0.002f);
-
-            LongblackCandle = (Close <= Open * (1 - LargeBodyMinimum) & BlackCandle) & (Open > Close) & ((Open - Close) / (.001f + High - Low) > .6f);
-            LongwhiteCandle = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) & ((Close > Open) & ((Close - Open) / (.001f + High - Low) > .6f));
-            Doji1 = Open == Close | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
-
-            //almost equal needs to be reviewd and implemented 
-            whitemarubozu = ((Close > Open) & AFMisc.AlmostEqual(High, Close, 5) & AFMisc.AlmostEqual(Open, Low, 5));
-            blackmarubozu = ((Open > Close) & (High == Open) & (Close == Low));
-
-            marubozuclosingblack = BlackCandle & High > Open & Low == Close;
-            marubozuopeningblack = BlackCandle & High == Open & Low < Close;
-            marubozuclosingwhite = WhiteCandle & High == Close & Open > Low;
-            marubozuopeningwhite = WhiteCandle & High > Close & Open == Low;
-            BlackSpinningTop = ((Open > Close) & ((High - Low) > (3 * (Open - Close))) & (((High - Open) / (0.001f + High - Low)) < 0.4f) & (((Close - Low) / (0.001f + High - Low)) < 0.4f));
-            WhiteSpinningTop = ((Close > Open) & ((High - Low) > (3 * (Close - Open))) & (((High - Close) / (0.001f + High - Low)) < 0.4f) & (((Open - Low) / (0.001f + High - Low)) < 0.4f));
-
-
-            hammer1 = (((High - Low) > 3 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) > 0.6f) & ((Open - Low) / (.001f + High - Low) > 0.6f));
-            InvertedHammer1 = (((High - Low) > 3 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) > 0.6f) & ((High - Open) / (0.001f + High - Low) > 0.6f));
-            HangingMan1 = (((High - Low) > 4 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) >= 0.75f) & ((Open - Low) / (.001f + High - Low) >= 0.75f));
-            ShootingStar1 = (((High - Low) > 4 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) >= 0.75f) & ((High - Open) / (0.001f + High - Low) >= 0.75f));
-            BearishEngulfing = ((C1 > O1) & (Open > Close) & (Open >= C1) & (O1 >= Close) & ((Open - Close) > (C1 - O1)));
-            BullishEngulfing = ((O1 > C1) & (Close > Open) & (Close >= O1) & (C1 >= Open) & ((Close - Open) > (O1 - C1)));
-            BearishEveningDojiStar = ((C2 > O2) & ((C2 - O2) / (0.001f + H2 - L2) > 0.6f) & (C2 < O1) & (C1 > O1) & ((H1 - L1) > (3 * (C1 - O1))) & (Open > Close) & (Open < O1));
-            BullishMorningDojiStar = ((O2 > C2) & ((O2 - C2) / (0.001f + H2 - L2) > 0.6f) & (C2 > O1) & (O1 > C1) & ((H1 - L1) > (3 * (C1 - O1))) & (Close > Open) & (Open > O1));
-            BullishHarami = ((O1 > C1) & (Close > Open) & (Close <= O1) & (C1 <= Open) & ((Close - Open) < (O1 - C1)));
-            BearishHarami = ((C1 > O1) & (Open > Close) & (Open <= C1) & (O1 <= Close) & ((Open - Close) < (C1 - O1)));
-
-
-
-         
-
-
-            PiercingLine = ((C1 < O1) & (((O1 + C1) / 2) < Close) & (Open < Close) & (Open < C1) & (Close < O1) & ((Close - Open) / (0.001f + (High - Low)) > 0.6f));
-
-            EveningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(WhiteCandle, -2) & AFTools.Ref(upGap, -1) & !AFTools.Ref(largeBody, -1) & BlackCandle & !smallBody & (MHT | MHY);
-            MorningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(BlackCandle, -2) & AFTools.Ref(downGap, -1) & WhiteCandle & largeBody & Close > AFTools.Ref(Close, -2) & MLY;
-            MATCHLOW = AFHL.Llv(Low, 8) == AFHL.Llv(Low, 2) & AFTools.Ref(Close, -1) <= AFTools.Ref(Open, -1) * .99f & AFMath.Abs(Close - AFTools.Ref(Close, -1)) <= Close * .0025f & Open > AFTools.Ref(Close, -1) & Open <= (High - ((High - Low) * .5f));
-            GapUpx = AFPattern.GapUp();
-            GapDownx = AFPattern.GapDown();
-            BigGapUp = Low > 1.01f * H1;
-            BigGapDown = High < 0.99f * L1;
-            HugeGapUp = Low > 1.02f * H1;
-            HugeGapDown = High < 0.98f * L1;
-            DoubleGapUp = AFPattern.GapUp() & AFTools.Ref(AFPattern.GapUp(), -1);
-            DoubleGapDown = AFPattern.GapDown() & AFTools.Ref(AFPattern.GapDown(), -1);
-
-            consecutave5up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5);
-            consecutave10up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5) & (H5 > H6) & (H6 > H7) & (H7 > H8) & (H8 > H9);
-
-            consecutave5down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5);
-            consecutave10down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5) & (L5 < L6) & (L6 < L7) & (L7 < L8) & (L8 < L9);
-            Abovethestomach = (O1 > C1) & (Close > Open) & Close >= AFStat.Median(C1, 1);
-            Belowthestomch = LongwhiteCandle & Open < AFStat.Median(C1, 1) & Close <= AFStat.Median(C1, 1);
-            TweezerTop = AFMath.Abs(High - AFTools.Ref(High, -1)) <= High * 0.0025f & Open > Close & (AFTools.Ref(Close, -1) > AFTools.Ref(Open, -1)) & (MHT | MHY);
-
-            /*Tweezer Bottom*/
-            tweezerBottom = (AFMath.Abs(Low - AFTools.Ref(Low, -1)) / Low < 0.0025f | AFMath.Abs(Low - AFTools.Ref(Low, -2)) / Low < 0.0025f) & Open < Close & (AFTools.Ref(Open, -1) > AFTools.Ref(Close, -1)) & (MLT | MLY);
-
-
-
-
-            /* Detecting double tops & bottoms (come into view, by Isfandi)*/
-            percdiff = 5; /* peak detection threshold */
-            fwdcheck = 5; /* forward validity check */
-            mindistance = 10;
-            validdiff = percdiff / 400;
-
-            PK = AFPattern.Peak(High, percdiff, 1) == High;
-            TR = AFPattern.Trough(Low, percdiff, 1) == Low;
-
-
-            x = AFAvg.Cum(1);
-            XPK1 = AFTools.ValueWhen(PK, x, 1);
-            XPK2 = AFTools.ValueWhen(PK, x, 2);
-            xTR1 = AFTools.ValueWhen(TR, x, 1);
-            xTr2 = AFTools.ValueWhen(TR, x, 2);
-
-            peakdiff = AFTools.ValueWhen(PK, High, 1) / AFTools.ValueWhen(PK, High, 2);
-            Troughdiff = AFTools.ValueWhen(TR, Low, 1) / AFTools.ValueWhen(TR, Low, 2);
-
-            doubletop = PK & AFMath.Abs(peakdiff - 1) < validdiff & (XPK1 - XPK2) > mindistance & High > AFHL.Hhv(AFTools.Ref(High, fwdcheck), fwdcheck - 1);
-            doubleBot = TR & AFMath.Abs(Troughdiff - 1) < validdiff & (xTR1 - xTr2) > mindistance & Low < AFHL.Llv(AFTools.Ref(Low, fwdcheck), fwdcheck - 1);
-
-
-
-            ////////////////////////////////////////////////
-            MINO10 = AFHL.Llv(Open, 10);
-            AVGH10 = AFAvg.Ma(High, 10);
-            AVGL10 = AFAvg.Ma(Low, 10);
-            MAXO10 = AFHL.Hhv(Open, 10);
-            MINL10 = AFHL.Llv(Low, 10);
-            MAXH10 = AFHL.Hhv(High, 10);
-            AVGH21 = AFAvg.Ma(High, 21);
-            AVGL21 = AFAvg.Ma(Low, 21);
-            MINL5 = AFHL.Llv(Low, 5);
-            BullishBeltHold = (Open = MINO10) & (Open < L1) & (Close - Open) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (Open - Low) <= .01f * (High - Low) & (Close <= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 < C2) & (C2 < C3);
-            BearishBeltHold = (Open = MAXO10) & (Open > H1) & (Open - Close) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (High - Open) <= .01f * (High - Low) & (Close >= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 > C2) & (C2 < C3);
-            BullishBreakaway = C4 < O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < O3 & H3 < L4 & C2 < C3 & C1 < C2 & AFMath.Abs(Close - Open) > .6f * (High - Low) & Close > Open & Close > H3;
-            BearishBreakaway = AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C4 > O4 & C3 > O3 & L3 > H4 & C2 > C3 & C1 > C2 & Close < Open & Low < H4 & High > L3;
-
-            DojiDragonfly = AFMath.Abs(Open - Close) <= .02f * (High - Low) & (High - Close) <= .3f * (High - Low) & (High - Low) >= (AVGH10 - AVGL10) & (High > Low) & (Low = MINL10);
-            //BullishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (L<=L1+.3*(H1-L1)) AND (H-L)>=(AVGH10-AVGL10);
-
-
-            //////////////////////////////price 
-            MAXC20 = AFHL.Hhv(Close, 20);
-            AVGC40 = AFAvg.Ma(Close, 40);
-            AVGH5 = AFAvg.Ma(High, 5);
-            AVGL5 = AFAvg.Ma(Low, 5);
-            AVGH34 = AFAvg.Ma(High, 34);
-            AVGL34 = AFAvg.Ma(Low, 43);
-            MAXH5 = AFHL.Hhv(High, 5);
-            MAXH10 = AFHL.Hhv(High, 10);
-            MAXH20 = AFHL.Hhv(High, 20);
-            MINL20 = AFHL.Llv(Low, 20);
-            MINL42 = AFHL.Llv(Low, 42);
-            MAXH42 = AFHL.Hhv(High, 42);
-            MINL21 = AFHL.Llv(Low, 21);
-
-           
-            //to be reveiewd 
-            AVGV4 = AFAvg.Ma(Volume, 4);
-            MINL3 = AFHL.Llv(Low, 3);
-           
-            ///////////////////////
-            AVGC20 = AFAvg.Ma(Close, 20);
-            AVGC50 = AFAvg.Ma(Close, 50);
-            MAXH3 = AFHL.Hhv(High, 3);
-           Insideday = AFPattern.Inside();
-            DojiGapUp = C3 > O3 & O2 > O3 & C2 > O2 & O1 > O2 & Open > C1 & Open == Close & High > Close & Close > Open;
-            //needs to be review
-            //DojiGapdown=C3 < O3 AND O2 < O3 AND C2  < O2 AND O1 < O2 AND O <  C1 AND O = C AND H <  C AND C < O;
-
-            /* Add AFInfo.Name in column*/
-
-
-            var doublecandle5 =
-                  AFMisc.WriteIf(TweezerTop, "Tweezer Top",
-  AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
-  AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
-  AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
-  AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
-  AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
-
-  AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
-   AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
-  AFMisc.WriteIf(EveningStar1, "Evening Star",
-  AFMisc.WriteIf(MorningStar1, "Morning Star",
-  AFMisc.WriteIf(Abovethestomach, "Above the stomach",
-  AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
-  AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
-
-
-            var pricepattern5 =
-            AFMisc.WriteIf(doubletop, "Double top ",
-            AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
-
-
-            var singlecandel5 =
-
-            AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
-            AFMisc.WriteIf(GapUpx, "Gap Up",
-            AFMisc.WriteIf(GapDownx, "Gap Down ",
-            AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
-            AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
-            AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
-            AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
-            AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
-
-
-             AFMisc.WriteIf(HangingMan1, "Hanging Man",
-
-              AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
-            AFMisc.WriteIf(PiercingLine, "Piercing Line ",
-             AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
-            AFMisc.WriteIf(Doji1, "Doji",
-             AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
-
-
-
-             AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
-             AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
-            AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
-             AFMisc.WriteIf(marubozuclosingwhite, "Marubozu closing white",
-             AFMisc.WriteIf(marubozuopeningwhite, "Marubozu opening white",
-            AFMisc.WriteIf(marubozuopeningblack, "Marubozu opening black",
-                       AFMisc.WriteIf(marubozuclosingblack, "Marubozu closing black",
-                       AFMisc.WriteIf(blackmarubozu, "Black marubozu",
-                        AFMisc.WriteIf(whitemarubozu, "White marubozu",
-                        AFMisc.WriteIf(ShortWhitecandle, "Short White candle",
-                        AFMisc.WriteIf(ShortblackCandle, "Short black Candle",
-                        AFMisc.WriteIf(LongwhiteCandle, "Long white Candle",
-                        AFMisc.WriteIf(LongblackCandle, "Long Black Candle",
-                        AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
-                        AFMisc.WriteIf(hammer1, "Hammer",
-                        AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
-
-            AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
-             AFMisc.WriteIf(oneDayreversal, "One Day reversal",
-            AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
-            AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
-
-
-
-            AFMisc.WriteIf(Belowthestomch, "Below the stomch",
-
-                        AFMisc.WriteIf(Insideday, "Inside Day", "No pattern"))))))))))))))))))))))))))))))))))));
-
-
-
-
-
-
-            AFMisc.AddTextColumn(singlecandel5, "Hourly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(doublecandle5, "Hourly  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(pricepattern5, "Hourly Price  Pattern", 5.6f, Color.Black, Color.White);
-            AFTimeFrame.TimeFrameRestore();
-
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            AFTimeFrame.TimeFrameSet(TFInterval.InDaily); // switch now to hourly 
-            O1 = AFTools.Ref(Open, -1); O2 = AFTools.Ref(Open, -2); O3 = AFTools.Ref(Open, -3); O4 = AFTools.Ref(Open, -4); O5 = AFTools.Ref(Open, -5); O6 = AFTools.Ref(Open, -6); O7 = AFTools.Ref(Open, -7); O8 = AFTools.Ref(Open, -8); O9 = AFTools.Ref(Open, -9);
-
-            H1 = AFTools.Ref(High, -1); H2 = AFTools.Ref(High, -2); H3 = AFTools.Ref(High, -3); H4 = AFTools.Ref(High, -4); H5 = AFTools.Ref(High, -5); H6 = AFTools.Ref(High, -6); H6 = AFTools.Ref(High, -6); H7 = AFTools.Ref(High, -7); H8 = AFTools.Ref(High, -8); H9 = AFTools.Ref(High, -9);
-
-            L1 = AFTools.Ref(Low, -1); L2 = AFTools.Ref(Low, -2); L3 = AFTools.Ref(Low, -3); L4 = AFTools.Ref(Low, -4); L5 = AFTools.Ref(Low, -5); L6 = AFTools.Ref(Low, -6); L7 = AFTools.Ref(Low, -7); L8 = AFTools.Ref(Low, -8); L9 = AFTools.Ref(Low, -9);
-
-
-            C1 = AFTools.Ref(Close, -1); C2 = AFTools.Ref(Close, -2); C3 = AFTools.Ref(Close, -3); C4 = AFTools.Ref(Close, -4); C5 = AFTools.Ref(Close, -5); C6 = AFTools.Ref(Close, -6); C7 = AFTools.Ref(Close, -7); C8 = AFTools.Ref(Close, -8); C9 = AFTools.Ref(Close, -9);
-
-            /* BODY Colors*/
-            WhiteCandle = Close >= Open;
-            BlackCandle = Open > Close;
-            B1 = O1 - C1;
-            B2 = O2 - C2;
-            B3 = O3 - C3;
-            Avgbody = ((B1 + B2 + B3) / 3);
-            XBODY = Avgbody * 3;
-
-            BODY = Open - Close;
-
-
-
-
-
-            /*Single candle Pattern */
-            smallBodyMaximum = 0.0025f;//less than 0.25%
-            LargeBodyMinimum = 0.01f;//greater than 1.0%
-            smallBody = (Open >= Close * (1 - smallBodyMaximum) & WhiteCandle) | (Close >= Open * (1 - smallBodyMaximum) & BlackCandle);
-            largeBody = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) | Close <= Open * (1 - LargeBodyMinimum) & BlackCandle;
-            mediumBody = !largeBody & !smallBody;
-            identicalBodies = AFMath.Abs(AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) - AFMath.Abs(Open - Close)) < AFMath.Abs(Open - Close) * smallBodyMaximum;
-            realBodySize = AFMath.Abs(Open - Close);
-
-
-
-            /*Shadows*/
-            smallUpperShadow = (WhiteCandle & High <= Close * (1 + smallBodyMaximum)) | (BlackCandle & High <= Open * (1 + smallBodyMaximum));
-            smallLowerShadow = (WhiteCandle & Low >= Open * (1 - smallBodyMaximum)) | (BlackCandle & Low >= Close * (1 - smallBodyMaximum));
-            largeUpperShadow = (WhiteCandle & High >= Close * (1 + LargeBodyMinimum)) | (BlackCandle & High >= Open * (1 + LargeBodyMinimum));
-            largeLowerShadow = (WhiteCandle & Low <= Open * (1 - LargeBodyMinimum)) | (BlackCandle & Low <= Close * (1 - LargeBodyMinimum));
-
-            /*Gaps*/
-            upGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Open > AFTools.Ref(Open, -1), 1,
-           AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Close > AFTools.Ref(Open, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Open > AFTools.Ref(Close, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Close > AFTools.Ref(Close, -1), 1, 0))));
-
-            downGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Close < AFTools.Ref(Close, -1), 1,
-           AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Open < AFTools.Ref(Close, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Close < AFTools.Ref(Open, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Open < AFTools.Ref(Open, -1), 1, 0))));
-
-
-
-
-            /*Maximum High Today - ( MHT)
-            Today is the maximum High in the last 5 days*/
-            MHT = AFHL.Hhv(High, 5) == High;
-
-            /*Maximum High Yesterday - ( MHY)
-            Yesterday is the maximum High in the last 5 days*/
-            MHY = AFHL.Hhv(High, 5) == AFTools.Ref(High, -1);
-
-            /*Minimum Low Today - ( MLT)
-            Today is the minimum Low in the last 5 days*/
-            MLT = AFHL.Llv(Low, 5) == Low;
-
-            /*Minimum Low Yesterday - ( MLY)
-            Yesterday is the minimum Low in the last 5 days*/
-            MLY = AFHL.Llv(Low, 5) == AFTools.Ref(Low, -1);
-
-            /* Doji1 definitions*/
-
-            /*Doji1 Today - (DT)*/
-            //   DT = AFMath.Abs(Close - Open) <= (Close * smallBodyMaximum) | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
-
-            /* Doji1 Yesterday - (DY)*/
-            //   DY = AFMath.Abs(AFTools.Ref(Close, -1) - AFTools.Ref(Open, -1)) <= AFTools.Ref(Close, -1) * smallBodyMaximum | AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) <= (AFTools.Ref(High, -1) - AFTools.Ref(Low, -1)) * 0.1f;
-
-
-
-            ShortWhitecandle = ((Close > Open) & ((High - Low) > (3 * (Close - Open))));
-            ShortblackCandle = ((Open > Close) & ((High - Low) > (3 * (Open - Close))));
-            Close1 = (Open - Close) * (0.002f);
-            Open1 = (Open * 0.002f);
-
-            LongblackCandle = (Close <= Open * (1 - LargeBodyMinimum) & BlackCandle) & (Open > Close) & ((Open - Close) / (.001f + High - Low) > .6f);
-            LongwhiteCandle = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) & ((Close > Open) & ((Close - Open) / (.001f + High - Low) > .6f));
-            Doji1 = Open == Close | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
-
-            //almost equal needs to be reviewd and implemented 
-            whitemarubozu = ((Close > Open) & AFMisc.AlmostEqual(High, Close, 5) & AFMisc.AlmostEqual(Open, Low, 5));
-            blackmarubozu = ((Open > Close) & (High == Open) & (Close == Low));
-
-            marubozuclosingblack = BlackCandle & High > Open & Low == Close;
-            marubozuopeningblack = BlackCandle & High == Open & Low < Close;
-            marubozuclosingwhite = WhiteCandle & High == Close & Open > Low;
-            marubozuopeningwhite = WhiteCandle & High > Close & Open == Low;
-            BlackSpinningTop = ((Open > Close) & ((High - Low) > (3 * (Open - Close))) & (((High - Open) / (0.001f + High - Low)) < 0.4f) & (((Close - Low) / (0.001f + High - Low)) < 0.4f));
-            WhiteSpinningTop = ((Close > Open) & ((High - Low) > (3 * (Close - Open))) & (((High - Close) / (0.001f + High - Low)) < 0.4f) & (((Open - Low) / (0.001f + High - Low)) < 0.4f));
-
-
-            hammer1 = (((High - Low) > 3 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) > 0.6f) & ((Open - Low) / (.001f + High - Low) > 0.6f));
-            InvertedHammer1 = (((High - Low) > 3 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) > 0.6f) & ((High - Open) / (0.001f + High - Low) > 0.6f));
-            HangingMan1 = (((High - Low) > 4 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) >= 0.75f) & ((Open - Low) / (.001f + High - Low) >= 0.75f));
-            ShootingStar1 = (((High - Low) > 4 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) >= 0.75f) & ((High - Open) / (0.001f + High - Low) >= 0.75f));
-            BearishEngulfing = ((C1 > O1) & (Open > Close) & (Open >= C1) & (O1 >= Close) & ((Open - Close) > (C1 - O1)));
-            BullishEngulfing = ((O1 > C1) & (Close > Open) & (Close >= O1) & (C1 >= Open) & ((Close - Open) > (O1 - C1)));
-            BearishEveningDojiStar = ((C2 > O2) & ((C2 - O2) / (0.001f + H2 - L2) > 0.6f) & (C2 < O1) & (C1 > O1) & ((H1 - L1) > (3 * (C1 - O1))) & (Open > Close) & (Open < O1));
-            BullishMorningDojiStar = ((O2 > C2) & ((O2 - C2) / (0.001f + H2 - L2) > 0.6f) & (C2 > O1) & (O1 > C1) & ((H1 - L1) > (3 * (C1 - O1))) & (Close > Open) & (Open > O1));
-            BullishHarami = ((O1 > C1) & (Close > Open) & (Close <= O1) & (C1 <= Open) & ((Close - Open) < (O1 - C1)));
-            BearishHarami = ((C1 > O1) & (Open > Close) & (Open <= C1) & (O1 <= Close) & ((Open - Close) < (C1 - O1)));
-
-
-
-        
-
-
-            PiercingLine = ((C1 < O1) & (((O1 + C1) / 2) < Close) & (Open < Close) & (Open < C1) & (Close < O1) & ((Close - Open) / (0.001f + (High - Low)) > 0.6f));
-
-            EveningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(WhiteCandle, -2) & AFTools.Ref(upGap, -1) & !AFTools.Ref(largeBody, -1) & BlackCandle & !smallBody & (MHT | MHY);
-            MorningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(BlackCandle, -2) & AFTools.Ref(downGap, -1) & WhiteCandle & largeBody & Close > AFTools.Ref(Close, -2) & MLY;
-            MATCHLOW = AFHL.Llv(Low, 8) == AFHL.Llv(Low, 2) & AFTools.Ref(Close, -1) <= AFTools.Ref(Open, -1) * .99f & AFMath.Abs(Close - AFTools.Ref(Close, -1)) <= Close * .0025f & Open > AFTools.Ref(Close, -1) & Open <= (High - ((High - Low) * .5f));
-            GapUpx = AFPattern.GapUp();
-            GapDownx = AFPattern.GapDown();
-            BigGapUp = Low > 1.01f * H1;
-            BigGapDown = High < 0.99f * L1;
-            HugeGapUp = Low > 1.02f * H1;
-            HugeGapDown = High < 0.98f * L1;
-            DoubleGapUp = AFPattern.GapUp() & AFTools.Ref(AFPattern.GapUp(), -1);
-            DoubleGapDown = AFPattern.GapDown() & AFTools.Ref(AFPattern.GapDown(), -1);
-
-            consecutave5up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5);
-            consecutave10up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5) & (H5 > H6) & (H6 > H7) & (H7 > H8) & (H8 > H9);
-
-            consecutave5down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5);
-            consecutave10down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5) & (L5 < L6) & (L6 < L7) & (L7 < L8) & (L8 < L9);
-            Abovethestomach = (O1 > C1) & (Close > Open) & Close >= AFStat.Median(C1, 1);
-            Belowthestomch = LongwhiteCandle & Open < AFStat.Median(C1, 1) & Close <= AFStat.Median(C1, 1);
-            TweezerTop = AFMath.Abs(High - AFTools.Ref(High, -1)) <= High * 0.0025f & Open > Close & (AFTools.Ref(Close, -1) > AFTools.Ref(Open, -1)) & (MHT | MHY);
-
-            /*Tweezer Bottom*/
-            tweezerBottom = (AFMath.Abs(Low - AFTools.Ref(Low, -1)) / Low < 0.0025f | AFMath.Abs(Low - AFTools.Ref(Low, -2)) / Low < 0.0025f) & Open < Close & (AFTools.Ref(Open, -1) > AFTools.Ref(Close, -1)) & (MLT | MLY);
-
-
-
-
-            /* Detecting double tops & bottoms (come into view, by Isfandi)*/
-            percdiff = 5; /* peak detection threshold */
-            fwdcheck = 5; /* forward validity check */
-            mindistance = 10;
-            validdiff = percdiff / 400;
-
-            PK = AFPattern.Peak(High, percdiff, 1) == High;
-            TR = AFPattern.Trough(Low, percdiff, 1) == Low;
-
-
-            x = AFAvg.Cum(1);
-            XPK1 = AFTools.ValueWhen(PK, x, 1);
-            XPK2 = AFTools.ValueWhen(PK, x, 2);
-            xTR1 = AFTools.ValueWhen(TR, x, 1);
-            xTr2 = AFTools.ValueWhen(TR, x, 2);
-
-            peakdiff = AFTools.ValueWhen(PK, High, 1) / AFTools.ValueWhen(PK, High, 2);
-            Troughdiff = AFTools.ValueWhen(TR, Low, 1) / AFTools.ValueWhen(TR, Low, 2);
-
-            doubletop = PK & AFMath.Abs(peakdiff - 1) < validdiff & (XPK1 - XPK2) > mindistance & High > AFHL.Hhv(AFTools.Ref(High, fwdcheck), fwdcheck - 1);
-            doubleBot = TR & AFMath.Abs(Troughdiff - 1) < validdiff & (xTR1 - xTr2) > mindistance & Low < AFHL.Llv(AFTools.Ref(Low, fwdcheck), fwdcheck - 1);
-
-
-
-            ////////////////////////////////////////////////
-            MINO10 = AFHL.Llv(Open, 10);
-            AVGH10 = AFAvg.Ma(High, 10);
-            AVGL10 = AFAvg.Ma(Low, 10);
-            MAXO10 = AFHL.Hhv(Open, 10);
-            MINL10 = AFHL.Llv(Low, 10);
-            MAXH10 = AFHL.Hhv(High, 10);
-            AVGH21 = AFAvg.Ma(High, 21);
-            AVGL21 = AFAvg.Ma(Low, 21);
-            MINL5 = AFHL.Llv(Low, 5);
-            BullishBeltHold = (Open = MINO10) & (Open < L1) & (Close - Open) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (Open - Low) <= .01f * (High - Low) & (Close <= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 < C2) & (C2 < C3);
-            BearishBeltHold = (Open = MAXO10) & (Open > H1) & (Open - Close) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (High - Open) <= .01f * (High - Low) & (Close >= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 > C2) & (C2 < C3);
-            BullishBreakaway = C4 < O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < O3 & H3 < L4 & C2 < C3 & C1 < C2 & AFMath.Abs(Close - Open) > .6f * (High - Low) & Close > Open & Close > H3;
-            BearishBreakaway = AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C4 > O4 & C3 > O3 & L3 > H4 & C2 > C3 & C1 > C2 & Close < Open & Low < H4 & High > L3;
-
-            DojiDragonfly = AFMath.Abs(Open - Close) <= .02f * (High - Low) & (High - Close) <= .3f * (High - Low) & (High - Low) >= (AVGH10 - AVGL10) & (High > Low) & (Low = MINL10);
-            //BullishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (L<=L1+.3*(H1-L1)) AND (H-L)>=(AVGH10-AVGL10);
-
-
-
-
-            //////////////////////////////price 
-            MAXC20 = AFHL.Hhv(Close, 20);
-            AVGC40 = AFAvg.Ma(Close, 40);
-            AVGH5 = AFAvg.Ma(High, 5);
-            AVGL5 = AFAvg.Ma(Low, 5);
-            AVGH34 = AFAvg.Ma(High, 34);
-            AVGL34 = AFAvg.Ma(Low, 43);
-            MAXH5 = AFHL.Hhv(High, 5);
-            MAXH10 = AFHL.Hhv(High, 10);
-            MAXH20 = AFHL.Hhv(High, 20);
-            MINL20 = AFHL.Llv(Low, 20);
-            MINL42 = AFHL.Llv(Low, 42);
-            MAXH42 = AFHL.Hhv(High, 42);
-            MINL21 = AFHL.Llv(Low, 21);
-
-          
-            ////////////////////////////////////
-            //to be reveiewd 
-            AVGV4 = AFAvg.Ma(Volume, 4);
-            MINL3 = AFHL.Llv(Low, 3);
-           
-         
-            ///////////////////////
-            AVGC20 = AFAvg.Ma(Close, 20);
-            AVGC50 = AFAvg.Ma(Close, 50);
-            MAXH3 = AFHL.Hhv(High, 3);
-           Insideday = AFPattern.Inside();
-            DojiGapUp = C3 > O3 & O2 > O3 & C2 > O2 & O1 > O2 & Open > C1 & Open == Close & High > Close & Close > Open;
-            //needs to be review
-            //DojiGapdown=C3 < O3 AND O2 < O3 AND C2  < O2 AND O1 < O2 AND O <  C1 AND O = C AND H <  C AND C < O;
-
-            /* Add AFInfo.Name in column*/
-
-
-            var doublecandle6=
-                  AFMisc.WriteIf(TweezerTop, "Tweezer Top",
-  AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
-  AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
-  AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
-  AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
-  AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
-
-  AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
-   AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
-  AFMisc.WriteIf(EveningStar1, "Evening Star",
-  AFMisc.WriteIf(MorningStar1, "Morning Star",
-  AFMisc.WriteIf(Abovethestomach, "Above the stomach",
-  AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
-  AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
-
-
-            var pricepattern6=
-            AFMisc.WriteIf(doubletop, "Double top ",
-            AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
-
-
-            var singlecandel6 =
-
-            AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
-            AFMisc.WriteIf(GapUpx, "Gap Up",
-            AFMisc.WriteIf(GapDownx, "Gap Down ",
-            AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
-            AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
-            AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
-            AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
-            AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
-
-
-             AFMisc.WriteIf(HangingMan1, "Hanging Man",
-
-              AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
-            AFMisc.WriteIf(PiercingLine, "Piercing Line ",
-             AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
-            AFMisc.WriteIf(Doji1, "Doji",
-             AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
-
-
-
-             AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
-             AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
-            AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
-             AFMisc.WriteIf(marubozuclosingwhite, "Marubozu closing white",
-             AFMisc.WriteIf(marubozuopeningwhite, "Marubozu opening white",
-            AFMisc.WriteIf(marubozuopeningblack, "Marubozu opening black",
-                       AFMisc.WriteIf(marubozuclosingblack, "Marubozu closing black",
-                       AFMisc.WriteIf(blackmarubozu, "Black marubozu",
-                        AFMisc.WriteIf(whitemarubozu, "White marubozu",
-                        AFMisc.WriteIf(ShortWhitecandle, "Short White candle",
-                        AFMisc.WriteIf(ShortblackCandle, "Short black Candle",
-                        AFMisc.WriteIf(LongwhiteCandle, "Long white Candle",
-                        AFMisc.WriteIf(LongblackCandle, "Long Black Candle",
-                        AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
-                        AFMisc.WriteIf(hammer1, "Hammer",
-                        AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
-
-            AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
-             AFMisc.WriteIf(oneDayreversal, "One Day reversal",
-            AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
-            AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
-
-
-
-            AFMisc.WriteIf(Belowthestomch, "Below the stomch",
-
-                        AFMisc.WriteIf(Insideday, "Inside Day", "No pattern"))))))))))))))))))))))))))))))))))));
-
-
-
-
-
-
-            AFMisc.AddTextColumn(singlecandel6, "Daily Single  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(doublecandle6, "Daily  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(pricepattern6, "Daily Price  Pattern", 5.6f, Color.Black, Color.White);
-            AFTimeFrame.TimeFrameRestore();
-
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            
-            
-            AFTimeFrame.TimeFrameSet(TFInterval.InWeekly ); // switch now to hourly 
-             O1 = AFTools.Ref(Open, -1);  O2 = AFTools.Ref(Open, -2);  O3 = AFTools.Ref(Open, -3);  O4 = AFTools.Ref(Open, -4);  O5 = AFTools.Ref(Open, -5);  O6 = AFTools.Ref(Open, -6);  O7 = AFTools.Ref(Open, -7);  O8 = AFTools.Ref(Open, -8);  O9 = AFTools.Ref(Open, -9);
-
-             H1 = AFTools.Ref(High, -1);  H2 = AFTools.Ref(High, -2);  H3 = AFTools.Ref(High, -3);  H4 = AFTools.Ref(High, -4);  H5 = AFTools.Ref(High, -5);  H6 = AFTools.Ref(High, -6); H6 = AFTools.Ref(High, -6);  H7 = AFTools.Ref(High, -7);  H8 = AFTools.Ref(High, -8);  H9 = AFTools.Ref(High, -9);
-
-             L1 = AFTools.Ref(Low, -1);  L2 = AFTools.Ref(Low, -2);  L3 = AFTools.Ref(Low, -3);  L4 = AFTools.Ref(Low, -4);  L5 = AFTools.Ref(Low, -5);  L6 = AFTools.Ref(Low, -6);  L7 = AFTools.Ref(Low, -7);  L8 = AFTools.Ref(Low, -8);  L9 = AFTools.Ref(Low, -9);
-
-
-             C1 = AFTools.Ref(Close, -1);  C2 = AFTools.Ref(Close, -2);  C3 = AFTools.Ref(Close, -3);  C4 = AFTools.Ref(Close, -4);  C5 = AFTools.Ref(Close, -5);  C6 = AFTools.Ref(Close, -6);  C7 = AFTools.Ref(Close, -7);  C8 = AFTools.Ref(Close, -8);  C9 = AFTools.Ref(Close, -9);
-
-            /* BODY Colors*/
-             WhiteCandle = Close >= Open;
-             BlackCandle = Open > Close;
-             B1 = O1 - C1;
-             B2 = O2 - C2;
-             B3 = O3 - C3;
-             Avgbody = ((B1 + B2 + B3) / 3);
-             XBODY = Avgbody * 3;
-
-             BODY = Open - Close;
-
-
-
-
-
-            /*Single candle Pattern */
-             smallBodyMaximum = 0.0025f;//less than 0.25%
-             LargeBodyMinimum = 0.01f;//greater than 1.0%
-             smallBody = (Open >= Close * (1 - smallBodyMaximum) & WhiteCandle) | (Close >= Open * (1 - smallBodyMaximum) & BlackCandle);
-             largeBody = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) | Close <= Open * (1 - LargeBodyMinimum) & BlackCandle;
-             mediumBody = !largeBody & !smallBody;
-             identicalBodies = AFMath.Abs(AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) - AFMath.Abs(Open - Close)) < AFMath.Abs(Open - Close) * smallBodyMaximum;
-             realBodySize = AFMath.Abs(Open - Close);
-
-
-
-            /*Shadows*/
-             smallUpperShadow = (WhiteCandle & High <= Close * (1 + smallBodyMaximum)) | (BlackCandle & High <= Open * (1 + smallBodyMaximum));
-             smallLowerShadow = (WhiteCandle & Low >= Open * (1 - smallBodyMaximum)) | (BlackCandle & Low >= Close * (1 - smallBodyMaximum));
-             largeUpperShadow = (WhiteCandle & High >= Close * (1 + LargeBodyMinimum)) | (BlackCandle & High >= Open * (1 + LargeBodyMinimum));
-             largeLowerShadow = (WhiteCandle & Low <= Open * (1 - LargeBodyMinimum)) | (BlackCandle & Low <= Close * (1 - LargeBodyMinimum));
-
-            /*Gaps*/
-             upGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Open > AFTools.Ref(Open, -1), 1,
+            var upGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Open > AFTools.Ref(Open, -1), 1,
             AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Close > AFTools.Ref(Open, -1), 1,
             AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Open > AFTools.Ref(Close, -1), 1,
             AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Close > AFTools.Ref(Close, -1), 1, 0))));
 
-             downGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Close < AFTools.Ref(Close, -1), 1,
+            var downGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Close < AFTools.Ref(Close, -1), 1,
             AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Open < AFTools.Ref(Close, -1), 1,
             AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Close < AFTools.Ref(Open, -1), 1,
             AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Open < AFTools.Ref(Open, -1), 1, 0))));
@@ -2771,512 +2240,197 @@ if(AFTools.ParamToggle("Add Comments","No,Yes",0)==1)
 
 
 
-            /*Maximum High Today - ( MHT)
+            /*Maximum High Today - (var MHT)
             Today is the maximum High in the last 5 days*/
-             MHT = AFHL.Hhv(High, 5) == High;
+            var MHT = AFHL.Hhv(High, 5) == High;
 
-            /*Maximum High Yesterday - ( MHY)
+            /*Maximum High Yesterday - (var MHY)
             Yesterday is the maximum High in the last 5 days*/
-             MHY = AFHL.Hhv(High, 5) == AFTools.Ref(High, -1);
+            var MHY = AFHL.Hhv(High, 5) == AFTools.Ref(High, -1);
 
-            /*Minimum Low Today - ( MLT)
+            /*Minimum Low Today - (var MLT)
             Today is the minimum Low in the last 5 days*/
-             MLT = AFHL.Llv(Low, 5) == Low;
+            var MLT = AFHL.Llv(Low, 5) == Low;
 
-            /*Minimum Low Yesterday - ( MLY)
+            /*Minimum Low Yesterday - (var MLY)
             Yesterday is the minimum Low in the last 5 days*/
-             MLY = AFHL.Llv(Low, 5) == AFTools.Ref(Low, -1);
+            var MLY = AFHL.Llv(Low, 5) == AFTools.Ref(Low, -1);
 
-            /* Doji1 definitions*/
+            /*var Doji1 definitions*/
 
             /*Doji1 Today - (DT)*/
-            //   DT = AFMath.Abs(Close - Open) <= (Close * smallBodyMaximum) | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+            //var   DT = AFMath.Abs(Close - Open) <= (Close * smallBodyMaximum) | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
 
             /* Doji1 Yesterday - (DY)*/
-            //   DY = AFMath.Abs(AFTools.Ref(Close, -1) - AFTools.Ref(Open, -1)) <= AFTools.Ref(Close, -1) * smallBodyMaximum | AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) <= (AFTools.Ref(High, -1) - AFTools.Ref(Low, -1)) * 0.1f;
+            // var  DY = AFMath.Abs(AFTools.Ref(Close, -1) - AFTools.Ref(Open, -1)) <= AFTools.Ref(Close, -1) * smallBodyMaximum | AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) <= (AFTools.Ref(High, -1) - AFTools.Ref(Low, -1)) * 0.1f;
 
 
 
-             ShortWhitecandle = ((Close > Open) & ((High - Low) > (3 * (Close - Open))));
-             ShortblackCandle = ((Open > Close) & ((High - Low) > (3 * (Open - Close))));
-             Close1 = (Open - Close) * (0.002f);
-             Open1 = (Open * 0.002f);
+            var ShortWhitecandle = ((Close > Open) & ((High - Low) > (3 * (Close - Open))));
+            var ShortblackCandle = ((Open > Close) & ((High - Low) > (3 * (Open - Close))));
+            var Close1 = (Open - Close) * (0.002f);
+            var Open1 = (Open * 0.002f);
 
-             LongblackCandle = (Close <= Open * (1 - LargeBodyMinimum) & BlackCandle) & (Open > Close) & ((Open - Close) / (.001f + High - Low) > .6f);
-             LongwhiteCandle = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) & ((Close > Open) & ((Close - Open) / (.001f + High - Low) > .6f));
-             Doji1 = Open == Close | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+            var LongblackCandle = (Close <= Open * (1 - LargeBodyMinimum) & BlackCandle) & (Open > Close) & ((Open - Close) / (.001f + High - Low) > .6f);
+            var LongwhiteCandle = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) & ((Close > Open) & ((Close - Open) / (.001f + High - Low) > .6f));
+            var Doji1 = Open == Close | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
 
             //almost equal needs to be reviewd and implemented 
-             whitemarubozu = ((Close > Open) & AFMisc.AlmostEqual(High, Close, 5) & AFMisc.AlmostEqual(Open, Low, 5));
-             blackmarubozu = ((Open > Close) & (High == Open) & (Close == Low));
+            var whitemarubozu = ((Close > Open) & AFMisc.AlmostEqual(High, Close, 5) & AFMisc.AlmostEqual(Open, Low, 5));
+            var blackmarubozu = ((Open > Close) & (High == Open) & (Close == Low));
 
-             marubozuclosingblack = BlackCandle & High > Open & Low == Close;
-             marubozuopeningblack = BlackCandle & High == Open & Low < Close;
-             marubozuclosingwhite = WhiteCandle & High == Close & Open > Low;
-             marubozuopeningwhite = WhiteCandle & High > Close & Open == Low;
-             BlackSpinningTop = ((Open > Close) & ((High - Low) > (3 * (Open - Close))) & (((High - Open) / (0.001f + High - Low)) < 0.4f) & (((Close - Low) / (0.001f + High - Low)) < 0.4f));
-             WhiteSpinningTop = ((Close > Open) & ((High - Low) > (3 * (Close - Open))) & (((High - Close) / (0.001f + High - Low)) < 0.4f) & (((Open - Low) / (0.001f + High - Low)) < 0.4f));
-
-
-             hammer1 = (((High - Low) > 3 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) > 0.6f) & ((Open - Low) / (.001f + High - Low) > 0.6f));
-             InvertedHammer1 = (((High - Low) > 3 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) > 0.6f) & ((High - Open) / (0.001f + High - Low) > 0.6f));
-             HangingMan1 = (((High - Low) > 4 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) >= 0.75f) & ((Open - Low) / (.001f + High - Low) >= 0.75f));
-             ShootingStar1 = (((High - Low) > 4 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) >= 0.75f) & ((High - Open) / (0.001f + High - Low) >= 0.75f));
-             BearishEngulfing = ((C1 > O1) & (Open > Close) & (Open >= C1) & (O1 >= Close) & ((Open - Close) > (C1 - O1)));
-             BullishEngulfing = ((O1 > C1) & (Close > Open) & (Close >= O1) & (C1 >= Open) & ((Close - Open) > (O1 - C1)));
-             BearishEveningDojiStar = ((C2 > O2) & ((C2 - O2) / (0.001f + H2 - L2) > 0.6f) & (C2 < O1) & (C1 > O1) & ((H1 - L1) > (3 * (C1 - O1))) & (Open > Close) & (Open < O1));
-             BullishMorningDojiStar = ((O2 > C2) & ((O2 - C2) / (0.001f + H2 - L2) > 0.6f) & (C2 > O1) & (O1 > C1) & ((H1 - L1) > (3 * (C1 - O1))) & (Close > Open) & (Open > O1));
-             BullishHarami = ((O1 > C1) & (Close > Open) & (Close <= O1) & (C1 <= Open) & ((Close - Open) < (O1 - C1)));
-             BearishHarami = ((C1 > O1) & (Open > Close) & (Open <= C1) & (O1 <= Close) & ((Open - Close) < (C1 - O1)));
+            var marubozuclosingblack = BlackCandle & High > Open & Low == Close;
+            var marubozuopeningblack = BlackCandle & High == Open & Low < Close;
+            var marubozuclosingwhite = WhiteCandle & High == Close & Open > Low;
+            var marubozuopeningwhite = WhiteCandle & High > Close & Open == Low;
+            var BlackSpinningTop = ((Open > Close) & ((High - Low) > (3 * (Open - Close))) & (((High - Open) / (0.001f + High - Low)) < 0.4f) & (((Close - Low) / (0.001f + High - Low)) < 0.4f));
+            var WhiteSpinningTop = ((Close > Open) & ((High - Low) > (3 * (Close - Open))) & (((High - Close) / (0.001f + High - Low)) < 0.4f) & (((Open - Low) / (0.001f + High - Low)) < 0.4f));
 
 
+            var hammer1 = (((High - Low) > 3 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) > 0.6f) & ((Open - Low) / (.001f + High - Low) > 0.6f));
+            var InvertedHammer1 = (((High - Low) > 3 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) > 0.6f) & ((High - Open) / (0.001f + High - Low) > 0.6f));
+            var HangingMan1 = (((High - Low) > 4 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) >= 0.75f) & ((Open - Low) / (.001f + High - Low) >= 0.75f));
+            var ShootingStar1 = (((High - Low) > 4 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) >= 0.75f) & ((High - Open) / (0.001f + High - Low) >= 0.75f));
+            var BearishEngulfing = ((C1 > O1) & (Open > Close) & (Open >= C1) & (O1 >= Close) & ((Open - Close) > (C1 - O1)));
+            var BullishEngulfing = ((O1 > C1) & (Close > Open) & (Close >= O1) & (C1 >= Open) & ((Close - Open) > (O1 - C1)));
+            var BearishEveningDojiStar = ((C2 > O2) & ((C2 - O2) / (0.001f + H2 - L2) > 0.6f) & (C2 < O1) & (C1 > O1) & ((H1 - L1) > (3 * (C1 - O1))) & (Open > Close) & (Open < O1));
+            var BullishMorningDojiStar = ((O2 > C2) & ((O2 - C2) / (0.001f + H2 - L2) > 0.6f) & (C2 > O1) & (O1 > C1) & ((H1 - L1) > (3 * (C1 - O1))) & (Close > Open) & (Open > O1));
+            var BullishHarami = ((O1 > C1) & (Close > Open) & (Close <= O1) & (C1 <= Open) & ((Close - Open) < (O1 - C1)));
+            var BearishHarami = ((C1 > O1) & (Open > Close) & (Open <= C1) & (O1 <= Close) & ((Open - Close) < (C1 - O1)));
 
 
 
-             PiercingLine = ((C1 < O1) & (((O1 + C1) / 2) < Close) & (Open < Close) & (Open < C1) & (Close < O1) & ((Close - Open) / (0.001f + (High - Low)) > 0.6f));
 
-             EveningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(WhiteCandle, -2) & AFTools.Ref(upGap, -1) & !AFTools.Ref(largeBody, -1) & BlackCandle & !smallBody & (MHT | MHY);
-             MorningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(BlackCandle, -2) & AFTools.Ref(downGap, -1) & WhiteCandle & largeBody & Close > AFTools.Ref(Close, -2) & MLY;
-             MATCHLOW = AFHL.Llv(Low, 8) == AFHL.Llv(Low, 2) & AFTools.Ref(Close, -1) <= AFTools.Ref(Open, -1) * .99f & AFMath.Abs(Close - AFTools.Ref(Close, -1)) <= Close * .0025f & Open > AFTools.Ref(Close, -1) & Open <= (High - ((High - Low) * .5f));
-             GapUpx = AFPattern.GapUp();
-             GapDownx = AFPattern.GapDown();
-             BigGapUp = Low > 1.01f * H1;
-             BigGapDown = High < 0.99f * L1;
-             HugeGapUp = Low > 1.02f * H1;
-             HugeGapDown = High < 0.98f * L1;
-             DoubleGapUp = AFPattern.GapUp() & AFTools.Ref(AFPattern.GapUp(), -1);
-             DoubleGapDown = AFPattern.GapDown() & AFTools.Ref(AFPattern.GapDown(), -1);
+            var PiercingLine = ((C1 < O1) & (((O1 + C1) / 2) < Close) & (Open < Close) & (Open < C1) & (Close < O1) & ((Close - Open) / (0.001f + (High - Low)) > 0.6f));
 
-             consecutave5up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5);
-             consecutave10up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5) & (H5 > H6) & (H6 > H7) & (H7 > H8) & (H8 > H9);
+            var EveningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(WhiteCandle, -2) & AFTools.Ref(upGap, -1) & !AFTools.Ref(largeBody, -1) & BlackCandle & !smallBody & (MHT | MHY);
+            var MorningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(BlackCandle, -2) & AFTools.Ref(downGap, -1) & WhiteCandle & largeBody & Close > AFTools.Ref(Close, -2) & MLY;
+            var MATCHLOW = AFHL.Llv(Low, 8) == AFHL.Llv(Low, 2) & AFTools.Ref(Close, -1) <= AFTools.Ref(Open, -1) * .99f & AFMath.Abs(Close - AFTools.Ref(Close, -1)) <= Close * .0025f & Open > AFTools.Ref(Close, -1) & Open <= (High - ((High - Low) * .5f));
+            var GapUpx = AFPattern.GapUp();
+            var GapDownx = AFPattern.GapDown();
+            var BigGapUp = Low > 1.01f * H1;
+            var BigGapDown = High < 0.99f * L1;
+            var HugeGapUp = Low > 1.02f * H1;
+            var HugeGapDown = High < 0.98f * L1;
+            var DoubleGapUp = AFPattern.GapUp() & AFTools.Ref(AFPattern.GapUp(), -1);
+            var DoubleGapDown = AFPattern.GapDown() & AFTools.Ref(AFPattern.GapDown(), -1);
 
-             consecutave5down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5);
-             consecutave10down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5) & (L5 < L6) & (L6 < L7) & (L7 < L8) & (L8 < L9);
-             Abovethestomach = (O1 > C1) & (Close > Open) & Close >= AFStat.Median(C1, 1);
-             Belowthestomch = LongwhiteCandle & Open < AFStat.Median(C1, 1) & Close <= AFStat.Median(C1, 1);
-             TweezerTop = AFMath.Abs(High - AFTools.Ref(High, -1)) <= High * 0.0025f & Open > Close & (AFTools.Ref(Close, -1) > AFTools.Ref(Open, -1)) & (MHT | MHY);
+            var consecutave5up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5);
+            var consecutave10up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5) & (H5 > H6) & (H6 > H7) & (H7 > H8) & (H8 > H9);
+
+            var consecutave5down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5);
+            var consecutave10down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5) & (L5 < L6) & (L6 < L7) & (L7 < L8) & (L8 < L9);
+            var Abovethestomach = (O1 > C1) & (Close > Open) & Close >= AFStat.Median(C1, 1);
+            var Belowthestomch = LongwhiteCandle & Open < AFStat.Median(C1, 1) & Close <= AFStat.Median(C1, 1);
+            var TweezerTop = AFMath.Abs(High - AFTools.Ref(High, -1)) <= High * 0.0025f & Open > Close & (AFTools.Ref(Close, -1) > AFTools.Ref(Open, -1)) & (MHT | MHY);
 
             /*Tweezer Bottom*/
-             tweezerBottom = (AFMath.Abs(Low - AFTools.Ref(Low, -1)) / Low < 0.0025f | AFMath.Abs(Low - AFTools.Ref(Low, -2)) / Low < 0.0025f) & Open < Close & (AFTools.Ref(Open, -1) > AFTools.Ref(Close, -1)) & (MLT | MLY);
+            var tweezerBottom = (AFMath.Abs(Low - AFTools.Ref(Low, -1)) / Low < 0.0025f | AFMath.Abs(Low - AFTools.Ref(Low, -2)) / Low < 0.0025f) & Open < Close & (AFTools.Ref(Open, -1) > AFTools.Ref(Close, -1)) & (MLT | MLY);
 
 
 
 
             /* Detecting double tops & bottoms (come into view, by Isfandi)*/
-             percdiff = 5; /* peak detection threshold */
-             fwdcheck = 5; /* forward validity check */
-             mindistance = 10;
-             validdiff = percdiff / 400;
+            var percdiff = 5; /* peak detection threshold */
+            var fwdcheck = 5; /* forward validity check */
+            var mindistance = 10;
+            var validdiff = percdiff / 400;
 
-             PK = AFPattern.Peak(High, percdiff, 1) == High;
-             TR = AFPattern.Trough(Low, percdiff, 1) == Low;
+            var PK = AFPattern.Peak(High, percdiff, 1) == High;
+            var TR = AFPattern.Trough(Low, percdiff, 1) == Low;
 
 
-             x = AFAvg.Cum(1);
-             XPK1 = AFTools.ValueWhen(PK, x, 1);
-             XPK2 = AFTools.ValueWhen(PK, x, 2);
-             xTR1 = AFTools.ValueWhen(TR, x, 1);
-             xTr2 = AFTools.ValueWhen(TR, x, 2);
+            var x = AFAvg.Cum(1);
+            var XPK1 = AFTools.ValueWhen(PK, x, 1);
+            var XPK2 = AFTools.ValueWhen(PK, x, 2);
+            var xTR1 = AFTools.ValueWhen(TR, x, 1);
+            var xTr2 = AFTools.ValueWhen(TR, x, 2);
 
-             peakdiff = AFTools.ValueWhen(PK, High, 1) / AFTools.ValueWhen(PK, High, 2);
-             Troughdiff = AFTools.ValueWhen(TR, Low, 1) / AFTools.ValueWhen(TR, Low, 2);
+            var peakdiff = AFTools.ValueWhen(PK, High, 1) / AFTools.ValueWhen(PK, High, 2);
+            var Troughdiff = AFTools.ValueWhen(TR, Low, 1) / AFTools.ValueWhen(TR, Low, 2);
 
-             doubletop = PK & AFMath.Abs(peakdiff - 1) < validdiff & (XPK1 - XPK2) > mindistance & High > AFHL.Hhv(AFTools.Ref(High, fwdcheck), fwdcheck - 1);
-             doubleBot = TR & AFMath.Abs(Troughdiff - 1) < validdiff & (xTR1 - xTr2) > mindistance & Low < AFHL.Llv(AFTools.Ref(Low, fwdcheck), fwdcheck - 1);
+            var doubletop = PK & AFMath.Abs(peakdiff - 1) < validdiff & (XPK1 - XPK2) > mindistance & High > AFHL.Hhv(AFTools.Ref(High, fwdcheck), fwdcheck - 1);
+            var doubleBot = TR & AFMath.Abs(Troughdiff - 1) < validdiff & (xTR1 - xTr2) > mindistance & Low < AFHL.Llv(AFTools.Ref(Low, fwdcheck), fwdcheck - 1);
 
 
 
             ////////////////////////////////////////////////
-             MINO10 = AFHL.Llv(Open, 10);
-             AVGH10 = AFAvg.Ma(High, 10);
-             AVGL10 = AFAvg.Ma(Low, 10);
-             MAXO10 = AFHL.Hhv(Open, 10);
-             MINL10 = AFHL.Llv(Low, 10);
-             MAXH10 = AFHL.Hhv(High, 10);
-             AVGH21 = AFAvg.Ma(High, 21);
-             AVGL21 = AFAvg.Ma(Low, 21);
-             MINL5 = AFHL.Llv(Low, 5);
-             BullishBeltHold = (Open = MINO10) & (Open < L1) & (Close - Open) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (Open - Low) <= .01f * (High - Low) & (Close <= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 < C2) & (C2 < C3);
-             BearishBeltHold = (Open = MAXO10) & (Open > H1) & (Open - Close) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (High - Open) <= .01f * (High - Low) & (Close >= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 > C2) & (C2 < C3);
-             BullishBreakaway = C4 < O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < O3 & H3 < L4 & C2 < C3 & C1 < C2 & AFMath.Abs(Close - Open) > .6f * (High - Low) & Close > Open & Close > H3;
-             BearishBreakaway = AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C4 > O4 & C3 > O3 & L3 > H4 & C2 > C3 & C1 > C2 & Close < Open & Low < H4 & High > L3;
+            var MINO10 = AFHL.Llv(Open, 10);
+            var AVGH10 = AFAvg.Ma(High, 10);
+            var AVGL10 = AFAvg.Ma(Low, 10);
+            var MAXO10 = AFHL.Hhv(Open, 10);
+            var MINL10 = AFHL.Llv(Low, 10);
+            var MAXH10 = AFHL.Hhv(High, 10);
+            var AVGH21 = AFAvg.Ma(High, 21);
+            var AVGL21 = AFAvg.Ma(Low, 21);
+            var MINL5 = AFHL.Llv(Low, 5);
+            var BullishBeltHold = (Open = MINO10) & (Open < L1) & (Close - Open) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (Open - Low) <= .01f * (High - Low) & (Close <= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 < C2) & (C2 < C3);
+            var BearishBeltHold = (Open = MAXO10) & (Open > H1) & (Open - Close) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (High - Open) <= .01f * (High - Low) & (Close >= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 > C2) & (C2 < C3);
+            var BullishBreakaway = C4 < O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < O3 & H3 < L4 & C2 < C3 & C1 < C2 & AFMath.Abs(Close - Open) > .6f * (High - Low) & Close > Open & Close > H3;
+            var BearishBreakaway = AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C4 > O4 & C3 > O3 & L3 > H4 & C2 > C3 & C1 > C2 & Close < Open & Low < H4 & High > L3;
 
-             DojiDragonfly = AFMath.Abs(Open - Close) <= .02f * (High - Low) & (High - Close) <= .3f * (High - Low) & (High - Low) >= (AVGH10 - AVGL10) & (High > Low) & (Low = MINL10);
+            var DojiDragonfly = AFMath.Abs(Open - Close) <= .02f * (High - Low) & (High - Close) <= .3f * (High - Low) & (High - Low) >= (AVGH10 - AVGL10) & (High > Low) & (Low = MINL10);
             //BullishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (L<=L1+.3*(H1-L1)) AND (H-L)>=(AVGH10-AVGL10);
 
 
 
 
 
-            
+
             //////////////////////////////price 
-             MAXC20 = AFHL.Hhv(Close, 20);
-             AVGC40 = AFAvg.Ma(Close, 40);
-             AVGH5 = AFAvg.Ma(High, 5);
-             AVGL5 = AFAvg.Ma(Low, 5);
-             AVGH34 = AFAvg.Ma(High, 34);
-             AVGL34 = AFAvg.Ma(Low, 43);
-             MAXH5 = AFHL.Hhv(High, 5);
+            var MAXC20 = AFHL.Hhv(Close, 20);
+            var AVGC40 = AFAvg.Ma(Close, 40);
+            var AVGH5 = AFAvg.Ma(High, 5);
+            var AVGL5 = AFAvg.Ma(Low, 5);
+            var AVGH34 = AFAvg.Ma(High, 34);
+            var AVGL34 = AFAvg.Ma(Low, 43);
+            var MAXH5 = AFHL.Hhv(High, 5);
             MAXH10 = AFHL.Hhv(High, 10);
-             MAXH20 = AFHL.Hhv(High, 20);
-             MINL20 = AFHL.Llv(Low, 20);
-             MINL42 = AFHL.Llv(Low, 42);
-             MAXH42 = AFHL.Hhv(High, 42);
-             MINL21 = AFHL.Llv(Low, 21);
+            var MAXH20 = AFHL.Hhv(High, 20);
+            var MINL20 = AFHL.Llv(Low, 20);
+            var MINL42 = AFHL.Llv(Low, 42);
+            var MAXH42 = AFHL.Hhv(High, 42);
+            var MINL21 = AFHL.Llv(Low, 21);
 
-            
 
-            ////////////////////////////////////
-            //to be reveiewd 
-             AVGV4 = AFAvg.Ma(Volume, 4);
-             MINL3 = AFHL.Llv(Low, 3);
-         
+            var AVGV4 = AFAvg.Ma(Volume, 4);
+            var MINL3 = AFHL.Llv(Low, 3);
+
             ///////////////////////
-             AVGC20 = AFAvg.Ma(Close, 20);
-             AVGC50 = AFAvg.Ma(Close, 50);
-             MAXH3 = AFHL.Hhv(High, 3);
-             Insideday = AFPattern.Inside();
-             DojiGapUp = C3 > O3 & O2 > O3 & C2 > O2 & O1 > O2 & Open > C1 & Open == Close & High > Close & Close > Open;
+            var AVGC20 = AFAvg.Ma(Close, 20);
+            var AVGC50 = AFAvg.Ma(Close, 50);
+            var MAXH3 = AFHL.Hhv(High, 3);
+            var Insideday = AFPattern.Inside();
+            var DojiGapUp = C3 > O3 & O2 > O3 & C2 > O2 & O1 > O2 & Open > C1 & Open == Close & High > Close & Close > Open;
             //needs to be review
             //DojiGapdown=C3 < O3 AND O2 < O3 AND C2  < O2 AND O1 < O2 AND O <  C1 AND O = C AND H <  C AND C < O;
 
             /* Add AFInfo.Name in column*/
 
 
-            var doublecandle1 =
-                  AFMisc.WriteIf(TweezerTop, "Tweezer Top",
-  AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
-  AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
-  AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
-  AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
-  AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
-
-  AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
-   AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
-  AFMisc.WriteIf(EveningStar1, "Evening Star",
-  AFMisc.WriteIf(MorningStar1, "Morning Star",
-  AFMisc.WriteIf(Abovethestomach, "Above the stomach",
-  AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
-  AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
-
-
-             var pricepattern1 =
-             AFMisc.WriteIf(doubletop, "Double top ",
-             AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
-
-
-            var   singlecandel1 =
-
-            AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
-            AFMisc.WriteIf(GapUpx, "Gap Up",
-            AFMisc.WriteIf(GapDownx, "Gap Down ",
-            AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
-            AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
-            AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
-            AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
-            AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
-
-
-             AFMisc.WriteIf(HangingMan1, "Hanging Man",
-
-              AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
-            AFMisc.WriteIf(PiercingLine, "Piercing Line ",
-             AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
-            AFMisc.WriteIf(Doji1, "Doji",
-             AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
-
-
-
-             AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
-             AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
-            AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
-             AFMisc.WriteIf(marubozuclosingwhite, "Marubozu closing white",
-             AFMisc.WriteIf(marubozuopeningwhite, "Marubozu opening white",
-            AFMisc.WriteIf(marubozuopeningblack, "Marubozu opening black",
-                       AFMisc.WriteIf(marubozuclosingblack, "Marubozu closing black",
-                       AFMisc.WriteIf(blackmarubozu, "Black marubozu",
-                        AFMisc.WriteIf(whitemarubozu, "White marubozu",
-                        AFMisc.WriteIf(ShortWhitecandle, "Short White candle",
-                        AFMisc.WriteIf(ShortblackCandle, "Short black Candle",
-                        AFMisc.WriteIf(LongwhiteCandle, "Long white Candle",
-                        AFMisc.WriteIf(LongblackCandle, "Long Black Candle",
-                        AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
-                        AFMisc.WriteIf(hammer1, "Hammer",
-                        AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
-
-            AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
-             AFMisc.WriteIf(oneDayreversal, "One Day reversal",
-            AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
-            AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
-
-
-
-            AFMisc.WriteIf(Belowthestomch, "Below the stomch",
-
-                        AFMisc.WriteIf(Insideday, "Inside Day", "No pattern"))))))))))))))))))))))))))))))))))));
-
-
-
-
-
-
-            AFMisc.AddTextColumn(singlecandel1, "Weekly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(doublecandle1, "Weekly  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(pricepattern1, "Weekly Price  Pattern", 5.6f, Color.Black, Color.White);
-            AFTimeFrame.TimeFrameRestore();
-
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            AFTimeFrame.TimeFrameSet(TFInterval.InMonthly ); // switch now to hourly 
-            O1 = AFTools.Ref(Open, -1); O2 = AFTools.Ref(Open, -2); O3 = AFTools.Ref(Open, -3); O4 = AFTools.Ref(Open, -4); O5 = AFTools.Ref(Open, -5); O6 = AFTools.Ref(Open, -6); O7 = AFTools.Ref(Open, -7); O8 = AFTools.Ref(Open, -8); O9 = AFTools.Ref(Open, -9);
-
-            H1 = AFTools.Ref(High, -1); H2 = AFTools.Ref(High, -2); H3 = AFTools.Ref(High, -3); H4 = AFTools.Ref(High, -4); H5 = AFTools.Ref(High, -5); H6 = AFTools.Ref(High, -6); H6 = AFTools.Ref(High, -6); H7 = AFTools.Ref(High, -7); H8 = AFTools.Ref(High, -8); H9 = AFTools.Ref(High, -9);
-
-            L1 = AFTools.Ref(Low, -1); L2 = AFTools.Ref(Low, -2); L3 = AFTools.Ref(Low, -3); L4 = AFTools.Ref(Low, -4); L5 = AFTools.Ref(Low, -5); L6 = AFTools.Ref(Low, -6); L7 = AFTools.Ref(Low, -7); L8 = AFTools.Ref(Low, -8); L9 = AFTools.Ref(Low, -9);
-
-
-            C1 = AFTools.Ref(Close, -1); C2 = AFTools.Ref(Close, -2); C3 = AFTools.Ref(Close, -3); C4 = AFTools.Ref(Close, -4); C5 = AFTools.Ref(Close, -5); C6 = AFTools.Ref(Close, -6); C7 = AFTools.Ref(Close, -7); C8 = AFTools.Ref(Close, -8); C9 = AFTools.Ref(Close, -9);
-
-            /* BODY Colors*/
-            WhiteCandle = Close >= Open;
-            BlackCandle = Open > Close;
-            B1 = O1 - C1;
-            B2 = O2 - C2;
-            B3 = O3 - C3;
-            Avgbody = ((B1 + B2 + B3) / 3);
-            XBODY = Avgbody * 3;
-
-            BODY = Open - Close;
-
-
-
-
-
-            /*Single candle Pattern */
-            smallBodyMaximum = 0.0025f;//less than 0.25%
-            LargeBodyMinimum = 0.01f;//greater than 1.0%
-            smallBody = (Open >= Close * (1 - smallBodyMaximum) & WhiteCandle) | (Close >= Open * (1 - smallBodyMaximum) & BlackCandle);
-            largeBody = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) | Close <= Open * (1 - LargeBodyMinimum) & BlackCandle;
-            mediumBody = !largeBody & !smallBody;
-            identicalBodies = AFMath.Abs(AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) - AFMath.Abs(Open - Close)) < AFMath.Abs(Open - Close) * smallBodyMaximum;
-            realBodySize = AFMath.Abs(Open - Close);
-
-
-
-            /*Shadows*/
-            smallUpperShadow = (WhiteCandle & High <= Close * (1 + smallBodyMaximum)) | (BlackCandle & High <= Open * (1 + smallBodyMaximum));
-            smallLowerShadow = (WhiteCandle & Low >= Open * (1 - smallBodyMaximum)) | (BlackCandle & Low >= Close * (1 - smallBodyMaximum));
-            largeUpperShadow = (WhiteCandle & High >= Close * (1 + LargeBodyMinimum)) | (BlackCandle & High >= Open * (1 + LargeBodyMinimum));
-            largeLowerShadow = (WhiteCandle & Low <= Open * (1 - LargeBodyMinimum)) | (BlackCandle & Low <= Close * (1 - LargeBodyMinimum));
-
-            /*Gaps*/
-            upGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Open > AFTools.Ref(Open, -1), 1,
-           AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Close > AFTools.Ref(Open, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Open > AFTools.Ref(Close, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Close > AFTools.Ref(Close, -1), 1, 0))));
-
-            downGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Close < AFTools.Ref(Close, -1), 1,
-           AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Open < AFTools.Ref(Close, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Close < AFTools.Ref(Open, -1), 1,
-           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Open < AFTools.Ref(Open, -1), 1, 0))));
-
-
-
-
-            /*Maximum High Today - ( MHT)
-            Today is the maximum High in the last 5 days*/
-            MHT = AFHL.Hhv(High, 5) == High;
-
-            /*Maximum High Yesterday - ( MHY)
-            Yesterday is the maximum High in the last 5 days*/
-            MHY = AFHL.Hhv(High, 5) == AFTools.Ref(High, -1);
-
-            /*Minimum Low Today - ( MLT)
-            Today is the minimum Low in the last 5 days*/
-            MLT = AFHL.Llv(Low, 5) == Low;
-
-            /*Minimum Low Yesterday - ( MLY)
-            Yesterday is the minimum Low in the last 5 days*/
-            MLY = AFHL.Llv(Low, 5) == AFTools.Ref(Low, -1);
-
-            /* Doji1 definitions*/
-
-            /*Doji1 Today - (DT)*/
-            //   DT = AFMath.Abs(Close - Open) <= (Close * smallBodyMaximum) | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
-
-            /* Doji1 Yesterday - (DY)*/
-            //   DY = AFMath.Abs(AFTools.Ref(Close, -1) - AFTools.Ref(Open, -1)) <= AFTools.Ref(Close, -1) * smallBodyMaximum | AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) <= (AFTools.Ref(High, -1) - AFTools.Ref(Low, -1)) * 0.1f;
-
-
-
-            ShortWhitecandle = ((Close > Open) & ((High - Low) > (3 * (Close - Open))));
-            ShortblackCandle = ((Open > Close) & ((High - Low) > (3 * (Open - Close))));
-            Close1 = (Open - Close) * (0.002f);
-            Open1 = (Open * 0.002f);
-
-            LongblackCandle = (Close <= Open * (1 - LargeBodyMinimum) & BlackCandle) & (Open > Close) & ((Open - Close) / (.001f + High - Low) > .6f);
-            LongwhiteCandle = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) & ((Close > Open) & ((Close - Open) / (.001f + High - Low) > .6f));
-            Doji1 = Open == Close | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
-
-            //almost equal needs to be reviewd and implemented 
-            whitemarubozu = ((Close > Open) & AFMisc.AlmostEqual(High, Close, 5) & AFMisc.AlmostEqual(Open, Low, 5));
-            blackmarubozu = ((Open > Close) & (High == Open) & (Close == Low));
-
-            marubozuclosingblack = BlackCandle & High > Open & Low == Close;
-            marubozuopeningblack = BlackCandle & High == Open & Low < Close;
-            marubozuclosingwhite = WhiteCandle & High == Close & Open > Low;
-            marubozuopeningwhite = WhiteCandle & High > Close & Open == Low;
-            BlackSpinningTop = ((Open > Close) & ((High - Low) > (3 * (Open - Close))) & (((High - Open) / (0.001f + High - Low)) < 0.4f) & (((Close - Low) / (0.001f + High - Low)) < 0.4f));
-            WhiteSpinningTop = ((Close > Open) & ((High - Low) > (3 * (Close - Open))) & (((High - Close) / (0.001f + High - Low)) < 0.4f) & (((Open - Low) / (0.001f + High - Low)) < 0.4f));
-
-
-            hammer1 = (((High - Low) > 3 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) > 0.6f) & ((Open - Low) / (.001f + High - Low) > 0.6f));
-            InvertedHammer1 = (((High - Low) > 3 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) > 0.6f) & ((High - Open) / (0.001f + High - Low) > 0.6f));
-            HangingMan1 = (((High - Low) > 4 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) >= 0.75f) & ((Open - Low) / (.001f + High - Low) >= 0.75f));
-            ShootingStar1 = (((High - Low) > 4 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) >= 0.75f) & ((High - Open) / (0.001f + High - Low) >= 0.75f));
-            BearishEngulfing = ((C1 > O1) & (Open > Close) & (Open >= C1) & (O1 >= Close) & ((Open - Close) > (C1 - O1)));
-            BullishEngulfing = ((O1 > C1) & (Close > Open) & (Close >= O1) & (C1 >= Open) & ((Close - Open) > (O1 - C1)));
-            BearishEveningDojiStar = ((C2 > O2) & ((C2 - O2) / (0.001f + H2 - L2) > 0.6f) & (C2 < O1) & (C1 > O1) & ((H1 - L1) > (3 * (C1 - O1))) & (Open > Close) & (Open < O1));
-            BullishMorningDojiStar = ((O2 > C2) & ((O2 - C2) / (0.001f + H2 - L2) > 0.6f) & (C2 > O1) & (O1 > C1) & ((H1 - L1) > (3 * (C1 - O1))) & (Close > Open) & (Open > O1));
-            BullishHarami = ((O1 > C1) & (Close > Open) & (Close <= O1) & (C1 <= Open) & ((Close - Open) < (O1 - C1)));
-            BearishHarami = ((C1 > O1) & (Open > Close) & (Open <= C1) & (O1 <= Close) & ((Open - Close) < (C1 - O1)));
-
-
-
-
-
-            PiercingLine = ((C1 < O1) & (((O1 + C1) / 2) < Close) & (Open < Close) & (Open < C1) & (Close < O1) & ((Close - Open) / (0.001f + (High - Low)) > 0.6f));
-
-            EveningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(WhiteCandle, -2) & AFTools.Ref(upGap, -1) & !AFTools.Ref(largeBody, -1) & BlackCandle & !smallBody & (MHT | MHY);
-            MorningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(BlackCandle, -2) & AFTools.Ref(downGap, -1) & WhiteCandle & largeBody & Close > AFTools.Ref(Close, -2) & MLY;
-            MATCHLOW = AFHL.Llv(Low, 8) == AFHL.Llv(Low, 2) & AFTools.Ref(Close, -1) <= AFTools.Ref(Open, -1) * .99f & AFMath.Abs(Close - AFTools.Ref(Close, -1)) <= Close * .0025f & Open > AFTools.Ref(Close, -1) & Open <= (High - ((High - Low) * .5f));
-            GapUpx = AFPattern.GapUp();
-            GapDownx = AFPattern.GapDown();
-            BigGapUp = Low > 1.01f * H1;
-            BigGapDown = High < 0.99f * L1;
-            HugeGapUp = Low > 1.02f * H1;
-            HugeGapDown = High < 0.98f * L1;
-            DoubleGapUp = AFPattern.GapUp() & AFTools.Ref(AFPattern.GapUp(), -1);
-            DoubleGapDown = AFPattern.GapDown() & AFTools.Ref(AFPattern.GapDown(), -1);
-
-            consecutave5up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5);
-            consecutave10up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5) & (H5 > H6) & (H6 > H7) & (H7 > H8) & (H8 > H9);
-
-            consecutave5down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5);
-            consecutave10down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5) & (L5 < L6) & (L6 < L7) & (L7 < L8) & (L8 < L9);
-            Abovethestomach = (O1 > C1) & (Close > Open) & Close >= AFStat.Median(C1, 1);
-            Belowthestomch = LongwhiteCandle & Open < AFStat.Median(C1, 1) & Close <= AFStat.Median(C1, 1);
-            TweezerTop = AFMath.Abs(High - AFTools.Ref(High, -1)) <= High * 0.0025f & Open > Close & (AFTools.Ref(Close, -1) > AFTools.Ref(Open, -1)) & (MHT | MHY);
-
-            /*Tweezer Bottom*/
-            tweezerBottom = (AFMath.Abs(Low - AFTools.Ref(Low, -1)) / Low < 0.0025f | AFMath.Abs(Low - AFTools.Ref(Low, -2)) / Low < 0.0025f) & Open < Close & (AFTools.Ref(Open, -1) > AFTools.Ref(Close, -1)) & (MLT | MLY);
-
-
-
-
-            /* Detecting double tops & bottoms (come into view, by Isfandi)*/
-            percdiff = 5; /* peak detection threshold */
-            fwdcheck = 5; /* forward validity check */
-            mindistance = 10;
-            validdiff = percdiff / 400;
-
-            PK = AFPattern.Peak(High, percdiff, 1) == High;
-            TR = AFPattern.Trough(Low, percdiff, 1) == Low;
-
-
-            x = AFAvg.Cum(1);
-            XPK1 = AFTools.ValueWhen(PK, x, 1);
-            XPK2 = AFTools.ValueWhen(PK, x, 2);
-            xTR1 = AFTools.ValueWhen(TR, x, 1);
-            xTr2 = AFTools.ValueWhen(TR, x, 2);
-
-            peakdiff = AFTools.ValueWhen(PK, High, 1) / AFTools.ValueWhen(PK, High, 2);
-            Troughdiff = AFTools.ValueWhen(TR, Low, 1) / AFTools.ValueWhen(TR, Low, 2);
-
-            doubletop = PK & AFMath.Abs(peakdiff - 1) < validdiff & (XPK1 - XPK2) > mindistance & High > AFHL.Hhv(AFTools.Ref(High, fwdcheck), fwdcheck - 1);
-            doubleBot = TR & AFMath.Abs(Troughdiff - 1) < validdiff & (xTR1 - xTr2) > mindistance & Low < AFHL.Llv(AFTools.Ref(Low, fwdcheck), fwdcheck - 1);
-
-
-
-            ////////////////////////////////////////////////
-            MINO10 = AFHL.Llv(Open, 10);
-            AVGH10 = AFAvg.Ma(High, 10);
-            AVGL10 = AFAvg.Ma(Low, 10);
-            MAXO10 = AFHL.Hhv(Open, 10);
-            MINL10 = AFHL.Llv(Low, 10);
-            MAXH10 = AFHL.Hhv(High, 10);
-            AVGH21 = AFAvg.Ma(High, 21);
-            AVGL21 = AFAvg.Ma(Low, 21);
-            MINL5 = AFHL.Llv(Low, 5);
-            BullishBeltHold = (Open = MINO10) & (Open < L1) & (Close - Open) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (Open - Low) <= .01f * (High - Low) & (Close <= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 < C2) & (C2 < C3);
-            BearishBeltHold = (Open = MAXO10) & (Open > H1) & (Open - Close) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (High - Open) <= .01f * (High - Low) & (Close >= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 > C2) & (C2 < C3);
-            BullishBreakaway = C4 < O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < O3 & H3 < L4 & C2 < C3 & C1 < C2 & AFMath.Abs(Close - Open) > .6f * (High - Low) & Close > Open & Close > H3;
-            BearishBreakaway = AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C4 > O4 & C3 > O3 & L3 > H4 & C2 > C3 & C1 > C2 & Close < Open & Low < H4 & High > L3;
-
-            DojiDragonfly = AFMath.Abs(Open - Close) <= .02f * (High - Low) & (High - Close) <= .3f * (High - Low) & (High - Low) >= (AVGH10 - AVGL10) & (High > Low) & (Low = MINL10);
-            //BullishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (L<=L1+.3*(H1-L1)) AND (H-L)>=(AVGH10-AVGL10);
-
-
-
-
-          
-
-            //////////////////////////////price 
-            MAXC20 = AFHL.Hhv(Close, 20);
-            AVGC40 = AFAvg.Ma(Close, 40);
-            AVGH5 = AFAvg.Ma(High, 5);
-            AVGL5 = AFAvg.Ma(Low, 5);
-            AVGH34 = AFAvg.Ma(High, 34);
-            AVGL34 = AFAvg.Ma(Low, 43);
-            MAXH5 = AFHL.Hhv(High, 5);
-            MAXH10 = AFHL.Hhv(High, 10);
-            MAXH20 = AFHL.Hhv(High, 20);
-            MINL20 = AFHL.Llv(Low, 20);
-            MINL42 = AFHL.Llv(Low, 42);
-            MAXH42 = AFHL.Hhv(High, 42);
-            MINL21 = AFHL.Llv(Low, 21);
-
-            //to be reveiewd 
-            AVGV4 = AFAvg.Ma(Volume, 4);
-            MINL3 = AFHL.Llv(Low, 3);
-           
-            ///////////////////////
-            AVGC20 = AFAvg.Ma(Close, 20);
-            AVGC50 = AFAvg.Ma(Close, 50);
-            MAXH3 = AFHL.Hhv(High, 3);
-           
-            Insideday = AFPattern.Inside();
-            DojiGapUp = C3 > O3 & O2 > O3 & C2 > O2 & O1 > O2 & Open > C1 & Open == Close & High > Close & Close > Open;
-            //needs to be review
-            //DojiGapdown=C3 < O3 AND O2 < O3 AND C2  < O2 AND O1 < O2 AND O <  C1 AND O = C AND H <  C AND C < O;
-
-            /* Add AFInfo.Name in column*/
-
-
-          var   doublecandle2 =
-                AFMisc.WriteIf(TweezerTop, "Tweezer Top",
-AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
-AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
-AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
-AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
-AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
-
-AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
- AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
-AFMisc.WriteIf(EveningStar1, "Evening Star",
-AFMisc.WriteIf(MorningStar1, "Morning Star",
-AFMisc.WriteIf(Abovethestomach, "Above the stomach",
-AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
-AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
-
-
-           var  pricepattern2 =
+            var doublecandle =
+                        AFMisc.WriteIf(TweezerTop, "Tweezer Top",
+        AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
+        AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
+        AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
+        AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
+        AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
+
+        AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
+         AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
+        AFMisc.WriteIf(EveningStar1, "Evening Star",
+        AFMisc.WriteIf(MorningStar1, "Morning Star",
+        AFMisc.WriteIf(Abovethestomach, "Above the stomach",
+        AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
+        AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
+
+
+            var pricepattern =
             AFMisc.WriteIf(doubletop, "Double top ",
             AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
 
 
-            var singlecandel2 =
+            var singlecandel =
 
            AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
            AFMisc.WriteIf(GapUpx, "Gap Up",
@@ -3316,7 +2470,7 @@ AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
                        AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
 
            AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
-            AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+
            AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
            AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
 
@@ -3324,23 +2478,334 @@ AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
 
            AFMisc.WriteIf(Belowthestomch, "Below the stomch",
 
-                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern"))))))))))))))))))))))))))))))))))));
+                       AFMisc.WriteIf(Insideday, "Inside Day", "No pattern")))))))))))))))))))))))))))))))))));
 
 
 
 
 
+            AFMisc.AddTextColumn(singlecandel, "Daily Single  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(doublecandle, "Daily Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(pricepattern, "Daily Price  Pattern", 5.6f, Color.Black, Color.White);
 
-            AFMisc.AddTextColumn(singlecandel2, "Monthly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(doublecandle2, "Monthly  Candle Pattern", 5.6f, Color.Black, Color.White);
-            AFMisc.AddTextColumn(pricepattern2, "Monthly Price  Pattern", 5.6f, Color.Black, Color.White);
+
             AFTimeFrame.TimeFrameRestore();
 
-            AFMisc.SectionBegin("Shubhalabha");
-            if (AFTools.ParamToggle("Add Formula", "No,Yes", 0) == 1)
-            {
-                shubhascanner();
-            }
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            AFTimeFrame.TimeFrameSet(TFInterval.InWeekly  ); // switch now to hourly 
+            O1 = AFTools.Ref(Open, -1); O2 = AFTools.Ref(Open, -2); O3 = AFTools.Ref(Open, -3); O4 = AFTools.Ref(Open, -4); O5 = AFTools.Ref(Open, -5); O6 = AFTools.Ref(Open, -6); O7 = AFTools.Ref(Open, -7); O8 = AFTools.Ref(Open, -8); O9 = AFTools.Ref(Open, -9);
+
+            H1 = AFTools.Ref(High, -1); H2 = AFTools.Ref(High, -2); H3 = AFTools.Ref(High, -3); H4 = AFTools.Ref(High, -4); H5 = AFTools.Ref(High, -5); H6 = AFTools.Ref(High, -6); H6 = AFTools.Ref(High, -6); H7 = AFTools.Ref(High, -7); H8 = AFTools.Ref(High, -8); H9 = AFTools.Ref(High, -9);
+
+            L1 = AFTools.Ref(Low, -1); L2 = AFTools.Ref(Low, -2); L3 = AFTools.Ref(Low, -3); L4 = AFTools.Ref(Low, -4); L5 = AFTools.Ref(Low, -5); L6 = AFTools.Ref(Low, -6); L7 = AFTools.Ref(Low, -7); L8 = AFTools.Ref(Low, -8); L9 = AFTools.Ref(Low, -9);
+
+
+            C1 = AFTools.Ref(Close, -1); C2 = AFTools.Ref(Close, -2); C3 = AFTools.Ref(Close, -3); C4 = AFTools.Ref(Close, -4); C5 = AFTools.Ref(Close, -5); C6 = AFTools.Ref(Close, -6); C7 = AFTools.Ref(Close, -7); C8 = AFTools.Ref(Close, -8); C9 = AFTools.Ref(Close, -9);
+
+            /* BODY Colors*/
+            WhiteCandle = Close >= Open;
+            BlackCandle = Open > Close;
+            B1 = O1 - C1;
+            B2 = O2 - C2;
+            B3 = O3 - C3;
+            Avgbody = ((B1 + B2 + B3) / 3);
+            XBODY = Avgbody * 3;
+
+            BODY = Open - Close;
+
+
+
+
+
+            /*Single candle Pattern */
+            smallBodyMaximum = 0.0025f;//less than 0.25%
+            LargeBodyMinimum = 0.01f;//greater than 1.0%
+            smallBody = (Open >= Close * (1 - smallBodyMaximum) & WhiteCandle) | (Close >= Open * (1 - smallBodyMaximum) & BlackCandle);
+            largeBody = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) | Close <= Open * (1 - LargeBodyMinimum) & BlackCandle;
+            mediumBody = !largeBody & !smallBody;
+            identicalBodies = AFMath.Abs(AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) - AFMath.Abs(Open - Close)) < AFMath.Abs(Open - Close) * smallBodyMaximum;
+            realBodySize = AFMath.Abs(Open - Close);
+
+
+
+            /*Shadows*/
+            smallUpperShadow = (WhiteCandle & High <= Close * (1 + smallBodyMaximum)) | (BlackCandle & High <= Open * (1 + smallBodyMaximum));
+            smallLowerShadow = (WhiteCandle & Low >= Open * (1 - smallBodyMaximum)) | (BlackCandle & Low >= Close * (1 - smallBodyMaximum));
+            largeUpperShadow = (WhiteCandle & High >= Close * (1 + LargeBodyMinimum)) | (BlackCandle & High >= Open * (1 + LargeBodyMinimum));
+            largeLowerShadow = (WhiteCandle & Low <= Open * (1 - LargeBodyMinimum)) | (BlackCandle & Low <= Close * (1 - LargeBodyMinimum));
+
+            /*Gaps*/
+            upGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Open > AFTools.Ref(Open, -1), 1,
+           AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Close > AFTools.Ref(Open, -1), 1,
+           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Open > AFTools.Ref(Close, -1), 1,
+           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Close > AFTools.Ref(Close, -1), 1, 0))));
+
+            downGap = AFTools.Iif(AFTools.Ref(BlackCandle, -1) & WhiteCandle & Close < AFTools.Ref(Close, -1), 1,
+           AFTools.Iif(AFTools.Ref(BlackCandle, -1) & BlackCandle & Open < AFTools.Ref(Close, -1), 1,
+           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & WhiteCandle & Close < AFTools.Ref(Open, -1), 1,
+           AFTools.Iif(AFTools.Ref(WhiteCandle, -1) & BlackCandle & Open < AFTools.Ref(Open, -1), 1, 0))));
+
+
+
+
+            /*Maximum High Today - ( MHT)
+            Today is the maximum High in the last 5 days*/
+            MHT = AFHL.Hhv(High, 5) == High;
+
+            /*Maximum High Yesterday - ( MHY)
+            Yesterday is the maximum High in the last 5 days*/
+            MHY = AFHL.Hhv(High, 5) == AFTools.Ref(High, -1);
+
+            /*Minimum Low Today - ( MLT)
+            Today is the minimum Low in the last 5 days*/
+            MLT = AFHL.Llv(Low, 5) == Low;
+
+            /*Minimum Low Yesterday - ( MLY)
+            Yesterday is the minimum Low in the last 5 days*/
+            MLY = AFHL.Llv(Low, 5) == AFTools.Ref(Low, -1);
+
+            /* Doji1 definitions*/
+
+            /*Doji1 Today - (DT)*/
+            //   DT = AFMath.Abs(Close - Open) <= (Close * smallBodyMaximum) | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+
+            /* Doji1 Yesterday - (DY)*/
+            //   DY = AFMath.Abs(AFTools.Ref(Close, -1) - AFTools.Ref(Open, -1)) <= AFTools.Ref(Close, -1) * smallBodyMaximum | AFMath.Abs(AFTools.Ref(Open, -1) - AFTools.Ref(Close, -1)) <= (AFTools.Ref(High, -1) - AFTools.Ref(Low, -1)) * 0.1f;
+
+
+
+            ShortWhitecandle = ((Close > Open) & ((High - Low) > (3 * (Close - Open))));
+            ShortblackCandle = ((Open > Close) & ((High - Low) > (3 * (Open - Close))));
+            Close1 = (Open - Close) * (0.002f);
+            Open1 = (Open * 0.002f);
+
+            LongblackCandle = (Close <= Open * (1 - LargeBodyMinimum) & BlackCandle) & (Open > Close) & ((Open - Close) / (.001f + High - Low) > .6f);
+            LongwhiteCandle = (Close >= Open * (1 + LargeBodyMinimum) & WhiteCandle) & ((Close > Open) & ((Close - Open) / (.001f + High - Low) > .6f));
+            Doji1 = Open == Close | (AFMath.Abs(Open - Close) <= ((High - Low) * 0.1f));
+
+            //almost equal needs to be reviewd and implemented 
+            whitemarubozu = ((Close > Open) & AFMisc.AlmostEqual(High, Close, 5) & AFMisc.AlmostEqual(Open, Low, 5));
+            blackmarubozu = ((Open > Close) & (High == Open) & (Close == Low));
+
+            marubozuclosingblack = BlackCandle & High > Open & Low == Close;
+            marubozuopeningblack = BlackCandle & High == Open & Low < Close;
+            marubozuclosingwhite = WhiteCandle & High == Close & Open > Low;
+            marubozuopeningwhite = WhiteCandle & High > Close & Open == Low;
+            BlackSpinningTop = ((Open > Close) & ((High - Low) > (3 * (Open - Close))) & (((High - Open) / (0.001f + High - Low)) < 0.4f) & (((Close - Low) / (0.001f + High - Low)) < 0.4f));
+            WhiteSpinningTop = ((Close > Open) & ((High - Low) > (3 * (Close - Open))) & (((High - Close) / (0.001f + High - Low)) < 0.4f) & (((Open - Low) / (0.001f + High - Low)) < 0.4f));
+
+
+            hammer1 = (((High - Low) > 3 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) > 0.6f) & ((Open - Low) / (.001f + High - Low) > 0.6f));
+            InvertedHammer1 = (((High - Low) > 3 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) > 0.6f) & ((High - Open) / (0.001f + High - Low) > 0.6f));
+            HangingMan1 = (((High - Low) > 4 * (Open - Close)) & ((Close - Low) / (.001f + High - Low) >= 0.75f) & ((Open - Low) / (.001f + High - Low) >= 0.75f));
+            ShootingStar1 = (((High - Low) > 4 * (Open - Close)) & ((High - Close) / (0.001f + High - Low) >= 0.75f) & ((High - Open) / (0.001f + High - Low) >= 0.75f));
+            BearishEngulfing = ((C1 > O1) & (Open > Close) & (Open >= C1) & (O1 >= Close) & ((Open - Close) > (C1 - O1)));
+            BullishEngulfing = ((O1 > C1) & (Close > Open) & (Close >= O1) & (C1 >= Open) & ((Close - Open) > (O1 - C1)));
+            BearishEveningDojiStar = ((C2 > O2) & ((C2 - O2) / (0.001f + H2 - L2) > 0.6f) & (C2 < O1) & (C1 > O1) & ((H1 - L1) > (3 * (C1 - O1))) & (Open > Close) & (Open < O1));
+            BullishMorningDojiStar = ((O2 > C2) & ((O2 - C2) / (0.001f + H2 - L2) > 0.6f) & (C2 > O1) & (O1 > C1) & ((H1 - L1) > (3 * (C1 - O1))) & (Close > Open) & (Open > O1));
+            BullishHarami = ((O1 > C1) & (Close > Open) & (Close <= O1) & (C1 <= Open) & ((Close - Open) < (O1 - C1)));
+            BearishHarami = ((C1 > O1) & (Open > Close) & (Open <= C1) & (O1 <= Close) & ((Open - Close) < (C1 - O1)));
+
+
+
+
+
+            PiercingLine = ((C1 < O1) & (((O1 + C1) / 2) < Close) & (Open < Close) & (Open < C1) & (Close < O1) & ((Close - Open) / (0.001f + (High - Low)) > 0.6f));
+
+            EveningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(WhiteCandle, -2) & AFTools.Ref(upGap, -1) & !AFTools.Ref(largeBody, -1) & BlackCandle & !smallBody & (MHT | MHY);
+            MorningStar1 = AFTools.Ref(largeBody, -2) & AFTools.Ref(BlackCandle, -2) & AFTools.Ref(downGap, -1) & WhiteCandle & largeBody & Close > AFTools.Ref(Close, -2) & MLY;
+            MATCHLOW = AFHL.Llv(Low, 8) == AFHL.Llv(Low, 2) & AFTools.Ref(Close, -1) <= AFTools.Ref(Open, -1) * .99f & AFMath.Abs(Close - AFTools.Ref(Close, -1)) <= Close * .0025f & Open > AFTools.Ref(Close, -1) & Open <= (High - ((High - Low) * .5f));
+            GapUpx = AFPattern.GapUp();
+            GapDownx = AFPattern.GapDown();
+            BigGapUp = Low > 1.01f * H1;
+            BigGapDown = High < 0.99f * L1;
+            HugeGapUp = Low > 1.02f * H1;
+            HugeGapDown = High < 0.98f * L1;
+            DoubleGapUp = AFPattern.GapUp() & AFTools.Ref(AFPattern.GapUp(), -1);
+            DoubleGapDown = AFPattern.GapDown() & AFTools.Ref(AFPattern.GapDown(), -1);
+
+            consecutave5up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5);
+            consecutave10up = (High > H1) & (H1 > H2) & (H2 > H3) & (H3 > H4) & (H4 > H5) & (H5 > H6) & (H6 > H7) & (H7 > H8) & (H8 > H9);
+
+            consecutave5down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5);
+            consecutave10down = (Low < L1) & (L1 < L2) & (L2 < L3) & (L3 < L4) & (L4 < L5) & (L5 < L6) & (L6 < L7) & (L7 < L8) & (L8 < L9);
+            Abovethestomach = (O1 > C1) & (Close > Open) & Close >= AFStat.Median(C1, 1);
+            Belowthestomch = LongwhiteCandle & Open < AFStat.Median(C1, 1) & Close <= AFStat.Median(C1, 1);
+            TweezerTop = AFMath.Abs(High - AFTools.Ref(High, -1)) <= High * 0.0025f & Open > Close & (AFTools.Ref(Close, -1) > AFTools.Ref(Open, -1)) & (MHT | MHY);
+
+            /*Tweezer Bottom*/
+            tweezerBottom = (AFMath.Abs(Low - AFTools.Ref(Low, -1)) / Low < 0.0025f | AFMath.Abs(Low - AFTools.Ref(Low, -2)) / Low < 0.0025f) & Open < Close & (AFTools.Ref(Open, -1) > AFTools.Ref(Close, -1)) & (MLT | MLY);
+
+
+
+
+            /* Detecting double tops & bottoms (come into view, by Isfandi)*/
+            percdiff = 5; /* peak detection threshold */
+            fwdcheck = 5; /* forward validity check */
+            mindistance = 10;
+            validdiff = percdiff / 400;
+
+            PK = AFPattern.Peak(High, percdiff, 1) == High;
+            TR = AFPattern.Trough(Low, percdiff, 1) == Low;
+
+
+            x = AFAvg.Cum(1);
+            XPK1 = AFTools.ValueWhen(PK, x, 1);
+            XPK2 = AFTools.ValueWhen(PK, x, 2);
+            xTR1 = AFTools.ValueWhen(TR, x, 1);
+            xTr2 = AFTools.ValueWhen(TR, x, 2);
+
+            peakdiff = AFTools.ValueWhen(PK, High, 1) / AFTools.ValueWhen(PK, High, 2);
+            Troughdiff = AFTools.ValueWhen(TR, Low, 1) / AFTools.ValueWhen(TR, Low, 2);
+
+            doubletop = PK & AFMath.Abs(peakdiff - 1) < validdiff & (XPK1 - XPK2) > mindistance & High > AFHL.Hhv(AFTools.Ref(High, fwdcheck), fwdcheck - 1);
+            doubleBot = TR & AFMath.Abs(Troughdiff - 1) < validdiff & (xTR1 - xTr2) > mindistance & Low < AFHL.Llv(AFTools.Ref(Low, fwdcheck), fwdcheck - 1);
+
+
+
+            ////////////////////////////////////////////////
+            MINO10 = AFHL.Llv(Open, 10);
+            AVGH10 = AFAvg.Ma(High, 10);
+            AVGL10 = AFAvg.Ma(Low, 10);
+            MAXO10 = AFHL.Hhv(Open, 10);
+            MINL10 = AFHL.Llv(Low, 10);
+            MAXH10 = AFHL.Hhv(High, 10);
+            AVGH21 = AFAvg.Ma(High, 21);
+            AVGL21 = AFAvg.Ma(Low, 21);
+            MINL5 = AFHL.Llv(Low, 5);
+            BullishBeltHold = (Open = MINO10) & (Open < L1) & (Close - Open) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (Open - Low) <= .01f * (High - Low) & (Close <= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 < C2) & (C2 < C3);
+            BearishBeltHold = (Open = MAXO10) & (Open > H1) & (Open - Close) >= .7f * (High - Low) & (High - Low) >= 1.2f * (AVGH10 - AVGL10) & (High - Open) <= .01f * (High - Low) & (Close >= H1 - .5f * (H1 - L1)) & (H1 > L1) & (High > Low) & (C1 > C2) & (C2 < C3);
+            BullishBreakaway = C4 < O4 & AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C3 < O3 & H3 < L4 & C2 < C3 & C1 < C2 & AFMath.Abs(Close - Open) > .6f * (High - Low) & Close > Open & Close > H3;
+            BearishBreakaway = AFMath.Abs(C4 - O4) > .5f * (H4 - L4) & C4 > O4 & C3 > O3 & L3 > H4 & C2 > C3 & C1 > C2 & Close < Open & Low < H4 & High > L3;
+
+            DojiDragonfly = AFMath.Abs(Open - Close) <= .02f * (High - Low) & (High - Close) <= .3f * (High - Low) & (High - Low) >= (AVGH10 - AVGL10) & (High > Low) & (Low = MINL10);
+            //BullishDojiGravestone=abs(O-C)<=.01*(H-L) AND (H-C)>=.95*(H-L) AND (H>L) AND (L<=L1+.3*(H1-L1)) AND (H-L)>=(AVGH10-AVGL10);
+
+
+
+
+
+
+            //////////////////////////////price 
+            MAXC20 = AFHL.Hhv(Close, 20);
+            AVGC40 = AFAvg.Ma(Close, 40);
+            AVGH5 = AFAvg.Ma(High, 5);
+            AVGL5 = AFAvg.Ma(Low, 5);
+            AVGH34 = AFAvg.Ma(High, 34);
+            AVGL34 = AFAvg.Ma(Low, 43);
+            MAXH5 = AFHL.Hhv(High, 5);
+            MAXH10 = AFHL.Hhv(High, 10);
+            MAXH20 = AFHL.Hhv(High, 20);
+            MINL20 = AFHL.Llv(Low, 20);
+            MINL42 = AFHL.Llv(Low, 42);
+            MAXH42 = AFHL.Hhv(High, 42);
+            MINL21 = AFHL.Llv(Low, 21);
+
+            //to be reveiewd 
+            AVGV4 = AFAvg.Ma(Volume, 4);
+            MINL3 = AFHL.Llv(Low, 3);
+            var oneDayreversal = ((L3 <= MINL21) & (L6 > L5) & (L5 > L4) & (L4 > L3) & (L2 > L3) & (L1 > L2) & (Low > L1));
+
+
+            ///////////////////////
+            AVGC20 = AFAvg.Ma(Close, 20);
+            AVGC50 = AFAvg.Ma(Close, 50);
+            MAXH3 = AFHL.Hhv(High, 3);
+            Insideday = AFPattern.Inside();
+            DojiGapUp = C3 > O3 & O2 > O3 & C2 > O2 & O1 > O2 & Open > C1 & Open == Close & High > Close & Close > Open;
+            //needs to be review
+            //DojiGapdown=C3 < O3 AND O2 < O3 AND C2  < O2 AND O1 < O2 AND O <  C1 AND O = C AND H <  C AND C < O;
+
+            /* Add AFInfo.Name in column*/
+
+
+            var doublecandle4 =
+                  AFMisc.WriteIf(TweezerTop, "Tweezer Top",
+  AFMisc.WriteIf(tweezerBottom, "Tweezer Bottom",
+  AFMisc.WriteIf(consecutave5down, "Consecutive 5 down",
+  AFMisc.WriteIf(consecutave10down, "Consecutive 10 down",
+  AFMisc.WriteIf(consecutave5up, "Consecutive 5 up",
+  AFMisc.WriteIf(consecutave10up, "Consecutive 10 up",
+
+  AFMisc.WriteIf(BullishMorningDojiStar, "Bullish Morning Doji Star ",
+   AFMisc.WriteIf(BearishEveningDojiStar, "Bearish Evening Doji Star ",
+  AFMisc.WriteIf(EveningStar1, "Evening Star",
+  AFMisc.WriteIf(MorningStar1, "Morning Star",
+  AFMisc.WriteIf(Abovethestomach, "Above the stomach",
+  AFMisc.WriteIf(BullishBreakaway, "Bullish Breakaway",
+  AFMisc.WriteIf(BearishBreakaway, "Bearish Breakaway", "No pattern")))))))))))));
+
+
+            var pricepattern4 =
+            AFMisc.WriteIf(doubletop, "Double top ",
+            AFMisc.WriteIf(doubleBot, "Double bottom", "No pattern"));
+
+
+            var singlecandel4 =
+
+            AFMisc.WriteIf(MATCHLOW, "MATCH Low ",
+            AFMisc.WriteIf(GapUpx, "Gap Up",
+            AFMisc.WriteIf(GapDownx, "Gap Down ",
+            AFMisc.WriteIf(BigGapUp, "Big Gap Up ",
+            AFMisc.WriteIf(HugeGapUp, "Huge Gap Up ",
+            AFMisc.WriteIf(HugeGapDown, "Huge Gap Down ",
+            AFMisc.WriteIf(DoubleGapUp, "Double Gap Up ",
+            AFMisc.WriteIf(DoubleGapDown, "Double Gap Down ",
+
+
+             AFMisc.WriteIf(HangingMan1, "Hanging Man",
+
+              AFMisc.WriteIf(BullishHarami, "Bullish Harami ",
+            AFMisc.WriteIf(PiercingLine, "Piercing Line ",
+             AFMisc.WriteIf(BearishHarami, "Bearish Harami ",
+            AFMisc.WriteIf(Doji1, "Doji",
+             AFMisc.WriteIf(DojiGapUp, "Doji Gap Up",
+
+
+
+             AFMisc.WriteIf(BlackSpinningTop, "Black Spinning Top ",
+             AFMisc.WriteIf(WhiteSpinningTop, "White Spinning Top ",
+            AFMisc.WriteIf(ShootingStar1, "Shooting Star ",
+             AFMisc.WriteIf(marubozuclosingwhite, "Marubozu closing white",
+             AFMisc.WriteIf(marubozuopeningwhite, "Marubozu opening white",
+            AFMisc.WriteIf(marubozuopeningblack, "Marubozu opening black",
+                       AFMisc.WriteIf(marubozuclosingblack, "Marubozu closing black",
+                       AFMisc.WriteIf(blackmarubozu, "Black marubozu",
+                        AFMisc.WriteIf(whitemarubozu, "White marubozu",
+                        AFMisc.WriteIf(ShortWhitecandle, "Short White candle",
+                        AFMisc.WriteIf(ShortblackCandle, "Short black Candle",
+                        AFMisc.WriteIf(LongwhiteCandle, "Long white Candle",
+                        AFMisc.WriteIf(LongblackCandle, "Long Black Candle",
+                        AFMisc.WriteIf(BearishEngulfing, "Bearish Engulfing",
+                        AFMisc.WriteIf(hammer1, "Hammer",
+                        AFMisc.WriteIf(InvertedHammer1, "Inverted hammer",
+
+            AFMisc.WriteIf(BullishEngulfing, "Bullish Engulfing ",
+             AFMisc.WriteIf(oneDayreversal, "One Day reversal",
+            AFMisc.WriteIf(BullishBeltHold, "Bullish Belt Hold",
+            AFMisc.WriteIf(BearishBeltHold, "Bearish Belt Hold",
+
+
+
+            AFMisc.WriteIf(Belowthestomch, "Below the stomch",
+
+                        AFMisc.WriteIf(Insideday, "Inside Day", "No pattern"))))))))))))))))))))))))))))))))))));
+
+
+
+
+
+
+            AFMisc.AddTextColumn(singlecandel4, "Weekly Single  Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(doublecandle4, "Weekly Candle Pattern", 5.6f, Color.Black, Color.White);
+            AFMisc.AddTextColumn(pricepattern4, "Weekly Price  Pattern", 5.6f, Color.Black, Color.White);
+            AFTimeFrame.TimeFrameRestore();
+
+
+            
+
             AFMisc.SectionEnd();
         }
       
